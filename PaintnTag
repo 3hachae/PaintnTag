@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자치단체 색칠지도 — 한국 · 일본</title>
+<!-- Pretendard static 웹폰트 -->
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-jp.min.css">
+<!-- D3.js & TopoJSON client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F5F7;
+    --surface: #FFFFFF;
+    --surface-2: #FBFBFD;
+    --text-1: #1D1D1F;
+    --text-2: #6E6E73;
+    --border: #D2D2D7;
+    --accent: #0071E3;
+    --accent-soft: #E8F1FD;
+    --danger: #FF3B30;
+    --map-fill: #E5E5EA;
+    --map-stroke: #FFFFFF;
+    --map-hover-stroke: #0071E3; /* 라이트모드: 깔끔한 차분한 블루 테두리 */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.04), 0 1px 1px rgba(0,0,0,.03);
+    --shadow-md: 0 8px 28px rgba(0,0,0,.10);
+    --modal-overlay: rgba(0,0,0,0.4);
+  }
+
+  body.dark-theme {
+    --bg: #161618;
+    --surface: #232326;
+    --surface-2: #2C2C2E;
+    --text-1: #F2F2F7;
+    --text-2: #8E8E93;
+    --border: #3A3A3C;
+    --accent: #0A84FF;
+    --accent-soft: rgba(10,132,255,0.2);
+    --danger: #FF453A;
+    --map-fill: #323236;
+    --map-stroke: #161618;
+    --map-hover-stroke: #0DFFEF; /* 다크모드: 화려한 네온 블루 테두리 */
+    --modal-overlay: rgba(0,0,0,0.7);
+  }
+
+  body.easter-theme {
+    --bg: #031011;
+    --surface: #072224;
+    --surface-2: #0B3337;
+    --text-1: #0DFFEF;
+    --text-2: #52FDF3;
+    --border: #0DFFEF;
+    --accent: #0DFFEF;
+    --accent-soft: rgba(13,255,239,0.2);
+    --danger: #FF3B30;
+    --map-fill: #0F4247;
+    --map-stroke: #031011;
+    --map-hover-stroke: #0DFFEF; /* 이스터에그: 민트 네온 */
+    --modal-overlay: rgba(0,255,239,0.2);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Pretendard', 'Pretendard JP', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background:var(--bg);
+    color:var(--text-1);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+  button, input, select, textarea{ font-family:inherit; }
+
+  .app{height:100vh;display:flex;flex-direction:column;}
+
+  .topbar{
+    flex:none;min-height:60px;display:flex;align-items:center;justify-content:space-between;
+    padding:10px 24px;background:var(--surface-2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;
+  }
+  .brand h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-0.01em;}
+  .brand p{font-size:12px;color:var(--text-2);margin:2px 0 0;}
+  .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-1);border-radius:980px;padding:7px 14px;font-size:12.5px;font-weight:500;cursor:pointer;transition:background .15s;white-space:nowrap;}
+  .btn-ghost:hover{background:rgba(0,0,0,.045);}
+  body.dark-theme .btn-ghost:hover{background:rgba(255,255,255,.08);}
+
+  .tagbar{flex:none;display:flex;align-items:center;gap:14px;padding:11px 24px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .tagbar-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;flex:none;}
+  .tag-rail{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px;}
+  .tag-rail::-webkit-scrollbar{display:none;}
+
+  .chip{display:flex;align-items:center;gap:5px;padding:5px 6px;border-radius:980px;border:1.5px solid var(--border);background:var(--surface-2);flex:none;cursor:pointer;transition:border-color .15s, background .15s;}
+  .chip.active{border-color:var(--accent);background:var(--accent-soft);}
+  .chip-swatch{position:relative;width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);overflow:hidden;flex:none;cursor:pointer;}
+  .chip-swatch input[type=color]{position:absolute;inset:-4px;width:26px;height:26px;opacity:0;cursor:pointer;border:none;padding:0;}
+  .chip-name{font-size:13px;font-weight:500;outline:none;padding:0 2px;min-width:14px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-1);}
+  .chip-count{font-size:11px;color:var(--text-2);min-width:10px;text-align:center;}
+  .chip-del{border:none;background:transparent;color:var(--text-2);font-size:15px;line-height:1;width:18px;height:18px;border-radius:50%;cursor:pointer;flex:none;}
+  .chip-del:hover{background:rgba(0,0,0,.07);color:var(--danger);}
+  .add-tag-btn{flex:none;border:1.5px dashed var(--border);background:transparent;color:var(--text-2);border-radius:980px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .add-tag-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  .inputbar{flex:none;padding:11px 24px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:8px;}
+  .search-row{display:flex;align-items:center;gap:10px;}
+  .active-tag-select-wrap{position:relative;flex:none;}
+  .active-tag-select-wrap .dot{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;pointer-events:none;}
+  .active-tag-select-wrap::after{content:'⌄';position:absolute;right:10px;top:50%;transform:translateY(-55%);color:var(--text-2);pointer-events:none;font-size:12px;}
+  #activeTagSelect{appearance:none;-webkit-appearance:none;padding:8px 26px 8px 27px;border-radius:980px;border:1px solid var(--border);background:var(--surface-2);font-size:12.5px;font-weight:500;color:var(--text-1);cursor:pointer;max-width:130px;}
+  .search-wrap{position:relative;flex:1;min-width:120px;}
+  #searchInput{width:100%;padding:9px 14px;border-radius:980px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:14px;outline:none;transition:border-color .15s, box-shadow .15s;}
+  #searchInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-md);max-height:260px;overflow-y:auto;z-index:60;display:none;}
+  .dropdown.open{display:block;}
+  .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:13.5px;cursor:pointer;color:var(--text-1);}
+  .dropdown-item:hover{background:var(--bg);}
+  .dropdown-flag{font-size:13px;}
+
+  .bulk-toggle{align-self:flex-start;border:none;background:transparent;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0;}
+  .bulk-panel{display:none;flex-direction:column;gap:8px;}
+  .bulk-panel.open{display:flex;}
+  .bulk-panel textarea{width:100%;min-height:60px;resize:vertical;border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:13.5px;outline:none;background:var(--surface-2);color:var(--text-1);}
+  .bulk-panel textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .bulk-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:980px;padding:8px 18px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  body.easter-theme .btn-primary{color:#000;}
+  .btn-primary:hover{opacity:0.9;}
+  .bulk-result{font-size:12px;color:var(--text-2);line-height:1.7;}
+  .bulk-result .amb{color:#B36B00;}
+  .bulk-result .miss{color:var(--danger);}
+
+  .maps{flex:1;display:flex;min-height:0;}
+  .map-panel{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);position:relative;}
+  .map-panel:last-child{border-right:none;}
+  .panel-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}
+  .panel-title{display:flex;align-items:baseline;gap:7px;}
+  .panel-title h2{font-size:14px;font-weight:600;margin:0;}
+  .panel-title .sub{font-size:12px;color:var(--text-2);font-weight:400;}
+  .panel-tools{display:flex;gap:6px;}
+  .icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;}
+  .icon-btn:hover{background:var(--bg);color:var(--text-1);}
+
+  .map-canvas{flex:1;position:relative;min-height:0;}
+  .map-canvas svg{width:100%;height:100%;display:block;cursor:grab;}
+  .map-canvas svg:active{cursor:grabbing;}
+  .map-canvas path{transition:fill .2s;cursor:pointer;vector-effect:non-scaling-stroke;}
+
+  .loading-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--bg);color:var(--text-2);font-size:13px;z-index:10;}
+  .spinner{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .error-msg{max-width:220px;text-align:center;line-height:1.5;}
+  .retry-btn{border:1px solid var(--border);background:var(--surface);color:var(--text-1);border-radius:980px;padding:6px 16px;font-size:12.5px;cursor:pointer;}
+
+  .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:90%;max-width:420px;box-shadow:var(--shadow-md);overflow:hidden;}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+  .modal-header h3{margin:0;font-size:16px;font-weight:600;}
+  .modal-close{background:transparent;border:none;font-size:20px;color:var(--text-2);cursor:pointer;}
+  .modal-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface-2);}
+  .tab-btn{flex:1;padding:12px;border:none;background:transparent;color:var(--text-2);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--surface);}
+  .tab-content{display:none;padding:20px;}
+  .tab-content.active{display:block;}
+
+  .setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .setting-row:last-child{margin-bottom:0;}
+  .setting-label{font-size:14px;font-weight:500;}
+  .setting-select{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:13px;}
+
+  .creator-box{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:10px 0;}
+  .creator-img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid #0DFFEF;cursor:pointer;transition:transform .2s;}
+  .creator-img:hover{transform:scale(1.05);}
+  .creator-name{font-size:16px;font-weight:600;}
+  .creator-desc{font-size:12px;color:var(--text-2);margin:0;}
+
+  .tooltip{position:fixed;z-index:100;background:rgba(29,29,31,.92);color:#fff;padding:8px 12px;border-radius:10px;font-size:12.5px;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s, transform .12s;backdrop-filter:blur(6px);max-width:220px;}
+  .tooltip.visible{opacity:1;transform:translateY(0);}
+  .tooltip-name{font-weight:600;}
+  .tooltip-tag{display:flex;align-items:center;gap:6px;margin-top:4px;color:rgba(255,255,255,.82);}
+  .tooltip-dot{width:7px;height:7px;border-radius:50%;flex:none;}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,8px);background:rgba(29,29,31,.94);color:#fff;padding:10px 18px;border-radius:980px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:600;white-space:nowrap;}
+  body.easter-theme .toast{background:#0DFFEF;color:#000;font-weight:bold;}
+  .toast.visible{opacity:1;transform:translate(-50%,0);}
+
+  @media (max-width:900px){
+    body{overflow:auto;}
+    .app{height:auto;min-height:100vh;}
+    .maps{flex-direction:column;}
+    .map-panel{border-right:none;border-bottom:1px solid var(--border);min-height:380px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>자치단체 색칠지도</h1>
+      <p>한국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요</p>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-ghost" id="settingsBtn">⚙️ 설정</button>
+      <button class="btn-ghost" id="resetAllBtn">⟲ 전체 초기화</button>
+      <button class="btn-ghost" id="exportBtn">⬇ 내보내기</button>
+      <button class="btn-ghost" id="importBtn">⬆ 불러오기</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </header>
+
+  <section class="tagbar">
+    <span class="tagbar-label">태그</span>
+    <div class="tag-rail" id="tagRail"></div>
+    <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
+  </section>
+
+  <section class="inputbar">
+    <div class="search-row">
+      <div class="active-tag-select-wrap">
+        <span class="dot" id="activeTagDot"></span>
+        <select id="activeTagSelect" aria-label="활성 태그"></select>
+      </div>
+      <div class="search-wrap">
+        <input type="text" id="searchInput" autocomplete="off" placeholder="예: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)">
+        <div class="dropdown" id="searchDropdown"></div>
+      </div>
+    </div>
+    <button class="bulk-toggle" id="toggleBulk">여러 개 한 번에 입력 ⌄</button>
+    <div class="bulk-panel" id="bulkPanel">
+      <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역을 한 번에 입력하세요.&#10;예: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)"></textarea>
+      <div class="bulk-actions">
+        <button class="btn-primary" id="bulkAddBtn">일괄 추가</button>
+        <span class="bulk-result" id="bulkResult"></span>
+      </div>
+    </div>
+  </section>
+
+  <main class="maps">
+    <section class="map-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <h2>대한민국</h2>
+          <span class="sub" id="count-kr">0개 색칠됨</span>
+        </div>
+        <div class="panel-tools">
+          <button class="icon-btn" id="zoomResetKR" title="확대 초기화" aria-label="확대 초기화">⟲</button>
+          <button class="icon-btn" id="pngKR" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
+        </div>
+      </div>
+      <div class="map-canvas" id="map-kr">
+        <div class="loading-state" id="loading-kr">
+          <div class="spinner"></div>
+          <span>지도를 불러오는 중...</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="map-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <h2>일본</h2>
+          <span class="sub" id="count-jp">0개 색칠됨</span>
+        </div>
+        <div class="panel-tools">
+          <button class="icon-btn" id="zoomResetJP" title="확대 초기화" aria-label="확대 초기화">⟲</button>
+          <button class="icon-btn" id="pngJP" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
+        </div>
+      </div>
+      <div class="map-canvas" id="map-jp">
+        <div class="loading-state" id="loading-jp">
+          <div class="spinner"></div>
+          <span>지도를 불러오는 중...</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>설정</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="tab-btn active" data-tab="tab-theme">화면 설정</button>
+      <button class="tab-btn" data-tab="tab-creator">만드는 사람</button>
+    </div>
+    <div class="tab-content active" id="tab-theme">
+      <div class="setting-row">
+        <span class="setting-label">테마 모드</span>
+        <select class="setting-select" id="themeSelect">
+          <option value="light">화이트 모드</option>
+          <option value="dark">다크 모드</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">언어 (Language)</span>
+        <select class="setting-select" id="langSelect">
+          <option value="ko">한국어</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+        </select>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-creator">
+      <div class="creator-box">
+        <img class="creator-img" id="creatorImg" src="creator.png" alt="채준영 (하채, Hachae)" title="클릭해서 테마를 전환해보세요!" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'70\' height=\'70\' viewBox=\'0 0 70 70\'><circle cx=\'35\' cy=\'35\' r=\'35\' fill=\'%230DFFEF\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23000000\' font-size=\'22\' font-weight=\'bold\'>채</text></svg>';">
+        <div class="creator-name">채준영 (하채, Hachae)</div>
+        <p class="creator-desc">자치단체 색칠지도 개발자</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var KR_TOPO_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
+  var JP_TOPO_URL = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
+
+  var i18n = {
+    ko: {
+      title: "자치단체 색칠지도 — 한국 · 일본",
+      headerTitle: "자치단체 색칠지도",
+      headerSub: "한국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요",
+      settings: "⚙️ 설정",
+      resetAll: "⟲ 전체 초기화",
+      export: "⬇ 내보내기",
+      import: "⬆ 불러오기",
+      tagLabel: "태그",
+      addTag: "+ 새 태그",
+      searchPlaceholder: "종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkToggle: "여러 개 한 번에 입력 ⌄",
+      bulkPlaceholder: "쉼표(,) 또는 줄바꿈으로 여러 지역을 한 번에 입력하세요.\n예: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkBtn: "일괄 추가",
+      krTitle: "대한민국",
+      jpTitle: "일본",
+      coloredCount: "개 색칠됨",
+      modalTitle: "설정",
+      tabTheme: "화면 설정",
+      tabCreator: "만드는 사람",
+      themeMode: "테마 모드",
+      themeLight: "화이트 모드",
+      themeDark: "다크 모드",
+      langLabel: "언어 (Language)",
+      creatorName: "채준영 (하채, Hachae)",
+      creatorDesc: "자치단체 색칠지도 개발자",
+      defaultTagVisit: "방문",
+      defaultTagPlan: "예정",
+      tagDefaultName: "새 태그",
+      confirmTagDel: " 태그를 삭제할까요? 이 태그로 칠한 지역이 모두 초기화됩니다.",
+      confirmReset: "모든 색칠을 초기화할까요? 태그는 유지됩니다.",
+      needTag: "먼저 태그를 선택하거나 추가하세요",
+      importSuccess: "불러오기 완료",
+      importFail: "파일을 읽을 수 없습니다",
+      exportFail: "이미지 생성에 실패했습니다",
+      themeRestored: "기본 테마로 복구되었습니다.",
+      loading: "지도를 불러오는 중...",
+      loadError: "지도 데이터를 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.",
+      retry: "다시 시도"
+    },
+    en: {
+      title: "Municipality Map Coloring — Korea · Japan",
+      headerTitle: "Municipality Coloring Map",
+      headerSub: "Color Korean and Japanese municipalities with your custom tags",
+      settings: "⚙️ Settings",
+      resetAll: "⟲ Reset All",
+      export: "⬇ Export",
+      import: "⬆ Import",
+      tagLabel: "TAGS",
+      addTag: "+ New Tag",
+      searchPlaceholder: "종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkToggle: "Bulk Input ⌄",
+      bulkPlaceholder: "Enter multiple locations separated by commas or newlines.\ne.g. 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkBtn: "Add All",
+      krTitle: "South Korea",
+      jpTitle: "Japan",
+      coloredCount: " colored",
+      modalTitle: "Settings",
+      tabTheme: "Appearance",
+      tabCreator: "Creator",
+      themeMode: "Theme Mode",
+      themeLight: "Light Mode",
+      themeDark: "Dark Mode",
+      langLabel: "Language",
+      creatorName: "Chae Junyeong",
+      creatorDesc: "Developer of Municipality Coloring Map",
+      defaultTagVisit: "Visited",
+      defaultTagPlan: "Plan",
+      tagDefaultName: "New Tag",
+      confirmTagDel: " tag? All regions colored with this tag will be reset.",
+      confirmReset: "Reset all colored regions? Tags will be kept.",
+      needTag: "Please select or add a tag first",
+      importSuccess: "Import successful",
+      importFail: "Failed to read file",
+      exportFail: "Failed to export image",
+      themeRestored: "Restored to default theme.",
+      loading: "Loading map...",
+      loadError: "Failed to load map data. Please check connection and retry.",
+      retry: "Retry"
+    },
+    ja: {
+      title: "自治体 塗りつぶしマップ — 韓国 · 日本",
+      headerTitle: "自治体 塗りつぶしマップ",
+      headerSub: "韓国の市・郡・区、日本の市町村をオリジナルタグで塗ってみよう",
+      settings: "⚙️ 設定",
+      resetAll: "⟲ 全初期化",
+      export: "⬇ エクスポート",
+      import: "⬆ インポート",
+      tagLabel: "タグ",
+      addTag: "+ 新規タグ",
+      searchPlaceholder: "종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkToggle: "一括入力 ⌄",
+      bulkPlaceholder: "カンマ(,)や改行で複数の地域を一括入力できます。\n例: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkBtn: "一括追加",
+      krTitle: "大韓民国",
+      jpTitle: "日本",
+      coloredCount: "箇所 塗布済み",
+      modalTitle: "設定",
+      tabTheme: "画面設定",
+      tabCreator: "制作者",
+      themeMode: "テーマモード",
+      themeLight: "ライトモード",
+      themeDark: "ダークモード",
+      langLabel: "言語 (Language)",
+      creatorName: "蔡俊榮(チェ・ジュニョン)",
+      creatorDesc: "自治体塗りつぶしマップ 開発者",
+      defaultTagVisit: "訪問",
+      defaultTagPlan: "予定",
+      tagDefaultName: "新規タグ",
+      confirmTagDel: " タグを削除しますか？このタグで塗られた地域が初期化されます。",
+      confirmReset: "すべての塗りつぶしを初期化しますか？(タグは保持されます)",
+      needTag: "最初にタグを選択または追加してください",
+      importSuccess: "インポート完了",
+      importFail: "ファイルを読み込めませんでした",
+      exportFail: "画像の生成に失敗しました",
+      themeRestored: "基本テーマに復元されました。",
+      loading: "マップを読み込み中...",
+      loadError: "マップ データの読み込みに失敗しました。接続を確認して再試行してください。",
+      retry: "再試行"
+    }
+  };
+
+  var KR_SIDO = {
+    '11':['서울특별시','서울'], '21':['부산광역시','부산'], '22':['대구광역시','대구'],
+    '23':['인천광역시','인천'], '24':['광주광역시','광주'], '25':['대전광역시','대전'],
+    '26':['울산광역시','울산'], '29':['세종특별자치시','세종'], '31':['경기도','경기'],
+    '32':['강원특별자치도','강원'], '33':['충청북도','충북'], '34':['충청남도','충남'],
+    '35':['전북특별자치도','전북'], '36':['전라남도','전남'], '37':['경상북도','경북'],
+    '38':['경상남도','경남'], '39':['제주특별자치도','제주']
+  };
+
+  /* 일본 47개 도도부현 로마자 사전 */
+  var JP_PREFECTURES = {
+    '北海道': ['hokkaido', '홉카이도', '북해도'], '青森県': ['aomori', '아오모리'], '岩手県': ['iwate', '이와테'],
+    '宮城県': ['miyagi', '미야기'], '秋田県': ['akita', '아키타'], '山形県': ['yamagata', '야마가타'],
+    '福島県': ['fukushima', '후쿠시마'], '茨城県': ['ibaraki', '이바라키'], '栃木県': ['tochigi', '토치기', '도치기'],
+    '群馬県': ['gunma', '군마'], '埼玉県': ['saitama', '사이타마'], '千葉県': ['chiba', '치바'],
+    '東京都': ['tokyo', '도쿄'], '神奈川県': ['kanagawa', '카나가와', '가나가와'], '新潟県': ['niigata', '니가타'],
+    '富山県': ['toyama', '도야마', '토야마'], '石川県': ['ishikawa', '이시카와'], '福井県': ['fukui', '후쿠이'],
+    '山梨県': ['yamanashi', '야마나시'], '長野県': ['nagano', '나가노'], '岐阜県': ['gifu', '기후'],
+    '静岡県': ['shizuoka', '시즈오카'], '愛知県': ['aichi', '아이치'], '三重県': ['mie', '미에'],
+    '滋賀県': ['shiga', '시가'], '京都府': ['kyoto', '교토'], '大阪府': ['osaka', '오사카'],
+    '兵庫県': ['hyogo', '효고'], '奈良県': ['nara', '나라'], '和歌山県': ['wakayama', '와카야마'],
+    '鳥取県': ['tottori', '돗토리'], '島根県': ['shimane', '시마네'], '岡山県': ['okayama', '오카야마'],
+    '広島県': ['hiroshima', '히로시마'], '山口県': ['yamaguchi', '야마구치'], '徳島県': ['tokushima', '도쿠시마'],
+    '香川県': ['kagawa', '카가와', '가가와'], '愛媛県': ['ehime', '에히메'], '高知県': ['kochi', '고치'],
+    '福岡県': ['fukuoka', '후쿠오카'], '佐賀県': ['saga', '사가'], '長崎県': ['nagasaki', '나가사키'],
+    '熊本県': ['kumamoto', '쿠마모토', '구마모토'], '大分県': ['oita', '오이타'], '宮崎県': ['miyazaki', '미야자키'],
+    '鹿児島県': ['kagoshima', '카고시마', '가고시마'], '沖縄県': ['okinawa', '오키나와']
+  };
+
+  /* 큐슈 전 지역 포함 일본 주요 도시/구/정/촌 광범위 로마자 사전 */
+  var JP_CITIES = {
+    // === 큐슈: 후쿠오카현 ===
+    '福岡市': ['fukuoka'], '博多区': ['hakata'], '中央区': ['chuo'], '東区': ['higashi'], '南区': ['minami'], '西区': ['nishi'], '城南区': ['jonan'], '早良区': ['sawara'],
+    '北九州市': ['kitakyushu'], '小倉北区': ['kokurakita', 'kokura'], '小倉南区': ['kokuraminami'], '門司区': ['moji'], '八幡西区': ['yahatanishi', 'yahata'], '八幡東区': ['yahatahigashi'], '戸畑区': ['tobata'], '若松区': ['wakamatsu'],
+    '久留米市': ['kurume'], '大牟田市': ['omuta'], '飯塚市': ['iizuka'], '田川市': ['tagawa'], '柳川市': ['yanagawa'], '八女市': ['yame'], '筑後市': ['chikugo'], '大川市': ['okawa'], '行橋市': ['yukuhashi'], '豊前市': ['buzen'], '中間市': ['nakama'], '小郡市': ['ogori'], '筑紫野市': ['chikushino'], '春日市': ['kasuga'], '大野城市': ['onojo'], '宗像市': ['munakata'], '太宰府市': ['dazaifu'], '古賀市': ['koga'], '福津市': ['fukutsu'], 'うきは市': ['ukiha'], '宮若市': ['miyawaka'], '朝倉市': ['asakura'], 'みやま市': ['miyama'], '糸島市': ['itoshima'], '篠栗町': ['sasaguri'], '志免町': ['shime'], '須恵町': ['sue'], '新宮町': ['shingu'], '久山町': ['hisayama'], '粕屋町': ['kasuya'], '芦屋町': ['ashiya'], '水巻町': ['mizumaki'], '岡垣町': ['okagaki'], '遠賀町': ['onga'],
+    // === 큐슈: 사가현 ===
+    '佐賀市': ['saga'], '唐津市': ['karatsu'], '鳥栖市': ['tosu'], '多久市': ['taku'], '伊万里市': ['imari'], '武雄市': ['takeo'], '鹿島市': ['kashima'], '小城市': ['ogi'], '嬉野市': ['ureshino'], '神埼市': ['kanzaki'], '吉野ヶ里町': ['yoshinogari'], '有田町': ['arita'],
+    // === 큐슈: 나가사키현 ===
+    '長崎市': ['nagasaki'], '佐世保市': ['sasebo'], '島原市': ['shimabara'], '諫早市': ['isahaya'], '大村市': ['omura'], '平戸市': ['hirado'], '松浦市': ['matsuura'], '対馬市': ['tsushima'], '壱岐市': ['iki'], '五島市': ['goto'], '西海市': ['saikai'], '雲仙市': ['unzen'], '南島原市': ['minamishimabara'],
+    // === 큐슈: 구마모토현 ===
+    '熊本市': ['kumamoto'], '八代市': ['yatsushiro'], '人吉市': ['hitoyoshi'], '荒尾市': ['arao'], '水俣市': ['minamata'], '玉名市': ['tamana'], '山鹿市': ['yamaga'], '菊池市': ['kikuchi'], '宇土市': ['uto'], '上天草市': ['kamiamakusa'], '宇城市': ['uki'], '阿蘇市': ['aso'], '天草市': ['amakusa'], '合志市': ['koshi'], '南阿蘇村': ['minamaso'], '小国町': ['oguni'],
+    // === 큐슈: 오이타현 ===
+    '大分市': ['oita'], '別府市': ['beppu'], '中津市': ['nakatsu'], '日田市': ['hita'], '佐伯市': ['saiki'], '臼杵市': ['usuki'], '津久見市': ['tsukumi'], '竹田市': ['taketa'], '豊後高田市': ['bungotakada'], '杵築市': ['kitsuki'], '宇佐市': ['usa'], '豊後大野市': ['bungo-ono', 'bungoono'], '由布市': ['yufu', 'yufuin'], '国東市': ['kunisaki'], '九重町': ['kokonoe'], '玖珠町': ['kusu'],
+    // === 큐슈: 미야자키현 ===
+    '宮崎市': ['miyazaki'], '都城市': ['miyakonojo'], '延岡市': ['nobeoka'], '日南市': ['nichinan'], '小林市': ['kobayashi'], '日向市': ['hyuga'], '串間市': ['kushima'], '西都市': ['saito'], 'えびの市': ['ebino'], '高千穂町': ['takachiho'],
+    // === 큐슈: 가고시마현 ===
+    '鹿児島市': ['kagoshima'], '鹿屋市': ['kanoya'], '枕崎市': ['makurazaki'], '阿久根市': ['akune'], '出水市': ['izumi'], '指宿市': ['ibusuki'], '西之表市': ['nishinoomote'], '薩摩川内市': ['satsumasendai', 'sendai'], '日置市': ['hioki'], '曽於市': ['soo'], '霧島市': ['kirishima'], 'いちき串木野市': ['ichikikushikino'], '南さつま市': ['minamisatsuma'], '志布志市': ['shibushi'], '奄美市': ['amami'], '南九州市': ['minamikyushu'], '伊佐市': ['isa'], '姶良市': ['aira'], '屋久島町': ['yakushima'],
+    // === 오키나와현 ===
+    '那覇市': ['naha'], '宜野湾市': ['ginowan'], '石垣市': ['ishigaki'], '浦添市': ['urasoe'], '名護市': ['nago'], '糸満市': ['itoman'], '沖縄市': ['okinawa'], '豊見城市': ['tomigusuku'], 'うるま市': ['uruma'], '宮古島市': ['miyakojima'], '南城市': ['nanjo'],
+    // === 도쿄 수도권 및 기타 전국 주요 도시 ===
+    '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '大田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'], '八王子市': ['hachioji'], '立川市': ['tachikawa'], '武蔵野市': ['musashino'], '三鷹市': ['mitaka'], '町田市': ['machida'], '横浜市': ['yokohama'], '川崎市': ['kawasaki'], '相模原市': ['sagamihara'], '鎌倉市': ['kamakura'], '箱根町': ['hakone'], '大阪市': ['osaka'], '堺市': ['sakai'], '豊中市': ['toyonaka'], '吹田市': ['suita'], '京都市': ['kyoto'], '宇治市': ['uji'], '神戸市': ['kobe'], '姫路市': ['himeji'], '西宮市': ['nishinomiya'], '奈良市': ['nara'], '和歌山市': ['wakayama'], '名古屋市': ['nagoya'], '豊田市': ['toyota'], '岡崎市': ['okazaki'], '静岡市': ['shizuoka'], '浜松市': ['hamamatsu'], '金沢市': ['kanazawa'], '富山市': ['toyama'], '福井市': ['fukui'], '岐阜市': ['gifu'], '高山市': ['takayama'], '長野市': ['nagano'], '松本市': ['matsumoto'], '軽井沢町': ['karuizawa'], '新潟市': ['niigata'], '長岡市': ['nagaoka'], '札幌市': ['sapporo'], '函館市': ['hakodate'], '小樽市': ['otaru'], '旭川市': ['asahikawa'], '釧路市': ['kushiro'], '帯広市': ['obihiro'], '仙台市': ['sendai'], '青森市': ['aomori'], '弘前市': ['hirosaki'], '八戸市': ['hachinohe'], '盛岡市': ['morioka'], '秋田市': ['akita'], '山形市': ['yamagata'], '福島市': ['fukushima'], '郡山市': ['koriyama'], 'いわき市': ['iwaki'], '水戸市': ['mito'], 'つくば市': ['tsukuba'], '宇都宮市': ['utsunomiya'], '日光市': ['nikko'], '前橋市': ['maebashi'], '高崎市': ['takasaki'], 'さいたま市': ['saitama'], '川越市': ['kawagoe'], '千葉市': ['chiba'], '船橋市': ['funabashi'], '柏市': ['kashiwa'], '広島市': ['hiroshima'], '福山市': ['fukuyama'], '岡山市': ['okayama'], '倉敷市': ['kurashiki'], '鳥取市': ['tottori'], '松江市': ['matsue'], '山口市': ['yamaguchi'], '下関市': ['shimonoseki'], '徳島市': ['tokushima'], '高松市': ['takamatsu'], '松山市': ['matsuyama'], '高知市': ['kochi']
+  };
+
+  var PALETTE = ['#0071E3','#FF3B30','#FF9500','#34C759','#AF52DE','#00C7BE','#FF2D55','#5856D6','#FFCC00','#32ADE6'];
+
+  var state = {
+    tags: [],
+    activeTagId: null,
+    assignments: {},
+    countries: { kr: null, jp: null },
+    theme: 'light',
+    lang: 'ko',
+    isEaster: false
+  };
+
+  var svgRefs = {};
+  var searchIndexAll = [];
+
+  function t(key){
+    return (i18n[state.lang] && i18n[state.lang][key]) || i18n.ko[key] || key;
+  }
+
+  function topologyToFeatures(topology){
+    if (typeof topojson !== 'undefined' && topojson.feature) {
+      var objName = Object.keys(topology.objects)[0];
+      var geojson = topojson.feature(topology, topology.objects[objName]);
+      return geojson.features || [];
+    }
+    return [];
+  }
+
+  /* 정규화 및 검색 엔진 */
+  function normalizeSearchTerm(str) {
+    if (!str) return '';
+    var s = String(str).toLowerCase().trim().replace(/[\s\-_]+/g, '');
+    s = s.replace(/ou/g, 'o').replace(/oo/g, 'o').replace(/uu/g, 'u');
+    s = s.replace(/(prefecture|pref|city|ward|town|village|shi|ku|machi|cho|son|mura|ken|to|fu)$/g, '');
+    s = s.replace(/(도|특별시|광역시|특별자치시|특별자치도|시|군|구|市|区|町|村|都|道|府|県)$/g, '');
+    return s;
+  }
+
+  function regionInfo(feature, country){
+    var p = feature.properties || {};
+    if (country === 'kr'){
+      var prefix = String(p.code).slice(0,2);
+      var sido = KR_SIDO[prefix];
+      var display = sido ? (sido[0] + ' ' + p.name) : p.name;
+      var aliases = [p.name, display];
+      if (sido) aliases.push(sido[1] + ' ' + p.name);
+      if (p.name_eng) aliases.push(p.name_eng);
+      return { key: 'kr:' + p.code, display: display, aliases: aliases };
+    } else {
+      var pref = p.N03_001 || '';
+      var sub = p.N03_003 || '';
+      var town = p.N03_004 || pref || '未指定';
+      var d = pref + (sub ? sub : '') + (p.N03_004 || '');
+      var code = p.N03_007 || (pref + '_' + town);
+
+      var al = [pref, town, d];
+      if (sub) al.push(sub);
+
+      if (JP_PREFECTURES[pref]) al = al.concat(JP_PREFECTURES[pref]);
+
+      Object.keys(JP_CITIES).forEach(function(ckey){
+        if (town.indexOf(ckey) !== -1 || d.indexOf(ckey) !== -1) {
+          al = al.concat(JP_CITIES[ckey]);
+        }
+      });
+
+      var uniqueAliases = [];
+      al.forEach(function(item){
+        if (item && uniqueAliases.indexOf(item) === -1) uniqueAliases.push(item);
+      });
+
+      return { key: 'jp:' + code, display: d || town, aliases: uniqueAliases };
+    }
+  }
+
+  function buildSearchIndex(){
+    searchIndexAll = [].concat(
+      state.countries.kr ? state.countries.kr.index : [],
+      state.countries.jp ? state.countries.jp.index : []
+    );
+  }
+
+  function loadCountry(url, country){
+    return fetch(url).then(function(res){
+      if (!res.ok) throw new Error('network');
+      return res.json();
+    }).then(function(topo){
+      var features = topologyToFeatures(topo);
+      var index = features.map(function(f){
+        var info = regionInfo(f, country);
+        return { key: info.key, display: info.display, aliases: info.aliases, country: country, feature: f };
+      });
+      return { features: features, index: index };
+    });
+  }
+
+  function init(){
+    Promise.all([
+      loadCountry(KR_TOPO_URL, 'kr'),
+      loadCountry(JP_TOPO_URL, 'jp')
+    ]).then(function(results){
+      state.countries.kr = results[0];
+      state.countries.jp = results[1];
+      buildSearchIndex();
+      renderMap('kr');
+      renderMap('jp');
+      setLoading('kr', false);
+      setLoading('jp', false);
+    }).catch(function(err){
+      console.error(err);
+      showLoadError();
+    });
+  }
+
+  function renderMap(country){
+    var container = document.getElementById('map-' + country);
+    var svgHolder = document.createElement('div');
+    svgHolder.style.width = '100%';
+    svgHolder.style.height = '100%';
+    var loadingEl = document.getElementById('loading-' + country);
+    container.innerHTML = '';
+    container.appendChild(loadingEl);
+    container.appendChild(svgHolder);
+
+    var rect = container.getBoundingClientRect();
+    var width = Math.max(rect.width, 100);
+    var height = Math.max(rect.height, 100);
+    var features = state.countries[country] ? state.countries[country].features : [];
+    var fc = { type:'FeatureCollection', features: features };
+
+    var projection = d3.geoMercator();
+    projection.fitExtent([[16,16],[width-16,height-16]], fc);
+    var pathGen = d3.geoPath(projection);
+
+    var svg = d3.select(svgHolder).append('svg')
+      .attr('viewBox', '0 0 ' + width + ' ' + height)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    var g = svg.append('g').attr('class','map-g');
+    
+    var overlayG = svg.append('g').attr('class','overlay-g').style('pointer-events','none');
+    var hoverPath = overlayG.append('path')
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--map-hover-stroke)')
+      .attr('stroke-width', country === 'jp' ? 1.5 : 2.0)
+      .attr('vector-effect', 'non-scaling-stroke')
+      .attr('stroke-linejoin', 'round');
+
+    var strokeW = country === 'jp' ? 0.35 : 0.6;
+
+    var paths = g.selectAll('path')
+      .data(features)
+      .enter()
+      .append('path')
+      .attr('d', pathGen)
+      .attr('fill', 'var(--map-fill)')
+      .attr('stroke', 'var(--map-stroke)')
+      .attr('stroke-width', strokeW)
+      .attr('vector-effect', 'non-scaling-stroke')
+      .attr('stroke-linejoin', 'round')
+      .each(function(d){ d._info = regionInfo(d, country); })
+      .attr('data-key', function(d){ return d._info.key; })
+      .on('mouseenter', function(event, d){
+        hoverPath.attr('d', pathGen(d));
+        showTooltip(event, d._info.display, state.assignments[d._info.key]);
+      })
+      .on('mousemove', function(event){ moveTooltip(event); })
+      .on('mouseleave', function(){
+        hoverPath.attr('d', null);
+        hideTooltip();
+      })
+      .on('click', function(event, d){
+        toggleAssign(d._info.key);
+      });
+
+    var maxZoom = country === 'jp' ? 50 : 15;
+    var zoom = d3.zoom().scaleExtent([1, maxZoom]).on('zoom', function(event){
+      g.attr('transform', event.transform);
+      overlayG.attr('transform', event.transform);
+    });
+    svg.call(zoom);
+
+    svgRefs[country] = { svg: svg, g: g, paths: paths, zoom: zoom };
+    applyColors(country);
+  }
+
+  function applyColors(country){
+    var ref = svgRefs[country];
+    if (!ref) return;
+    ref.paths.attr('fill', function(d){
+      var tagId = state.assignments[d._info.key];
+      var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
+      return tag ? tag.color : 'var(--map-fill)';
+    });
+  }
+
+  function toggleAssign(key){
+    if (!state.activeTagId){ flashNeedTag(); return; }
+    if (state.assignments[key] === state.activeTagId) delete state.assignments[key];
+    else state.assignments[key] = state.activeTagId;
+    assignmentsChanged();
+  }
+
+  function uid(){ return 't' + Math.random().toString(36).slice(2,9); }
+
+  function addTag(name, color){
+    var tag = { id: uid(), name: name || t('tagDefaultName'), color: color || PALETTE[state.tags.length % PALETTE.length] };
+    state.tags.push(tag);
+    state.activeTagId = tag.id;
+    renderTags();
+    return tag;
+  }
+
+  function deleteTag(id){
+    var tag = state.tags.filter(function(t){ return t.id === id; })[0];
+    if (!tag) return;
+    if (!confirm('"' + tag.name + '"' + t('confirmTagDel'))) return;
+    state.tags = state.tags.filter(function(t){ return t.id !== id; });
+    Object.keys(state.assignments).forEach(function(k){
+      if (state.assignments[k] === id) delete state.assignments[k];
+    });
+    if (state.activeTagId === id) state.activeTagId = state.tags.length ? state.tags[0].id : null;
+    renderTags();
+    applyColors('kr'); applyColors('jp');
+  }
+
+  function setActiveTag(id){
+    state.activeTagId = id;
+    document.querySelectorAll('.chip').forEach(function(chip){
+      if (chip.dataset.tagId === id) chip.classList.add('active');
+      else chip.classList.remove('active');
+    });
+    renderActiveTagSelect();
+  }
+
+  function tagCount(id){
+    var c = 0;
+    Object.keys(state.assignments).forEach(function(k){ if (state.assignments[k] === id) c++; });
+    return c;
+  }
+
+  function renderTags(){
+    var rail = document.getElementById('tagRail');
+    rail.innerHTML = '';
+    state.tags.forEach(function(tag){
+      var chip = document.createElement('div');
+      chip.className = 'chip' + (tag.id === state.activeTagId ? ' active' : '');
+      chip.dataset.tagId = tag.id;
+      chip.addEventListener('click', function(e){
+        if (e.target.closest('.chip-del') || e.target.closest('.chip-swatch')) return;
+        setActiveTag(tag.id);
+      });
+
+      var swatchLabel = document.createElement('label');
+      swatchLabel.className = 'chip-swatch';
+      swatchLabel.style.background = tag.color;
+      var colorInput = document.createElement('input');
+      colorInput.type = 'color';
+      colorInput.value = tag.color;
+      colorInput.addEventListener('input', function(e){
+        tag.color = e.target.value;
+        swatchLabel.style.background = tag.color;
+        applyColors('kr'); applyColors('jp');
+        var dot = document.getElementById('activeTagDot');
+        if (tag.id === state.activeTagId) dot.style.background = tag.color;
+      });
+      swatchLabel.appendChild(colorInput);
+
+      var nameSpan = document.createElement('span');
+      nameSpan.className = 'chip-name';
+      nameSpan.contentEditable = 'true';
+      nameSpan.spellcheck = false;
+      nameSpan.textContent = tag.name;
+      nameSpan.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (state.activeTagId !== tag.id) {
+          setActiveTag(tag.id);
+        }
+      });
+      nameSpan.addEventListener('keydown', function(e){
+        if (e.key === 'Enter'){ e.preventDefault(); nameSpan.blur(); }
+      });
+      nameSpan.addEventListener('blur', function(){
+        var v = nameSpan.textContent.trim() || t('tagDefaultName');
+        tag.name = v;
+        nameSpan.textContent = v;
+        renderActiveTagSelect();
+      });
+
+      var countSpan = document.createElement('span');
+      countSpan.className = 'chip-count';
+      var c = tagCount(tag.id);
+      countSpan.textContent = c ? String(c) : '';
+
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'chip-del';
+      delBtn.setAttribute('aria-label','태그 삭제');
+      delBtn.textContent = '×';
+      delBtn.addEventListener('click', function(e){ e.stopPropagation(); deleteTag(tag.id); });
+
+      chip.appendChild(swatchLabel);
+      chip.appendChild(nameSpan);
+      chip.appendChild(countSpan);
+      chip.appendChild(delBtn);
+      rail.appendChild(chip);
+    });
+    renderActiveTagSelect();
+    updatePanelCounts();
+  }
+
+  function renderActiveTagSelect(){
+    var select = document.getElementById('activeTagSelect');
+    select.innerHTML = '';
+    state.tags.forEach(function(tag){
+      var opt = document.createElement('option');
+      opt.value = tag.id;
+      opt.textContent = tag.name;
+      if (tag.id === state.activeTagId) opt.selected = true;
+      select.appendChild(opt);
+    });
+    var dot = document.getElementById('activeTagDot');
+    var activeTag = state.tags.filter(function(t){ return t.id === state.activeTagId; })[0];
+    dot.style.background = activeTag ? activeTag.color : 'transparent';
+    select.disabled = state.tags.length === 0;
+  }
+
+  function updateChipCounts(){
+    document.querySelectorAll('.chip').forEach(function(chip){
+      var id = chip.dataset.tagId;
+      var span = chip.querySelector('.chip-count');
+      var c = tagCount(id);
+      span.textContent = c ? String(c) : '';
+    });
+  }
+
+  function updatePanelCounts(){
+    ['kr','jp'].forEach(function(c){
+      var el = document.getElementById('count-' + c);
+      if (!el) return;
+      var n = 0;
+      Object.keys(state.assignments).forEach(function(k){ if (k.indexOf(c+':') === 0) n++; });
+      el.textContent = n + t('coloredCount');
+    });
+  }
+
+  function assignmentsChanged(){
+    applyColors('kr'); applyColors('jp');
+    updatePanelCounts();
+    updateChipCounts();
+  }
+
+  var searchInput = document.getElementById('searchInput');
+  var dropdown = document.getElementById('searchDropdown');
+
+  function searchMatches(q){
+    var nq = normalizeSearchTerm(q);
+    if (!nq) return [];
+    var pool = searchIndexAll;
+    var results = pool.filter(function(r){
+      return r.aliases.some(function(a){
+        var na = normalizeSearchTerm(a);
+        return na.indexOf(nq) !== -1;
+      });
+    });
+    return results.slice(0, 10);
+  }
+
+  searchInput.addEventListener('input', function(){
+    renderDropdown(searchMatches(searchInput.value));
+  });
+  searchInput.addEventListener('focus', function(){
+    if (searchInput.value) renderDropdown(searchMatches(searchInput.value));
+  });
+  searchInput.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') dropdown.classList.remove('open');
+  });
+
+  function renderDropdown(matches){
+    dropdown.innerHTML = '';
+    if (!matches.length){ dropdown.classList.remove('open'); return; }
+    matches.forEach(function(m){
+      var item = document.createElement('div');
+      item.className = 'dropdown-item';
+      var flag = document.createElement('span');
+      flag.className = 'dropdown-flag';
+      flag.textContent = m.country === 'kr' ? '🇰🇷' : '🇯🇵';
+      var label = document.createElement('span');
+      label.textContent = m.display;
+      item.appendChild(flag);
+      item.appendChild(label);
+      item.addEventListener('click', function(){ selectSearchResult(m); });
+      dropdown.appendChild(item);
+    });
+    dropdown.classList.add('open');
+  }
+
+  function selectSearchResult(m){
+    if (!state.activeTagId){ flashNeedTag(); return; }
+    state.assignments[m.key] = state.activeTagId;
+    assignmentsChanged();
+    searchInput.value = '';
+    dropdown.classList.remove('open');
+    searchInput.focus();
+    showToast(m.display);
+  }
+
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.search-wrap')) dropdown.classList.remove('open');
+  });
+
+  function findByName(raw){
+    var q = raw.trim();
+    if (!q) return { status:'empty' };
+    var nq = normalizeSearchTerm(q);
+    var pool = searchIndexAll;
+
+    var exact = pool.filter(function(r){
+      return r.aliases.some(function(a){ return normalizeSearchTerm(a) === nq; });
+    });
+    if (exact.length === 1) return { status:'ok', item: exact[0] };
+    if (exact.length > 1) return { status:'ambiguous', items: exact };
+
+    var partial = pool.filter(function(r){
+      return r.aliases.some(function(a){ return normalizeSearchTerm(a).indexOf(nq) !== -1; });
+    });
+    if (partial.length === 1) return { status:'ok', item: partial[0] };
+    if (partial.length > 1) return { status:'ambiguous', items: partial };
+    return { status:'notfound' };
+  }
+
+  function runBulkAdd(){
+    if (!state.activeTagId){ flashNeedTag(); return; }
+    var raw = document.getElementById('bulkInput').value;
+    var names = raw.split(/[,\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+    var ok = 0, ambiguous = [], notfound = [];
+    names.forEach(function(name){
+      var r = findByName(name);
+      if (r.status === 'ok'){
+        state.assignments[r.item.key] = state.activeTagId;
+        ok++;
+      } else if (r.status === 'ambiguous'){
+        ambiguous.push({ name: name, options: r.items.map(function(i){ return i.display; }) });
+      } else if (r.status === 'notfound'){
+        notfound.push(name);
+      }
+    });
+    if (ok) assignmentsChanged();
+    renderBulkResult(ok, ambiguous, notfound);
+    if (ok) document.getElementById('bulkInput').value = '';
+  }
+
+  function renderBulkResult(ok, ambiguous, notfound){
+    var el = document.getElementById('bulkResult');
+    el.innerHTML = '';
+    var parts = [];
+    if (ok) parts.push({ cls:'', text: '✓ ' + ok + ' Added' });
+    ambiguous.forEach(function(a){
+      parts.push({ cls:'amb', text: '⚠ "' + a.name + '" Ambiguous (' + a.options.slice(0,4).join(', ') + (a.options.length>4?'...':'') + ')' });
+    });
+    notfound.forEach(function(n){
+      parts.push({ cls:'miss', text: '✕ "' + n + '" Not Found' });
+    });
+    parts.forEach(function(p){
+      var span = document.createElement('div');
+      if (p.cls) span.className = p.cls;
+      span.textContent = p.text;
+      el.appendChild(span);
+    });
+  }
+
+  function exportData(){
+    var data = { version: 1, tags: state.tags, assignments: state.assignments };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'map-data.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function importData(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{
+        var data = JSON.parse(reader.result);
+        if (!data.tags || !data.assignments) throw new Error('format');
+        state.tags = data.tags;
+        state.assignments = data.assignments;
+        state.activeTagId = state.tags.length ? state.tags[0].id : null;
+        renderTags();
+        applyColors('kr'); applyColors('jp');
+        updatePanelCounts();
+        showToast(t('importSuccess'));
+      }catch(e){
+        showToast(t('importFail'));
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetAll(){
+    if (!confirm(t('confirmReset'))) return;
+    state.assignments = {};
+    assignmentsChanged();
+  }
+
+  function exportPNG(country){
+    var ref = svgRefs[country];
+    if (!ref) return;
+    var svgEl = ref.svg.node();
+    var vb = svgEl.viewBox.baseVal;
+    var w = vb.width || svgEl.clientWidth;
+    var h = vb.height || svgEl.clientHeight;
+    var clone = svgEl.cloneNode(true);
+    clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    var xml = new XMLSerializer().serializeToString(clone);
+    var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
+    var url = URL.createObjectURL(svgBlob);
+    var img = new Image();
+    img.onload = function(){
+      var scale = 2;
+      var canvas = document.createElement('canvas');
+      canvas.width = w*scale; canvas.height = h*scale;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = (state.theme === 'dark' || state.isEaster) ? '#161618' : '#ffffff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.scale(scale,scale);
+      ctx.drawImage(img,0,0,w,h);
+      canvas.toBlob(function(blob){
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = (country==='kr'?'korea':'japan') + '-map.png';
+        a.click();
+      });
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = function(){ showToast(t('exportFail')); };
+    img.src = url;
+  }
+
+  function resetZoom(country){
+    var ref = svgRefs[country];
+    if (!ref) return;
+    ref.svg.transition().duration(300).call(ref.zoom.transform, d3.zoomIdentity);
+  }
+
+  function applyTheme(){
+    document.body.classList.remove('dark-theme', 'easter-theme');
+    if (state.isEaster) {
+      document.body.classList.add('easter-theme');
+    } else if (state.theme === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+  }
+
+  function toggleTheme(){
+    state.isEaster = !state.isEaster;
+    applyTheme();
+    if (state.isEaster) {
+      showToast('ミクダヨー');
+    } else {
+      showToast(t('themeRestored'));
+    }
+  }
+
+  function updateLanguageUI(){
+    document.title = t('title');
+    document.querySelector('.brand h1').textContent = t('headerTitle');
+    document.querySelector('.brand p').textContent = t('headerSub');
+    document.getElementById('settingsBtn').textContent = t('settings');
+    document.getElementById('resetAllBtn').textContent = t('resetAll');
+    document.getElementById('exportBtn').textContent = t('export');
+    document.getElementById('importBtn').textContent = t('import');
+    document.querySelector('.tagbar-label').textContent = t('tagLabel');
+    document.getElementById('addTagBtn').textContent = t('addTag');
+    document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+    document.getElementById('toggleBulk').textContent = t('bulkToggle');
+    document.getElementById('bulkInput').placeholder = t('bulkPlaceholder');
+    document.getElementById('bulkAddBtn').textContent = t('bulkBtn');
+
+    var mapTitles = document.querySelectorAll('.panel-title h2');
+    if (mapTitles[0]) mapTitles[0].textContent = t('krTitle');
+    if (mapTitles[1]) mapTitles[1].textContent = t('jpTitle');
+
+    document.querySelector('.modal-header h3').textContent = t('modalTitle');
+    document.querySelector('.tab-btn[data-tab="tab-theme"]').textContent = t('tabTheme');
+    document.querySelector('.tab-btn[data-tab="tab-creator"]').textContent = t('tabCreator');
+
+    var settingLabels = document.querySelectorAll('.setting-label');
+    if (settingLabels[0]) settingLabels[0].textContent = t('themeMode');
+    if (settingLabels[1]) settingLabels[1].textContent = t('langLabel');
+
+    var themeOpts = document.querySelectorAll('#themeSelect option');
+    if (themeOpts[0]) themeOpts[0].textContent = t('themeLight');
+    if (themeOpts[1]) themeOpts[1].textContent = t('themeDark');
+
+    document.querySelector('.creator-name').textContent = t('creatorName');
+    document.querySelector('.creator-desc').textContent = t('creatorDesc');
+
+    updatePanelCounts();
+  }
+
+  var tooltipEl = document.getElementById('tooltip');
+  function showTooltip(event, name, tagId){
+    var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
+    tooltipEl.innerHTML = '';
+    var nameEl = document.createElement('div');
+    nameEl.className = 'tooltip-name';
+    nameEl.textContent = name;
+    tooltipEl.appendChild(nameEl);
+    if (tag){
+      var row = document.createElement('div');
+      row.className = 'tooltip-tag';
+      var dot = document.createElement('span');
+      dot.className = 'tooltip-dot';
+      dot.style.background = tag.color;
+      var tn = document.createElement('span');
+      tn.textContent = tag.name;
+      row.appendChild(dot);
+      row.appendChild(tn);
+      tooltipEl.appendChild(row);
+    }
+    tooltipEl.classList.add('visible');
+    moveTooltip(event);
+  }
+  function moveTooltip(event){
+    var pad = 14;
+    tooltipEl.style.left = (event.clientX + pad) + 'px';
+    tooltipEl.style.top = (event.clientY + pad) + 'px';
+  }
+  function hideTooltip(){ tooltipEl.classList.remove('visible'); }
+
+  var toastTimer;
+  function showToast(msg){
+    var toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('visible'); }, 1800);
+  }
+  function flashNeedTag(){ showToast(t('needTag')); }
+
+  function setLoading(country, isLoading){
+    var el = document.getElementById('loading-' + country);
+    if (el) el.style.display = isLoading ? 'flex' : 'none';
+  }
+  function showLoadError(){
+    ['kr','jp'].forEach(function(c){
+      var el = document.getElementById('loading-' + c);
+      if (!el) return;
+      el.innerHTML = '';
+      var msg = document.createElement('div');
+      msg.className = 'error-msg';
+      msg.textContent = t('loadError');
+      var btn = document.createElement('button');
+      btn.className = 'retry-btn';
+      btn.textContent = t('retry');
+      btn.addEventListener('click', function(){ location.reload(); });
+      el.appendChild(msg);
+      el.appendChild(btn);
+      el.style.display = 'flex';
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    addTag(t('defaultTagVisit'), PALETTE[0]);
+    addTag(t('defaultTagPlan'), PALETTE[2]);
+    state.activeTagId = state.tags[0].id;
+    renderTags();
+    init();
+
+    document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
+    document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('importBtn').addEventListener('click', function(){
+      document.getElementById('importFile').click();
+    });
+    document.getElementById('importFile').addEventListener('change', function(e){
+      if (e.target.files[0]) importData(e.target.files[0]);
+      e.target.value = '';
+    });
+    document.getElementById('activeTagSelect').addEventListener('change', function(e){
+      setActiveTag(e.target.value);
+    });
+    document.getElementById('toggleBulk').addEventListener('click', function(){
+      document.getElementById('bulkPanel').classList.toggle('open');
+    });
+    document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
+    document.getElementById('zoomResetKR').addEventListener('click', function(){ resetZoom('kr'); });
+    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
+    document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
+    document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
+
+    var settingsModal = document.getElementById('settingsModal');
+    document.getElementById('settingsBtn').addEventListener('click', function(){
+      settingsModal.classList.add('open');
+    });
+    document.getElementById('modalCloseBtn').addEventListener('click', function(){
+      settingsModal.classList.remove('open');
+    });
+    settingsModal.addEventListener('click', function(e){
+      if (e.target === settingsModal) settingsModal.classList.remove('open');
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    document.getElementById('themeSelect').addEventListener('change', function(e){
+      state.theme = e.target.value;
+      applyTheme();
+    });
+
+    document.getElementById('langSelect').addEventListener('change', function(e){
+      state.lang = e.target.value;
+      updateLanguageUI();
+    });
+
+    document.getElementById('creatorImg').addEventListener('click', toggleTheme);
+
+    var resizeTimer;
+    window.addEventListener('resize', function(){
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function(){
+        if (state.countries.kr) renderMap('kr');
+        if (state.countries.jp) renderMap('jp');
+      }, 200);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
