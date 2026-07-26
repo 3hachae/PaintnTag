@@ -23,7 +23,7 @@
     --danger: #FF3B30;
     --map-fill: #E5E5EA;
     --map-stroke: #FFFFFF;
-    --map-hover-stroke: #0071E3; /* 라이트모드: 깔끔한 차분한 블루 테두리 */
+    --map-hover-stroke: #0071E3;
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -44,7 +44,7 @@
     --danger: #FF453A;
     --map-fill: #323236;
     --map-stroke: #161618;
-    --map-hover-stroke: #0DFFEF; /* 다크모드: 화려한 네온 블루 테두리 */
+    --map-hover-stroke: #0DFFEF;
     --modal-overlay: rgba(0,0,0,0.7);
   }
 
@@ -60,7 +60,7 @@
     --danger: #FF3B30;
     --map-fill: #0F4247;
     --map-stroke: #031011;
-    --map-hover-stroke: #0DFFEF; /* 이스터에그: 민트 네온 */
+    --map-hover-stroke: #0DFFEF;
     --modal-overlay: rgba(0,255,239,0.2);
   }
 
@@ -119,6 +119,7 @@
   .dropdown.open{display:block;}
   .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:13.5px;cursor:pointer;color:var(--text-1);}
   .dropdown-item:hover{background:var(--bg);}
+  .dropdown-item.parent-item{font-weight:600;color:var(--accent);}
   .dropdown-flag{font-size:13px;}
 
   .bulk-toggle{align-self:flex-start;border:none;background:transparent;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0;}
@@ -131,6 +132,7 @@
   body.easter-theme .btn-primary{color:#000;}
   .btn-primary:hover{opacity:0.9;}
   .bulk-result{font-size:12px;color:var(--text-2);line-height:1.7;}
+  .bulk-result .parent-res{color:var(--accent);font-weight:600;}
   .bulk-result .amb{color:#B36B00;}
   .bulk-result .miss{color:var(--danger);}
 
@@ -227,13 +229,13 @@
         <select id="activeTagSelect" aria-label="활성 태그"></select>
       </div>
       <div class="search-wrap">
-        <input type="text" id="searchInput" autocomplete="off" placeholder="예: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)">
+        <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시, 경기도, 강남구 / 東京都, 大阪府, 千代田区 (상위 행정구역 입력 시 전체 일괄 적용)">
         <div class="dropdown" id="searchDropdown"></div>
       </div>
     </div>
     <button class="bulk-toggle" id="toggleBulk">여러 개 한 번에 입력 ⌄</button>
     <div class="bulk-panel" id="bulkPanel">
-      <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역을 한 번에 입력하세요.&#10;예: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)"></textarea>
+      <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역/시·도/도도부현을 한 번에 입력하세요.&#10;예: 서울특별시, 경기도, 강남구 / 東京都, 大阪府, 渋谷区 / Jongno, Gangnam, Tokyo"></textarea>
       <div class="bulk-actions">
         <button class="btn-primary" id="bulkAddBtn">일괄 추가</button>
         <span class="bulk-result" id="bulkResult"></span>
@@ -341,9 +343,9 @@
       import: "⬆ 불러오기",
       tagLabel: "태그",
       addTag: "+ 새 태그",
-      searchPlaceholder: "종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      searchPlaceholder: "서울특별시, 경기도, 강남구 / 東京都, 大阪府, 千代田区 (상위 행정구역 입력 시 전체 일괄 적용)",
       bulkToggle: "여러 개 한 번에 입력 ⌄",
-      bulkPlaceholder: "쉼표(,) 또는 줄바꿈으로 여러 지역을 한 번에 입력하세요.\n예: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (일본 지명 일본어로 입력 권장)",
+      bulkPlaceholder: "쉼표(,) 또는 줄바꿈으로 여러 지역/시·도/도도부현을 한 번에 입력하세요.\n예: 서울특별시, 경기도, 강남구 / 東京都, 大阪府, 渋谷区 / Jongno, Gangnam, Tokyo",
       bulkBtn: "일괄 추가",
       krTitle: "대한민국",
       jpTitle: "일본",
@@ -381,9 +383,9 @@
       import: "⬆ Import",
       tagLabel: "TAGS",
       addTag: "+ New Tag",
-      searchPlaceholder: "종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (Recommended: Enter Japanese place names in Japanese)",
+      searchPlaceholder: "Seoul, Gyeonggi, Gangnam / Tokyo, Osaka, Chiyoda (Enter state/pref to select all)",
       bulkToggle: "Bulk Input ⌄",
-      bulkPlaceholder: "Enter multiple locations separated by commas or newlines.\ne.g. 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (Recommended: Enter Japanese place names in Japanese)",
+      bulkPlaceholder: "Enter multiple locations or states/prefectures separated by commas or newlines.\ne.g. Seoul, Gyeonggi, Gangnam / Tokyo, Osaka, Chiyoda",
       bulkBtn: "Add All",
       krTitle: "South Korea",
       jpTitle: "Japan",
@@ -421,9 +423,9 @@
       import: "⬆ インポート",
       tagLabel: "タグ",
       addTag: "+ 新規タグ",
-      searchPlaceholder: "종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (日本の地名は日本語入力推奨)",
+      searchPlaceholder: "서울특별시, 경기도 / 東京都, 大阪府, 千代田区 (広域自治体入力時一括適用)",
       bulkToggle: "一括入力 ⌄",
-      bulkPlaceholder: "カンマ(,)や改行で複数の地域を一括入力できます。\n例: 종로구, 강남구 / 千代田区, 渋谷区 / Jongno, Gangnam / Chiyoda, Shibuya (日本の地名は日本語入力推奨)",
+      bulkPlaceholder: "カンマ(,)や改行で複数の地域・広域自治体(広域市・道・都道府県)を一括入力できます。\n例: 서울특별시, 경기도 / 東京都, 大阪府, 渋谷区",
       bulkBtn: "一括追加",
       krTitle: "大韓民国",
       jpTitle: "日本",
@@ -454,12 +456,12 @@
   };
 
   var KR_SIDO = {
-    '11':['서울특별시','서울'], '21':['부산광역시','부산'], '22':['대구광역시','대구'],
-    '23':['인천광역시','인천'], '24':['광주광역시','광주'], '25':['대전광역시','대전'],
-    '26':['울산광역시','울산'], '29':['세종특별자치시','세종'], '31':['경기도','경기'],
-    '32':['강원특별자치도','강원'], '33':['충청북도','충북'], '34':['충청남도','충남'],
-    '35':['전북특별자치도','전북'], '36':['전라남도','전남'], '37':['경상북도','경북'],
-    '38':['경상남도','경남'], '39':['제주특별자치도','제주']
+    '11':['서울특별시','서울','seoul'], '21':['부산광역시','부산','busan'], '22':['대구광역시','대구','daegu'],
+    '23':['인천광역시','인천','incheon'], '24':['광주광역시','광주','gwangju'], '25':['대전광역시','대전','daejeon'],
+    '26':['울산광역시','울산','ulsan'], '29':['세종특별자치시','세종','sejong'], '31':['경기도','경기','gyeonggi'],
+    '32':['강원특별자치도','강원도','강원','gangwon'], '33':['충청북도','충북','chungbuk'], '34':['충청남도','충남','chungnam'],
+    '35':['전북특별자치도','전라북도','전북','jeonbuk'], '36':['전라남도','전남','jeonnam'], '37':['경상북도','경북','gyeongbuk'],
+    '38':['경상남도','경남','gyeongnam'], '39':['제주특별자치도','제주도','제주','jeju']
   };
 
   /* 일본 47개 도도부현 로마자 사전 */
@@ -482,27 +484,17 @@
     '鹿児島県': ['kagoshima', '카고시마', '가고시마'], '沖縄県': ['okinawa', '오키나와']
   };
 
-  /* 큐슈 전 지역 포함 일본 주요 도시/구/정/촌 광범위 로마자 사전 */
   var JP_CITIES = {
-    // === 큐슈: 후쿠오카현 ===
     '福岡市': ['fukuoka'], '博多区': ['hakata'], '中央区': ['chuo'], '東区': ['higashi'], '南区': ['minami'], '西区': ['nishi'], '城南区': ['jonan'], '早良区': ['sawara'],
     '北九州市': ['kitakyushu'], '小倉北区': ['kokurakita', 'kokura'], '小倉南区': ['kokuraminami'], '門司区': ['moji'], '八幡西区': ['yahatanishi', 'yahata'], '八幡東区': ['yahatahigashi'], '戸畑区': ['tobata'], '若松区': ['wakamatsu'],
     '久留米市': ['kurume'], '大牟田市': ['omuta'], '飯塚市': ['iizuka'], '田川市': ['tagawa'], '柳川市': ['yanagawa'], '八女市': ['yame'], '筑後市': ['chikugo'], '大川市': ['okawa'], '行橋市': ['yukuhashi'], '豊前市': ['buzen'], '中間市': ['nakama'], '小郡市': ['ogori'], '筑紫野市': ['chikushino'], '春日市': ['kasuga'], '大野城市': ['onojo'], '宗像市': ['munakata'], '太宰府市': ['dazaifu'], '古賀市': ['koga'], '福津市': ['fukutsu'], 'うきは市': ['ukiha'], '宮若市': ['miyawaka'], '朝倉市': ['asakura'], 'みやま市': ['miyama'], '糸島市': ['itoshima'], '篠栗町': ['sasaguri'], '志免町': ['shime'], '須恵町': ['sue'], '新宮町': ['shingu'], '久山町': ['hisayama'], '粕屋町': ['kasuya'], '芦屋町': ['ashiya'], '水巻町': ['mizumaki'], '岡垣町': ['okagaki'], '遠賀町': ['onga'],
-    // === 큐슈: 사가현 ===
     '佐賀市': ['saga'], '唐津市': ['karatsu'], '鳥栖市': ['tosu'], '多久市': ['taku'], '伊万里市': ['imari'], '武雄市': ['takeo'], '鹿島市': ['kashima'], '小城市': ['ogi'], '嬉野市': ['ureshino'], '神埼市': ['kanzaki'], '吉野ヶ里町': ['yoshinogari'], '有田町': ['arita'],
-    // === 큐슈: 나가사키현 ===
     '長崎市': ['nagasaki'], '佐世保市': ['sasebo'], '島原市': ['shimabara'], '諫早市': ['isahaya'], '大村市': ['omura'], '平戸市': ['hirado'], '松浦市': ['matsuura'], '対馬市': ['tsushima'], '壱岐市': ['iki'], '五島市': ['goto'], '西海市': ['saikai'], '雲仙市': ['unzen'], '南島原市': ['minamishimabara'],
-    // === 큐슈: 구마모토현 ===
     '熊本市': ['kumamoto'], '八代市': ['yatsushiro'], '人吉市': ['hitoyoshi'], '荒尾市': ['arao'], '水俣市': ['minamata'], '玉名市': ['tamana'], '山鹿市': ['yamaga'], '菊池市': ['kikuchi'], '宇土市': ['uto'], '上天草市': ['kamiamakusa'], '宇城市': ['uki'], '阿蘇市': ['aso'], '天草市': ['amakusa'], '合志市': ['koshi'], '南阿蘇村': ['minamaso'], '小国町': ['oguni'],
-    // === 큐슈: 오이타현 ===
     '大分市': ['oita'], '別府市': ['beppu'], '中津市': ['nakatsu'], '日田市': ['hita'], '佐伯市': ['saiki'], '臼杵市': ['usuki'], '津久見市': ['tsukumi'], '竹田市': ['taketa'], '豊後高田市': ['bungotakada'], '杵築市': ['kitsuki'], '宇佐市': ['usa'], '豊後大野市': ['bungo-ono', 'bungoono'], '由布市': ['yufu', 'yufuin'], '国東市': ['kunisaki'], '九重町': ['kokonoe'], '玖珠町': ['kusu'],
-    // === 큐슈: 미야자키현 ===
     '宮崎市': ['miyazaki'], '都城市': ['miyakonojo'], '延岡市': ['nobeoka'], '日南市': ['nichinan'], '小林市': ['kobayashi'], '日向市': ['hyuga'], '串間市': ['kushima'], '西都市': ['saito'], 'えびの市': ['ebino'], '高千穂町': ['takachiho'],
-    // === 큐슈: 가고시마현 ===
     '鹿児島市': ['kagoshima'], '鹿屋市': ['kanoya'], '枕崎市': ['makurazaki'], '阿久根市': ['akune'], '出水市': ['izumi'], '指宿市': ['ibusuki'], '西之表市': ['nishinoomote'], '薩摩川内市': ['satsumasendai', 'sendai'], '日置市': ['hioki'], '曽於市': ['soo'], '霧島市': ['kirishima'], 'いちき串木野市': ['ichikikushikino'], '南さつま市': ['minamisatsuma'], '志布志市': ['shibushi'], '奄美市': ['amami'], '南九州市': ['minamikyushu'], '伊佐市': ['isa'], '姶良市': ['aira'], '屋久島町': ['yakushima'],
-    // === 오키나와현 ===
     '那覇市': ['naha'], '宜野湾市': ['ginowan'], '石垣市': ['ishigaki'], '浦添市': ['urasoe'], '名護市': ['nago'], '糸満市': ['itoman'], '沖縄市': ['okinawa'], '豊見城市': ['tomigusuku'], 'うるま市': ['uruma'], '宮古島市': ['miyakojima'], '南城市': ['nanjo'],
-    // === 도쿄 수도권 및 기타 전국 주요 도시 ===
     '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '大田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'], '八王子市': ['hachioji'], '立川市': ['tachikawa'], '武蔵野市': ['musashino'], '三鷹市': ['mitaka'], '町田市': ['machida'], '横浜市': ['yokohama'], '川崎市': ['kawasaki'], '相模原市': ['sagamihara'], '鎌倉市': ['kamakura'], '箱根町': ['hakone'], '大阪市': ['osaka'], '堺市': ['sakai'], '豊中市': ['toyonaka'], '吹田市': ['suita'], '京都市': ['kyoto'], '宇治市': ['uji'], '神戸市': ['kobe'], '姫路市': ['himeji'], '西宮市': ['nishinomiya'], '奈良市': ['nara'], '和歌山市': ['wakayama'], '名古屋市': ['nagoya'], '豊田市': ['toyota'], '岡崎市': ['okazaki'], '静岡市': ['shizuoka'], '浜松市': ['hamamatsu'], '金沢市': ['kanazawa'], '富山市': ['toyama'], '福井市': ['fukui'], '岐阜市': ['gifu'], '高山市': ['takayama'], '長野市': ['nagano'], '松本市': ['matsumoto'], '軽井沢町': ['karuizawa'], '新潟市': ['niigata'], '長岡市': ['nagaoka'], '札幌市': ['sapporo'], '函館市': ['hakodate'], '小樽市': ['otaru'], '旭川市': ['asahikawa'], '釧路市': ['kushiro'], '帯広市': ['obihiro'], '仙台市': ['sendai'], '青森市': ['aomori'], '弘前市': ['hirosaki'], '八戸市': ['hachinohe'], '盛岡市': ['morioka'], '秋田市': ['akita'], '山形市': ['yamagata'], '福島市': ['fukushima'], '郡山市': ['koriyama'], 'いわき市': ['iwaki'], '水戸市': ['mito'], 'つくば市': ['tsukuba'], '宇都宮市': ['utsunomiya'], '日光市': ['nikko'], '前橋市': ['maebashi'], '高崎市': ['takasaki'], 'さいたま市': ['saitama'], '川越市': ['kawagoe'], '千葉市': ['chiba'], '船橋市': ['funabashi'], '柏市': ['kashiwa'], '広島市': ['hiroshima'], '福山市': ['fukuyama'], '岡山市': ['okayama'], '倉敷市': ['kurashiki'], '鳥取市': ['tottori'], '松江市': ['matsue'], '山口市': ['yamaguchi'], '下関市': ['shimonoseki'], '徳島市': ['tokushima'], '高松市': ['takamatsu'], '松山市': ['matsuyama'], '高知市': ['kochi']
   };
 
@@ -540,7 +532,7 @@
     var s = String(str).toLowerCase().trim().replace(/[\s\-_]+/g, '');
     s = s.replace(/ou/g, 'o').replace(/oo/g, 'o').replace(/uu/g, 'u');
     s = s.replace(/(prefecture|pref|city|ward|town|village|shi|ku|machi|cho|son|mura|ken|to|fu)$/g, '');
-    s = s.replace(/(도|특별시|광역시|특별자치시|특별자치도|시|군|구|市|区|町|村|都|道|府|県)$/g, '');
+    s = s.replace(/(특별시|광역시|특별자치시|특별자치도|시|군|구|市|区|町|村|都|道|府|県)$/g, '');
     return s;
   }
 
@@ -864,14 +856,64 @@
   function searchMatches(q){
     var nq = normalizeSearchTerm(q);
     if (!nq) return [];
+    var results = [];
+
+    // 1. 한국 상위 행정구역(시·도) 검색
+    if (state.countries.kr) {
+      Object.keys(KR_SIDO).forEach(function(code) {
+        var names = KR_SIDO[code];
+        var matched = names.some(function(nm) { return normalizeSearchTerm(nm).indexOf(nq) !== -1; });
+        if (matched) {
+          var items = state.countries.kr.index.filter(function(item) {
+            var pCode = String((item.feature.properties && item.feature.properties.code) || '');
+            return pCode.slice(0, 2) === code;
+          });
+          if (items.length > 0) {
+            results.push({
+              isParent: true,
+              parentName: names[0],
+              display: names[0] + ' 전체 (' + items.length + '개 지역)',
+              country: 'kr',
+              items: items
+            });
+          }
+        }
+      });
+    }
+
+    // 2. 일본 상위 행정구역(도도부현) 검색
+    if (state.countries.jp) {
+      Object.keys(JP_PREFECTURES).forEach(function(prefKey) {
+        var aliases = [prefKey].concat(JP_PREFECTURES[prefKey]);
+        var matched = aliases.some(function(al) { return normalizeSearchTerm(al).indexOf(nq) !== -1; });
+        if (matched) {
+          var items = state.countries.jp.index.filter(function(item) {
+            return item.feature.properties && item.feature.properties.N03_001 === prefKey;
+          });
+          if (items.length > 0) {
+            results.push({
+              isParent: true,
+              parentName: prefKey,
+              display: prefKey + ' 전체 (' + items.length + '개 지역)',
+              country: 'jp',
+              items: items
+            });
+          }
+        }
+      });
+    }
+
+    // 3. 개별 시군구/시정촌 검색
     var pool = searchIndexAll;
-    var results = pool.filter(function(r){
+    var matchedMunis = pool.filter(function(r){
       return r.aliases.some(function(a){
         var na = normalizeSearchTerm(a);
         return na.indexOf(nq) !== -1;
       });
     });
-    return results.slice(0, 10);
+
+    results = results.concat(matchedMunis);
+    return results.slice(0, 12);
   }
 
   searchInput.addEventListener('input', function(){
@@ -889,7 +931,7 @@
     if (!matches.length){ dropdown.classList.remove('open'); return; }
     matches.forEach(function(m){
       var item = document.createElement('div');
-      item.className = 'dropdown-item';
+      item.className = 'dropdown-item' + (m.isParent ? ' parent-item' : '');
       var flag = document.createElement('span');
       flag.className = 'dropdown-flag';
       flag.textContent = m.country === 'kr' ? '🇰🇷' : '🇯🇵';
@@ -905,35 +947,88 @@
 
   function selectSearchResult(m){
     if (!state.activeTagId){ flashNeedTag(); return; }
-    state.assignments[m.key] = state.activeTagId;
-    assignmentsChanged();
+    if (m.isParent) {
+      m.items.forEach(function(item){
+        state.assignments[item.key] = state.activeTagId;
+      });
+      assignmentsChanged();
+      showToast(m.parentName + ' 전체 (' + m.items.length + '개) 적용 완료');
+    } else {
+      state.assignments[m.key] = state.activeTagId;
+      assignmentsChanged();
+      showToast(m.display);
+    }
     searchInput.value = '';
     dropdown.classList.remove('open');
     searchInput.focus();
-    showToast(m.display);
   }
 
   document.addEventListener('click', function(e){
     if (!e.target.closest('.search-wrap')) dropdown.classList.remove('open');
   });
 
-  function findByName(raw){
+  /* 입력어를 기반으로 상위 행정구역 또는 개별 시군구/시정촌 탐색 */
+  function findRegionsByInput(raw){
     var q = raw.trim();
     if (!q) return { status:'empty' };
     var nq = normalizeSearchTerm(q);
-    var pool = searchIndexAll;
 
+    // 1. 한국 상위 행정구역(시·도) 일치 여부 검사
+    var krCode = null;
+    var krName = "";
+    Object.keys(KR_SIDO).forEach(function(code){
+      var names = KR_SIDO[code];
+      names.forEach(function(nm){
+        if (normalizeSearchTerm(nm) === nq) {
+          krCode = code;
+          krName = names[0];
+        }
+      });
+    });
+    if (krCode && state.countries.kr) {
+      var krItems = state.countries.kr.index.filter(function(item){
+        var pCode = String((item.feature.properties && item.feature.properties.code) || '');
+        return pCode.slice(0, 2) === krCode;
+      });
+      if (krItems.length > 0) {
+        return { status: 'parent', parentName: krName, items: krItems };
+      }
+    }
+
+    // 2. 일본 상위 행정구역(도도부현) 일치 여부 검사
+    var jpPrefKey = null;
+    Object.keys(JP_PREFECTURES).forEach(function(prefKey){
+      var aliases = [prefKey].concat(JP_PREFECTURES[prefKey]);
+      aliases.forEach(function(al){
+        if (normalizeSearchTerm(al) === nq) {
+          jpPrefKey = prefKey;
+        }
+      });
+    });
+    if (jpPrefKey && state.countries.jp) {
+      var jpItems = state.countries.jp.index.filter(function(item){
+        return item.feature.properties && item.feature.properties.N03_001 === jpPrefKey;
+      });
+      if (jpItems.length > 0) {
+        return { status: 'parent', parentName: jpPrefKey, items: jpItems };
+      }
+    }
+
+    // 3. 개별 지명 정밀 매칭
+    var pool = searchIndexAll;
     var exact = pool.filter(function(r){
       return r.aliases.some(function(a){ return normalizeSearchTerm(a) === nq; });
     });
     if (exact.length === 1) return { status:'ok', item: exact[0] };
     if (exact.length > 1) return { status:'ambiguous', items: exact };
 
+    // 4. 개별 지명 부분 매칭
     var partial = pool.filter(function(r){
       return r.aliases.some(function(a){ return normalizeSearchTerm(a).indexOf(nq) !== -1; });
     });
     if (partial.length === 1) return { status:'ok', item: partial[0] };
     if (partial.length > 1) return { status:'ambiguous', items: partial };
+
     return { status:'notfound' };
   }
 
@@ -941,10 +1036,17 @@
     if (!state.activeTagId){ flashNeedTag(); return; }
     var raw = document.getElementById('bulkInput').value;
     var names = raw.split(/[,\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
-    var ok = 0, ambiguous = [], notfound = [];
+    var ok = 0, ambiguous = [], notfound = [], parents = [];
+
     names.forEach(function(name){
-      var r = findByName(name);
-      if (r.status === 'ok'){
+      var r = findRegionsByInput(name);
+      if (r.status === 'parent'){
+        r.items.forEach(function(item){
+          state.assignments[item.key] = state.activeTagId;
+        });
+        ok += r.items.length;
+        parents.push({ name: name, parentName: r.parentName, count: r.items.length });
+      } else if (r.status === 'ok'){
         state.assignments[r.item.key] = state.activeTagId;
         ok++;
       } else if (r.status === 'ambiguous'){
@@ -953,26 +1055,42 @@
         notfound.push(name);
       }
     });
+
     if (ok) assignmentsChanged();
-    renderBulkResult(ok, ambiguous, notfound);
+    renderBulkResult(ok, ambiguous, notfound, parents);
     if (ok) document.getElementById('bulkInput').value = '';
   }
 
-  function renderBulkResult(ok, ambiguous, notfound){
+  function renderBulkResult(ok, ambiguous, notfound, parents){
     var el = document.getElementById('bulkResult');
     el.innerHTML = '';
-    var parts = [];
-    if (ok) parts.push({ cls:'', text: '✓ ' + ok + ' Added' });
+
+    if (parents && parents.length) {
+      parents.forEach(function(p){
+        var div = document.createElement('div');
+        div.className = 'parent-res';
+        div.textContent = '✓ ' + p.parentName + ' 전체 (' + p.count + '개 지역) 일괄 추가됨';
+        el.appendChild(div);
+      });
+    }
+
+    if (ok) {
+      var okDiv = document.createElement('div');
+      okDiv.textContent = '✓ 총 ' + ok + '개 지역 색칠 완료';
+      el.appendChild(okDiv);
+    }
+
     ambiguous.forEach(function(a){
-      parts.push({ cls:'amb', text: '⚠ "' + a.name + '" Ambiguous (' + a.options.slice(0,4).join(', ') + (a.options.length>4?'...':'') + ')' });
-    });
-    notfound.forEach(function(n){
-      parts.push({ cls:'miss', text: '✕ "' + n + '" Not Found' });
-    });
-    parts.forEach(function(p){
       var span = document.createElement('div');
-      if (p.cls) span.className = p.cls;
-      span.textContent = p.text;
+      span.className = 'amb';
+      span.textContent = '⚠ "' + a.name + '" 모호함 (' + a.options.slice(0,4).join(', ') + (a.options.length>4?'...':'') + ')';
+      el.appendChild(span);
+    });
+
+    notfound.forEach(function(n){
+      var span = document.createElement('div');
+      span.className = 'miss';
+      span.textContent = '✕ "' + n + '" 찾을 수 없음';
       el.appendChild(span);
     });
   }
