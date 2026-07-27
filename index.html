@@ -276,13 +276,13 @@
         <select id="activeTagSelect" aria-label="활성 태그"></select>
       </div>
       <div class="search-wrap">
-        <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시, 전남광주통합특별시, 대구광역시, 강남구 / 東京都, 大阪府 (상위 행정구역 입력 시 전체 일괄 적용)">
+        <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시, 강남구 / 東京都, 大阪府 (상위 행정구역 입력 시 전체 일괄 적용)">
         <div class="dropdown" id="searchDropdown"></div>
       </div>
     </div>
     <button class="bulk-toggle" id="toggleBulk">여러 개 한 번에 입력 ⌄</button>
     <div class="bulk-panel" id="bulkPanel">
-      <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역/시·도/도도부현을 한 번에 입력하세요.&#10;예: 서울특별시, 전남광주통합특별시, 강남구 / 東京都, 大阪府, 渋谷区"></textarea>
+      <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역/시·도/도도부현을 한 번에 입력하세요.&#10;예: 서울특별시, 강남구 / 東京都, 大阪府, 渋谷区"></textarea>
       <div class="bulk-actions">
         <button class="btn-primary" id="bulkAddBtn">일괄 추가</button>
         <span class="bulk-result" id="bulkResult"></span>
@@ -390,9 +390,9 @@
       import: "⬆ 불러오기",
       tagLabel: "태그",
       addTag: "+ 새 태그",
-      searchPlaceholder: "서울특별시, 전남광주통합특별시, 대구광역시, 강남구 / 東京都, 大阪府 (상위 행정구역 입력 시 전체 일괄 적용)",
+      searchPlaceholder: "서울특별시, 강남구 / 東京都, 大阪府 (상위 행정구역 입력 시 전체 일괄 적용)",
       bulkToggle: "여러 개 한 번에 입력 ⌄",
-      bulkPlaceholder: "쉼표(,) 또는 줄바꿈으로 여러 지역/시·도/도도부현을 한 번에 입력하세요.\n예: 서울특별시, 전남광주통합특별시, 강남구 / 東京都, 大阪府, 渋谷区",
+      bulkPlaceholder: "쉼표(,) 또는 줄바꿈으로 여러 지역/시·도/도도부현을 한 번에 입력하세요.\n예: 서울특별시, 강남구 / 東京都, 大阪府, 渋谷区",
       bulkBtn: "일괄 추가",
       krTitle: "대한민국",
       jpTitle: "일본",
@@ -430,7 +430,7 @@
       import: "⬆ Import",
       tagLabel: "TAGS",
       addTag: "+ New Tag",
-      searchPlaceholder: "Seoul, Jeonnam-Gwangju, Daegu, Gangnam / Tokyo, Osaka (Enter state/pref to select all)",
+      searchPlaceholder: "Seoul, Gangnam / Tokyo, Osaka (Enter state/pref to select all)",
       bulkToggle: "Bulk Input ⌄",
       bulkPlaceholder: "Enter multiple locations or states/prefectures separated by commas or newlines.\ne.g. Seoul, Gangnam / Tokyo, Osaka, Chiyoda",
       bulkBtn: "Add All",
@@ -470,7 +470,7 @@
       import: "⬆ インポート",
       tagLabel: "タグ",
       addTag: "+ 新規タグ",
-      searchPlaceholder: "서울특별시, 全南光州統合特別市, 大邱広域市 / 東京都, 大阪府 (広域自治体入力時一括適用)",
+      searchPlaceholder: "서울특별시, 종로구 / 東京都, 大阪府 (広域自治体入力時一括適用)",
       bulkToggle: "一括入力 ⌄",
       bulkPlaceholder: "カンマ(,)や改行で複数の地域・広域自治体を一括入力できます。\n例: 서울특별시, 경기도 / 東京都, 大阪府",
       bulkBtn: "一括追加",
@@ -484,7 +484,7 @@
       themeLight: "ライトモード",
       themeDark: "ダークモード",
       langLabel: "言語 (Language)",
-      creatorName: "蔡俊榮(チェ・ジュニョン)",
+      creatorName: "蔡俊榮(チェ・ジュニョン) (ハチェ / Hachae)",
       creatorDesc: "PaintnTag 開発者",
       defaultTagVisit: "訪問",
       defaultTagPlan: "予定",
@@ -505,7 +505,7 @@
   /* 
    * 군위군 대구 통합 및 전남+광주 통합 반영
    * Code 22 = 대구광역시 (군위군 37310 포괄)
-   * Code 24, 36 = 전남광주통합특별시
+   * Code 24, 36 = 
    */
   var KR_SIDO = {
     '11':['서울특별시','서울','seoul'], 
@@ -528,7 +528,7 @@
   };
 
   var JP_PREFECTURES = {
-    '北海道': ['hokkaido', '홉카이도', '북해도'], '青森県': ['aomori', '아오모리'], '岩手県': ['iwate', '이와테'],
+    '北海道': ['hokkaido', '홋카이도', '북해도',], '青森県': ['aomori', '아오모리'], '岩手県': ['iwate', '이와테'],
     '宮城県': ['miyagi', '미야기'], '秋田県': ['akita', '아키타'], '山形県': ['yamagata', '야마가타'],
     '福島県': ['fukushima', '후쿠시마'], '茨城県': ['ibaraki', '이바라키'], '栃木県': ['tochigi', '토치기', '도치기'],
     '群馬県': ['gunma', '군마'], '埼玉県': ['saitama', '사이타마'], '千葉県': ['chiba', '치바'],
@@ -539,8 +539,8 @@
     '滋賀県': ['shiga', '시가'], '京都府': ['kyoto', '교토'], '大阪府': ['osaka', '오사카'],
     '兵庫県': ['hyogo', '효고'], '奈良県': ['nara', '나라'], '和歌山県': ['wakayama', '와카야마'],
     '鳥取県': ['tottori', '돗토리'], '島根県': ['shimane', '시마네'], '岡山県': ['okayama', '오카야마'],
-    '広島県': ['hiroshima', '히로시마'], '山口県': ['yamaguchi', '야마구치'], '徳島県': ['tokushima', '도쿠시마'],
-    '香川県': ['kagawa', '카가와', '가가와'], '愛媛県': ['ehime', '에히메'], '高知県': ['kochi', '고치'],
+    '広島県': ['hiroshima', '히로시마'], '山口県': ['yamaguchi', '야마구치'], '徳島県': ['tokushima', '도쿠시마', '토쿠시마'],
+    '香川県': ['kagawa', '카가와', '가가와'], '愛媛県': ['ehime', '에히메'], '高知県': ['kochi', '고치', '코치'],
     '福岡県': ['fukuoka', '후쿠오카'], '佐賀県': ['saga', '사가'], '長崎県': ['nagasaki', '나가사키'],
     '熊本県': ['kumamoto', '쿠마모토', '구마모토'], '大分県': ['oita', '오이타'], '宮崎県': ['miyazaki', '미야자키'],
     '鹿児島県': ['kagoshima', '카고시마', '가고시마'], '沖縄県': ['okinawa', '오키나와']
@@ -944,7 +944,7 @@
     if (!nq) return [];
     var results = [];
 
-    // 1. 한국 상위 행정구역(시·도 및 전남광주통합) 검색
+    // 1. 한국 상위 행정구역(시·도) 검색
     if (state.countries.kr) {
       var addedParents = {};
       Object.keys(KR_SIDO).forEach(function(code) {
@@ -956,7 +956,7 @@
         if (matched) {
           addedParents[parentName] = true;
           var items = state.countries.kr.index.filter(function(item) {
-            return item.info.prefix === code || (parentName === '전남광주통합특별시' && (item.info.prefix === '24' || item.info.prefix === '36'));
+            return item.info.prefix === code || (parentName === '' && (item.info.prefix === '24' || item.info.prefix === '36'));
           });
           if (items.length > 0) {
             results.push({
@@ -1075,7 +1075,7 @@
 
     if (krParentName && state.countries.kr) {
       var krItems = state.countries.kr.index.filter(function(item){
-        return krParentName === '전남광주통합특별시' ? (item.info.prefix === '24' || item.info.prefix === '36') : (item.info.display.indexOf(krParentName) === 0);
+        return krParentName === '' ? (item.info.prefix === '24' || item.info.prefix === '36') : (item.info.display.indexOf(krParentName) === 0);
       });
       if (krItems.length > 0) {
         return { status: 'parent', parentName: krParentName, items: krItems };
