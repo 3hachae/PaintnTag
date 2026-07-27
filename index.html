@@ -803,6 +803,7 @@
       done: "완료",
       selectAll: "전체 선택",
       deleteSelected: "선택 삭제",
+      deleteAll: "전체 삭제",
       selectToDelete: "삭제할 지역을 선택해 주세요."
     },
     en: {
@@ -853,6 +854,7 @@
       done: "Done",
       selectAll: "Select All",
       deleteSelected: "Delete Selected",
+      deleteAll: "Delete All",
       selectToDelete: "Please select regions to delete."
     },
     ja: {
@@ -903,6 +905,7 @@
       done: "完了",
       selectAll: "すべて選択",
       deleteSelected: "選択削除",
+      deleteAll: "全削除",
       selectToDelete: "削除する地域を選択してください。"
     }
   };
@@ -1510,12 +1513,22 @@
   function updateSelectAllStatus(){
     var cbs = document.querySelectorAll('.region-select-cb');
     var selectAllCb = document.getElementById('selectAllTagRegions');
-    if (!selectAllCb || cbs.length === 0) return;
+    var deleteBtn = document.getElementById('deleteSelectedTagRegionsBtn');
+    
+    if (!selectAllCb || cbs.length === 0) {
+      if (deleteBtn) deleteBtn.textContent = t('deleteSelected');
+      return;
+    }
+
     var allChecked = true;
     for (var i = 0; i < cbs.length; i++) {
       if (!cbs[i].checked) { allChecked = false; break; }
     }
     selectAllCb.checked = allChecked;
+
+    if (deleteBtn) {
+      deleteBtn.textContent = (allChecked && cbs.length > 0) ? t('deleteAll') : t('deleteSelected');
+    }
   }
 
   function openTagRegionsModal(targetTagId){
@@ -2136,8 +2149,8 @@
     if (editBtn) editBtn.textContent = isTagRegionsEditing ? t('done') : t('edit');
     var selectAllLabel = document.getElementById('selectAllLabel');
     if (selectAllLabel) selectAllLabel.textContent = t('selectAll');
-    var deleteSelectedBtn = document.getElementById('deleteSelectedTagRegionsBtn');
-    if (deleteSelectedBtn) deleteSelectedBtn.textContent = t('deleteSelected');
+    
+    updateSelectAllStatus();
 
     updatePanelCounts();
   }
@@ -2302,6 +2315,7 @@
       document.querySelectorAll('.region-select-cb').forEach(function(cb){
         cb.checked = isChecked;
       });
+      updateSelectAllStatus();
     });
 
     document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
