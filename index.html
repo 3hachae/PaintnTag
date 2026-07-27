@@ -98,7 +98,6 @@
   .chip{display:flex;align-items:center;gap:6px;padding:5px 8px 5px 6px;border-radius:980px;border:1.5px solid var(--border);background:var(--surface-2);flex:none;cursor:pointer;transition:border-color .15s, background .15s, box-shadow .15s;}
   .chip.active{border-color:var(--accent);background:var(--accent-soft);}
   
-  /* iOS 스와치 스타일 */
   .chip-swatch{
     position:relative;
     width:22px;
@@ -114,82 +113,182 @@
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.2);
   }
 
-  /* iOS 메모앱 스타일 컬러피커 팝오버 */
+  /* 고급 커스텀 iOS 컬러피커 팝오버 디자인 */
   .ios-color-picker {
     position: absolute;
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border-radius: 18px;
-    padding: 14px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.18), 0 0 0 0.5px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(30px) saturate(190%);
+    -webkit-backdrop-filter: blur(30px) saturate(190%);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.08);
     display: none;
     flex-direction: column;
-    gap: 12px;
-    width: 216px;
-    animation: iosPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 14px;
+    width: 280px;
+    animation: iosPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes iosPop {
-    from { opacity: 0; transform: scale(0.92) translateY(-6px); }
+    from { opacity: 0; transform: scale(0.92) translateY(-8px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
   body.dark-theme .ios-color-picker, body.easter-theme .ios-color-picker {
-    background: rgba(44, 44, 46, 0.88);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.15);
+    background: rgba(36, 36, 38, 0.92);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.12);
   }
   .ios-color-picker.open { display: flex; }
+
+  /* Segmented Control (탭 버튼) */
+  .picker-segmented-control {
+    display: flex;
+    background: rgba(120, 120, 128, 0.12);
+    border-radius: 9px;
+    padding: 2px;
+  }
+  .picker-segment-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .picker-segment-btn.active {
+    background: var(--surface);
+    color: var(--text-1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.08);
+    font-weight: 600;
+  }
+
+  /* HSL 정렬 프리셋 팔레트 Grid */
   .ios-color-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 10px;
     justify-items: center;
+    padding: 2px 0;
   }
   .ios-color-circle {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     cursor: pointer;
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
   .ios-color-circle:hover {
     transform: scale(1.15);
   }
   .ios-color-circle.selected {
-    box-shadow: inset 0 0 0 2px #FFFFFF, 0 0 0 2px var(--accent);
+    box-shadow: inset 0 0 0 2px #FFFFFF, 0 0 0 2.5px var(--accent);
     transform: scale(1.08);
   }
-  .ios-color-custom-row {
+
+  /* 커스텀 RGB 조절 패널 */
+  .rgb-control-panel {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rgb-control-panel.active { display: flex; }
+
+  .rgb-preview-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
+    gap: 12px;
+    background: var(--surface-2);
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
   }
-  .ios-color-custom-label {
-    font-size: 12px;
-    font-weight: 500;
+  .rgb-preview-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+    flex: none;
+  }
+  .rgb-hex-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .rgb-hex-label {
+    font-size: 13px;
+    font-weight: 600;
     color: var(--text-2);
   }
-  .ios-color-wheel-btn {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
-    border: 2px solid var(--surface);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  .rgb-hex-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-1);
+    outline: none;
+    font-family: monospace;
+    text-transform: uppercase;
   }
-  .ios-color-wheel-btn input[type=color] {
-    position: absolute;
-    inset: -50%;
-    width: 200%;
-    height: 200%;
-    opacity: 0;
+
+  .rgb-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .rgb-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rgb-slider-label {
+    font-size: 12px;
+    font-weight: 700;
+    width: 14px;
+    text-align: center;
+  }
+  .rgb-slider-label.r { color: #FF3B30; }
+  .rgb-slider-label.g { color: #34C759; }
+  .rgb-slider-label.b { color: #007AFF; }
+
+  .rgb-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    outline: none;
     cursor: pointer;
+  }
+  .rgb-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .rgb-slider::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+  }
+
+  .rgb-number-input {
+    width: 42px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-1);
+    font-size: 12px;
+    text-align: center;
+    font-weight: 500;
   }
 
   .chip-name{font-size:13px;font-weight:500;outline:none;padding:0 2px;min-width:14px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-1);}
@@ -314,13 +413,41 @@
     <div class="tag-rail" id="tagRail"></div>
     <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
 
-    <!-- iOS 스타일 컬러 피커 팝오버 -->
+    <!-- 고급 iOS 스타일 커스텀 컬러 피커 팝오버 -->
     <div class="ios-color-picker" id="iosColorPicker">
+      <div class="picker-segmented-control">
+        <button class="picker-segment-btn active" id="segPresetsBtn">색상표</button>
+        <button class="picker-segment-btn" id="segRgbBtn">RGB 조절</button>
+      </div>
+
+      <!-- 1. HSL 정렬 팔레트 패널 -->
       <div class="ios-color-grid" id="iosColorGrid"></div>
-      <div class="ios-color-custom-row">
-        <span class="ios-color-custom-label">사용자 지정 색상</span>
-        <div class="ios-color-wheel-btn">
-          <input type="color" id="iosCustomColorInput">
+
+      <!-- 2. 커스텀 RGB 조절 패널 -->
+      <div class="rgb-control-panel" id="rgbControlPanel">
+        <div class="rgb-preview-row">
+          <div class="rgb-preview-box" id="rgbPreviewBox"></div>
+          <div class="rgb-hex-input-wrap">
+            <span class="rgb-hex-label">#</span>
+            <input type="text" class="rgb-hex-input" id="rgbHexInput" maxlength="6" spellcheck="false">
+          </div>
+        </div>
+        <div class="rgb-slider-group">
+          <div class="rgb-slider-row">
+            <span class="rgb-slider-label r">R</span>
+            <input type="range" class="rgb-slider" id="sliderR" min="0" max="255">
+            <input type="number" class="rgb-number-input" id="numR" min="0" max="255">
+          </div>
+          <div class="rgb-slider-row">
+            <span class="rgb-slider-label g">G</span>
+            <input type="range" class="rgb-slider" id="sliderG" min="0" max="255">
+            <input type="number" class="rgb-number-input" id="numG" min="0" max="255">
+          </div>
+          <div class="rgb-slider-row">
+            <span class="rgb-slider-label b">B</span>
+            <input type="range" class="rgb-slider" id="sliderB" min="0" max="255">
+            <input type="number" class="rgb-number-input" id="numB" min="0" max="255">
+          </div>
         </div>
       </div>
     </div>
@@ -436,11 +563,12 @@
   var KR_TOPO_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
   var JP_TOPO_URL = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
 
-  /* iOS 메모앱 시그니처 팔레트 프리셋 색상 */
+  /* HSL 기준 Hue (0°~360°) 순서대로 정렬된 24가지 감성 팔레트 */
   var IOS_PALETTE = [
-    '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#00C7BE', 
-    '#30B0C7', '#007AFF', '#5856D6', '#AF52DE', '#FF2D55', 
-    '#A2845E', '#8E8E93', '#1C1C1E', '#64D2FF', '#E55B13'
+    '#FF3B30', '#FF6B00', '#FF9500', '#FFCC00', '#D4E157', '#34C759',
+    '#00C7BE', '#30B0C7', '#007AFF', '#5856D6', '#AF52DE', '#FF2D55',
+    '#E05252', '#F09235', '#F5C842', '#7CB342', '#26A69A', '#42A5F5',
+    '#7E57C2', '#EC407A', '#8E8E93', '#636366', '#3A3A3C', '#1C1C1E'
   ];
 
   var i18n = {
@@ -566,7 +694,6 @@
     }
   };
 
-  /* 시도 코드 정의 */
   var KR_SIDO = {
     '11':['서울특별시','서울','seoul'], 
     '21':['부산광역시','부산','busan'], 
@@ -631,6 +758,21 @@
     return (i18n[state.lang] && i18n[state.lang][key]) || i18n.ko[key] || key;
   }
 
+  /* RGB / HEX 유틸리티 */
+  function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '');
+    if (hex.length === 3) hex = hex.split('').map(function(c){ return c + c; }).join('');
+    var num = parseInt(hex, 16);
+    return isNaN(num) ? { r: 0, g: 0, b: 0 } : { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+  }
+  function rgbToHex(r, g, b) {
+    var toHex = function(n) {
+      var h = Math.max(0, Math.min(255, Math.round(n))).toString(16);
+      return h.length === 1 ? '0' + h : h;
+    };
+    return '#' + toHex(r) + toHex(g) + toHex(b);
+  }
+
   function topologyToFeatures(topology){
     if (typeof topojson !== 'undefined' && topojson.feature) {
       var objName = Object.keys(topology.objects)[0];
@@ -655,7 +797,6 @@
       var codeStr = String(p.code);
       var prefix = codeStr.slice(0,2);
       
-      // 군위군 대구 통합 처리
       if (codeStr === '37310' || p.name === '군위군') {
         prefix = '22';
       }
@@ -664,7 +805,6 @@
       var display = sido ? (sido[0] + ' ' + p.name) : p.name;
       var aliases = [p.name, display];
 
-      /* 2026년 7월 1일 인천광역시 행정구역 개편 연동 (제물포구, 영종구, 검단구) */
       if (prefix === '23') {
         if (codeStr === '28010' || p.name === '중구') {
           aliases.push('제물포구', '영종구', '인천광역시 제물포구', '인천광역시 영종구');
@@ -876,7 +1016,9 @@
     return c;
   }
 
-  /* iOS 스타일 컬러피커 팝오버 빌드 및 제어 */
+  /* 커스텀 iOS RGB 컬러피커 로직 */
+  var rgbState = { r: 0, g: 0, b: 0, updating: false };
+
   function setupColorPickerUI(){
     var grid = document.getElementById('iosColorGrid');
     grid.innerHTML = '';
@@ -893,12 +1035,75 @@
       grid.appendChild(circle);
     });
 
-    var customInput = document.getElementById('iosCustomColorInput');
-    customInput.addEventListener('input', function(e){
-      if (state.editingTagForPicker) {
-        updateTagColor(state.editingTagForPicker, e.target.value);
+    // 탭 전환
+    document.getElementById('segPresetsBtn').addEventListener('click', function(){
+      this.classList.add('active');
+      document.getElementById('segRgbBtn').classList.remove('active');
+      document.getElementById('iosColorGrid').style.display = 'grid';
+      document.getElementById('rgbControlPanel').classList.remove('active');
+    });
+    document.getElementById('segRgbBtn').addEventListener('click', function(){
+      this.classList.add('active');
+      document.getElementById('segPresetsBtn').classList.remove('active');
+      document.getElementById('iosColorGrid').style.display = 'none';
+      document.getElementById('rgbControlPanel').classList.add('active');
+    });
+
+    // 슬라이더 이벤트 연결
+    ['R','G','B'].forEach(function(ch){
+      var slider = document.getElementById('slider' + ch);
+      var numInput = document.getElementById('num' + ch);
+      
+      var onValChange = function(val){
+        if (rgbState.updating) return;
+        rgbState[ch.toLowerCase()] = parseInt(val, 10) || 0;
+        syncRgbUI();
+        if (state.editingTagForPicker) {
+          var hex = rgbToHex(rgbState.r, rgbState.g, rgbState.b);
+          updateTagColorLive(state.editingTagForPicker, hex);
+        }
+      };
+
+      slider.addEventListener('input', function(e){ onValChange(e.target.value); });
+      numInput.addEventListener('input', function(e){ onValChange(e.target.value); });
+    });
+
+    // HEX 직접 입력
+    document.getElementById('rgbHexInput').addEventListener('input', function(e){
+      var val = e.target.value.replace(/[^0-9A-Fa-f]/g, '');
+      if (val.length === 6) {
+        var rgb = hexToRgb(val);
+        rgbState.r = rgb.r; rgbState.g = rgb.g; rgbState.b = rgb.b;
+        syncRgbUI();
+        if (state.editingTagForPicker) {
+          updateTagColorLive(state.editingTagForPicker, '#' + val);
+        }
       }
     });
+  }
+
+  function syncRgbUI(){
+    rgbState.updating = true;
+    var r = rgbState.r, g = rgbState.g, b = rgbState.b;
+    var hex = rgbToHex(r, g, b);
+
+    document.getElementById('sliderR').value = r;
+    document.getElementById('sliderG').value = g;
+    document.getElementById('sliderB').value = b;
+
+    document.getElementById('numR').value = r;
+    document.getElementById('numG').value = g;
+    document.getElementById('numB').value = b;
+
+    document.getElementById('rgbHexInput').value = hex.replace('#','').toUpperCase();
+    document.getElementById('rgbPreviewBox').style.background = hex;
+
+    // 슬라이더 트랙 그라데이션 동적 생성
+    document.getElementById('sliderR').style.background = 'linear-gradient(to right, rgb(0,'+g+','+b+'), rgb(255,'+g+','+b+'))';
+    document.getElementById('sliderG').style.background = 'linear-gradient(to right, rgb('+r+',0,'+b+'), rgb('+r+',255,'+b+'))';
+    document.getElementById('sliderB').style.background = 'linear-gradient(to right, rgb('+r+','+g+',0), rgb('+r+','+g+',255))';
+
+    rgbState.updating = false;
   }
 
   function openColorPicker(tag, anchorEl){
@@ -909,13 +1114,17 @@
     var rect = anchorEl.getBoundingClientRect();
     var tagbarRect = document.querySelector('.tagbar').getBoundingClientRect();
     var left = rect.left - tagbarRect.left;
-    if (left + 220 > window.innerWidth) {
-      left = window.innerWidth - 230;
+    if (left + 290 > window.innerWidth) {
+      left = window.innerWidth - 300;
     }
     picker.style.left = Math.max(10, left) + 'px';
     picker.style.top = (rect.bottom - tagbarRect.top + 8) + 'px';
 
-    // 활성 색상 하이라이트
+    // 현재 태그 색상 반영
+    var rgb = hexToRgb(tag.color);
+    rgbState.r = rgb.r; rgbState.g = rgb.g; rgbState.b = rgb.b;
+    syncRgbUI();
+
     document.querySelectorAll('.ios-color-circle').forEach(function(el){
       if (el.dataset.color.toLowerCase() === tag.color.toLowerCase()){
         el.classList.add('selected');
@@ -923,7 +1132,6 @@
         el.classList.remove('selected');
       }
     });
-    document.getElementById('iosCustomColorInput').value = tag.color;
 
     picker.classList.add('open');
   }
@@ -934,9 +1142,17 @@
     if (picker) picker.classList.remove('open');
   }
 
-  function updateTagColor(tag, color){
+  function updateTagColorLive(tag, color){
     tag.color = color;
     applyColors('kr'); applyColors('jp');
+    var chip = document.querySelector('.chip[data-tag-id="' + tag.id + '"] .chip-swatch');
+    if (chip) chip.style.background = color;
+    var dot = document.getElementById('activeTagDot');
+    if (tag.id === state.activeTagId) dot.style.background = color;
+  }
+
+  function updateTagColor(tag, color){
+    updateTagColorLive(tag, color);
     renderTags();
     closeColorPicker();
   }
@@ -1057,7 +1273,6 @@
     if (!nq) return [];
     var results = [];
 
-    // 1. 한국 상위 행정구역(시·도) 검색
     if (state.countries.kr) {
       var addedParents = {};
       Object.keys(KR_SIDO).forEach(function(code) {
@@ -1084,7 +1299,6 @@
       });
     }
 
-    // 2. 일본 상위 행정구역(도도부현) 검색
     if (state.countries.jp) {
       Object.keys(JP_PREFECTURES).forEach(function(prefKey) {
         var aliases = [prefKey].concat(JP_PREFECTURES[prefKey]);
@@ -1106,7 +1320,6 @@
       });
     }
 
-    // 3. 개별 시군구/시정촌 검색
     var pool = searchIndexAll;
     var matchedMunis = pool.filter(function(r){
       return r.aliases.some(function(a){
@@ -1178,7 +1391,6 @@
     if (!q) return { status:'empty' };
     var nq = normalizeSearchTerm(q);
 
-    // 1. 한국 상위 행정구역 일치 여부
     var krParentName = null;
     Object.keys(KR_SIDO).forEach(function(code){
       var names = KR_SIDO[code];
@@ -1198,7 +1410,6 @@
       }
     }
 
-    // 2. 일본 상위 행정구역 일치 여부
     var jpPrefKey = null;
     Object.keys(JP_PREFECTURES).forEach(function(prefKey){
       var aliases = [prefKey].concat(JP_PREFECTURES[prefKey]);
@@ -1217,7 +1428,6 @@
       }
     }
 
-    // 3. 개별 지명 매칭
     var pool = searchIndexAll;
     var exact = pool.filter(function(r){
       return r.aliases.some(function(a){ return normalizeSearchTerm(a) === nq; });
@@ -1333,7 +1543,6 @@
     assignmentsChanged();
   }
 
-  /* PNG 내보내기 */
   function exportPNG(country){
     var countryData = state.countries[country];
     if (!countryData || !countryData.features) return;
@@ -1537,8 +1746,8 @@
 
   window.addEventListener('DOMContentLoaded', function(){
     setupColorPickerUI();
-    addTag(t('defaultTagVisit'), IOS_PALETTE[6]);
-    addTag(t('defaultTagPlan'), IOS_PALETTE[1]);
+    addTag(t('defaultTagVisit'), IOS_PALETTE[8]);
+    addTag(t('defaultTagPlan'), IOS_PALETTE[2]);
     state.activeTagId = state.tags[0].id;
     renderTags();
     init();
