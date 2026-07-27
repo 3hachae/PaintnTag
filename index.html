@@ -492,6 +492,14 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 10px; border-radius: 980px; background: var(--surface-2);
     border: 1px solid var(--border); font-size: 12.5px; color: var(--text-1);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .region-pill input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--accent);
+    width: 14px;
+    height: 14px;
+    margin: 0;
   }
   .region-pill-del {
     border: none; background: transparent; color: var(--text-2); cursor: pointer;
@@ -707,11 +715,23 @@
   <div class="modal">
     <div class="modal-header">
       <h3 id="tagRegionsModalTitle">태그별 지역 목록</h3>
-      <button class="modal-close" id="tagRegionsCloseBtn">&times;</button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-ghost" id="tagRegionsEditBtn" style="padding: 4px 12px; font-size: 12px;">편집</button>
+        <button class="modal-close" id="tagRegionsCloseBtn">&times;</button>
+      </div>
     </div>
-    <div style="padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; background: var(--surface-2);">
-      <span style="font-size: 13px; font-weight: 600; color: var(--text-2); flex: none;" id="selectTagLabel">태그 선택:</span>
-      <select id="tagRegionsSelect" class="setting-select" style="flex: 1; max-width: 100%;"></select>
+    <div style="padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface-2);">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span style="font-size: 13px; font-weight: 600; color: var(--text-2); flex: none;" id="selectTagLabel">태그 선택:</span>
+        <select id="tagRegionsSelect" class="setting-select" style="flex: 1; max-width: 100%;"></select>
+      </div>
+      <!-- 편집 도구 모음 (편집 모드 시 표시) -->
+      <div id="tagRegionsEditTools" style="display: none; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+        <label style="font-size: 12.5px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-1); font-weight: 600;">
+          <input type="checkbox" id="selectAllTagRegions"> <span id="selectAllLabel">전체 선택</span>
+        </label>
+        <button class="btn-ghost" id="deleteSelectedTagRegionsBtn" style="color: var(--danger); border-color: var(--danger); padding: 4px 12px; font-size: 12px; font-weight: 600;">선택 삭제</button>
+      </div>
     </div>
     <div id="tagRegionsListContent" style="padding: 20px; max-height: 380px; overflow-y: auto;"></div>
   </div>
@@ -778,7 +798,12 @@
       selectTagLabel: "태그 선택:",
       noRegionsInTag: "이 태그로 칠해진 지역이 없습니다.",
       krRegionsHeader: "대한민국",
-      jpRegionsHeader: "일본"
+      jpRegionsHeader: "일본",
+      edit: "편집",
+      done: "완료",
+      selectAll: "전체 선택",
+      deleteSelected: "선택 삭제",
+      selectToDelete: "삭제할 지역을 선택해 주세요."
     },
     en: {
       title: "PaintnTag — Korea · Japan",
@@ -823,7 +848,12 @@
       selectTagLabel: "Select Tag:",
       noRegionsInTag: "No regions assigned to this tag.",
       krRegionsHeader: "South Korea",
-      jpRegionsHeader: "Japan"
+      jpRegionsHeader: "Japan",
+      edit: "Edit",
+      done: "Done",
+      selectAll: "Select All",
+      deleteSelected: "Delete Selected",
+      selectToDelete: "Please select regions to delete."
     },
     ja: {
       title: "PaintnTag — 韓国 · 日本",
@@ -868,7 +898,12 @@
       selectTagLabel: "タグ選択:",
       noRegionsInTag: "このタグで塗られた地域はありません。",
       krRegionsHeader: "大韓民国",
-      jpRegionsHeader: "日本"
+      jpRegionsHeader: "日本",
+      edit: "編集",
+      done: "完了",
+      selectAll: "すべて選択",
+      deleteSelected: "選択削除",
+      selectToDelete: "削除する地域を選択してください。"
     }
   };
 
@@ -929,6 +964,7 @@
     isEaster: false
   };
 
+  var isTagRegionsEditing = false;
   var svgRefs = {};
   var searchIndexAll = [];
 
@@ -1460,6 +1496,28 @@
     updateChipCounts();
   }
 
+  function updateTagSelectOptionText(tagId){
+    var select = document.getElementById('tagRegionsSelect');
+    if (!select) return;
+    Array.from(select.options).forEach(function(opt){
+      if (opt.value === tagId) {
+        var tag = state.tags.filter(function(t){ return t.id === tagId; })[0];
+        if (tag) opt.textContent = tag.name + ' (' + tagCount(tagId) + ')';
+      }
+    });
+  }
+
+  function updateSelectAllStatus(){
+    var cbs = document.querySelectorAll('.region-select-cb');
+    var selectAllCb = document.getElementById('selectAllTagRegions');
+    if (!selectAllCb || cbs.length === 0) return;
+    var allChecked = true;
+    for (var i = 0; i < cbs.length; i++) {
+      if (!cbs[i].checked) { allChecked = false; break; }
+    }
+    selectAllCb.checked = allChecked;
+  }
+
   function openTagRegionsModal(targetTagId){
     var modal = document.getElementById('tagRegionsModal');
     var select = document.getElementById('tagRegionsSelect');
@@ -1472,6 +1530,14 @@
       if (tag.id === (targetTagId || state.activeTagId)) opt.selected = true;
       select.appendChild(opt);
     });
+
+    isTagRegionsEditing = false;
+    var editBtn = document.getElementById('tagRegionsEditBtn');
+    if (editBtn) editBtn.textContent = t('edit');
+    var editTools = document.getElementById('tagRegionsEditTools');
+    if (editTools) editTools.style.display = 'none';
+    var selectAllCb = document.getElementById('selectAllTagRegions');
+    if (selectAllCb) selectAllCb.checked = false;
 
     renderTagRegionsList(select.value);
     modal.classList.add('open');
@@ -1498,7 +1564,14 @@
 
     if (krList.length === 0 && jpList.length === 0) {
       container.innerHTML = '<div style="text-align:center; padding: 20px; color:var(--text-2); font-size:13px;">' + t('noRegionsInTag') + '</div>';
+      var editTools = document.getElementById('tagRegionsEditTools');
+      if (editTools) editTools.style.display = 'none';
       return;
+    }
+
+    if (isTagRegionsEditing) {
+      var editTools = document.getElementById('tagRegionsEditTools');
+      if (editTools) editTools.style.display = 'flex';
     }
 
     var renderGroup = function(title, list){
@@ -1518,28 +1591,42 @@
         var pill = document.createElement('div');
         pill.className = 'region-pill';
         
-        var nameSpan = document.createElement('span');
-        nameSpan.textContent = item.display;
+        if (isTagRegionsEditing) {
+          var cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.className = 'region-select-cb';
+          cb.dataset.key = item.key;
+          cb.addEventListener('change', updateSelectAllStatus);
+          pill.appendChild(cb);
 
-        var delBtn = document.createElement('button');
-        delBtn.className = 'region-pill-del';
-        delBtn.innerHTML = '×';
-        delBtn.title = '이 지역 색칠 해제';
-        delBtn.addEventListener('click', function(){
-          delete state.assignments[item.key];
-          assignmentsChanged();
-          renderTagRegionsList(tagId);
-          var select = document.getElementById('tagRegionsSelect');
-          Array.from(select.options).forEach(function(opt){
-            if (opt.value === tagId) {
-              var tag = state.tags.filter(function(t){ return t.id === tagId; })[0];
-              if (tag) opt.textContent = tag.name + ' (' + tagCount(tagId) + ')';
+          pill.style.cursor = 'pointer';
+          pill.addEventListener('click', function(e){
+            if (e.target !== cb) {
+              cb.checked = !cb.checked;
+              updateSelectAllStatus();
             }
           });
-        });
+        }
 
+        var nameSpan = document.createElement('span');
+        nameSpan.textContent = item.display;
         pill.appendChild(nameSpan);
-        pill.appendChild(delBtn);
+
+        if (!isTagRegionsEditing) {
+          var delBtn = document.createElement('button');
+          delBtn.className = 'region-pill-del';
+          delBtn.innerHTML = '×';
+          delBtn.title = '이 지역 색칠 해제';
+          delBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            delete state.assignments[item.key];
+            assignmentsChanged();
+            renderTagRegionsList(tagId);
+            updateTagSelectOptionText(tagId);
+          });
+          pill.appendChild(delBtn);
+        }
+
         pillsEl.appendChild(pill);
       });
 
@@ -1549,6 +1636,10 @@
 
     renderGroup('🇰🇷 ' + t('krRegionsHeader'), krList);
     renderGroup('🇯🇵 ' + t('jpRegionsHeader'), jpList);
+
+    if (isTagRegionsEditing) {
+      updateSelectAllStatus();
+    }
   }
 
   var searchInput = document.getElementById('searchInput');
@@ -2041,6 +2132,13 @@
     document.getElementById('tagRegionsModalTitle').textContent = t('tagRegionsTitle');
     document.getElementById('selectTagLabel').textContent = t('selectTagLabel');
 
+    var editBtn = document.getElementById('tagRegionsEditBtn');
+    if (editBtn) editBtn.textContent = isTagRegionsEditing ? t('done') : t('edit');
+    var selectAllLabel = document.getElementById('selectAllLabel');
+    if (selectAllLabel) selectAllLabel.textContent = t('selectAll');
+    var deleteSelectedBtn = document.getElementById('deleteSelectedTagRegionsBtn');
+    if (deleteSelectedBtn) deleteSelectedBtn.textContent = t('deleteSelected');
+
     updatePanelCounts();
   }
 
@@ -2187,6 +2285,42 @@
     });
     document.getElementById('tagRegionsSelect').addEventListener('change', function(e){
       renderTagRegionsList(e.target.value);
+    });
+
+    // 태그별 지역 편집 및 삭제 이벤트 핸들러
+    document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
+      isTagRegionsEditing = !isTagRegionsEditing;
+      this.textContent = isTagRegionsEditing ? t('done') : t('edit');
+      var selectAllCb = document.getElementById('selectAllTagRegions');
+      if (selectAllCb) selectAllCb.checked = false;
+
+      renderTagRegionsList(document.getElementById('tagRegionsSelect').value);
+    });
+
+    document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
+      var isChecked = e.target.checked;
+      document.querySelectorAll('.region-select-cb').forEach(function(cb){
+        cb.checked = isChecked;
+      });
+    });
+
+    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
+      var tagId = document.getElementById('tagRegionsSelect').value;
+      var checkedCbs = document.querySelectorAll('.region-select-cb:checked');
+      if (checkedCbs.length === 0) {
+        showToast(t('selectToDelete'));
+        return;
+      }
+      checkedCbs.forEach(function(cb){
+        var key = cb.dataset.key;
+        delete state.assignments[key];
+      });
+      assignmentsChanged();
+      var selectAllCb = document.getElementById('selectAllTagRegions');
+      if (selectAllCb) selectAllCb.checked = false;
+
+      renderTagRegionsList(tagId);
+      updateTagSelectOptionText(tagId);
     });
 
     document.querySelectorAll('.tab-btn').forEach(function(btn){
