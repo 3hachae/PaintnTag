@@ -78,9 +78,10 @@
 
   .app{height:100vh;display:flex;flex-direction:column;}
 
+  /* 깔끔하게 정리된 상단 리본 */
   .topbar{
-    flex:none;min-height:60px;display:flex;align-items:center;justify-content:space-between;
-    padding:10px 24px;background:var(--surface-2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    flex:none;min-height:56px;display:flex;align-items:center;justify-content:space-between;
+    padding:8px 24px;background:var(--surface-2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
     border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;
   }
   .brand h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-0.01em;}
@@ -89,13 +90,72 @@
   .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-1);border-radius:980px;padding:7px 14px;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
   .btn-ghost:hover{background:rgba(0,0,0,.045);}
   body.dark-theme .btn-ghost:hover{background:rgba(255,255,255,.08);}
-  .btn-ghost.active-toggle{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600;}
-  .btn-ghost.off-toggle{opacity:0.55;text-decoration:line-through;}
 
-  .tagbar{flex:none;display:flex;align-items:center;gap:14px;padding:11px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:relative;transition:all 0.25s ease;}
-  .tagbar.collapsed{display:none !important;}
+  /* 각 창 패널 표준화 디자인 */
+  .section-panel {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  .panel-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 24px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  
+  .fold-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .fold-toggle-btn:hover {
+    background: var(--bg);
+    color: var(--text-1);
+    border-color: var(--accent);
+  }
 
-  .tagbar-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;flex:none;}
+  .tagbar-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 24px;
+    position: relative;
+  }
+  .inputbar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 24px;
+  }
+
+  .section-panel.collapsed .tagbar-content,
+  .section-panel.collapsed .inputbar-content {
+    display: none !important;
+  }
+  .section-panel.collapsed .panel-header-bar {
+    border-bottom: none;
+  }
+
   .tag-rail{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px;}
   .tag-rail::-webkit-scrollbar{display:none;}
 
@@ -324,9 +384,6 @@
   .add-tag-btn{flex:none;border:1.5px dashed var(--border);background:transparent;color:var(--text-2);border-radius:980px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
   .add-tag-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  .inputbar{flex:none;padding:11px 24px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:8px;transition:all 0.25s ease;}
-  .inputbar.collapsed{display:none !important;}
-
   .search-row{display:flex;align-items:center;gap:10px;}
   .active-tag-select-wrap{position:relative;flex:none;}
   .active-tag-select-wrap .dot{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;pointer-events:none;}
@@ -357,9 +414,11 @@
   .bulk-result .miss{color:var(--danger);}
 
   .maps{flex:1;display:flex;min-height:0;}
-  .map-panel{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);position:relative;}
+  .map-panel{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);position:relative;transition: all 0.2s ease;}
   .map-panel:last-child{border-right:none;}
-  .map-panel.hidden{display:none !important;}
+  .map-panel.collapsed { flex: none !important; }
+  .map-panel.collapsed .map-canvas { display: none !important; }
+  
   .panel-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}
   .panel-title{display:flex;align-items:baseline;gap:7px;}
   .panel-title h2{font-size:14px;font-weight:600;margin:0;}
@@ -373,26 +432,23 @@
   .map-canvas svg:active{cursor:grabbing;}
   .map-canvas path{transition:fill .2s;cursor:pointer;vector-effect:non-scaling-stroke;}
 
-  /* 검색 호버 아웃라인 은은하게 반짝이는 효과 */
+  /* 깔끔하고 또렷한 아웃라인 애니메이션 (블러/Glow 완전 제거) */
   @keyframes outlineGlow {
     0% {
       stroke-opacity: 0.3;
-      stroke-width: 2.5px;
-      filter: drop-shadow(0 0 3px var(--accent));
+      stroke-width: 2px;
     }
     50% {
       stroke-opacity: 1.0;
-      stroke-width: 4.5px;
-      filter: drop-shadow(0 0 12px var(--accent));
+      stroke-width: 4px;
     }
     100% {
       stroke-opacity: 0.3;
-      stroke-width: 2.5px;
-      filter: drop-shadow(0 0 3px var(--accent));
+      stroke-width: 2px;
     }
   }
   .search-highlight-path {
-    fill: rgba(0, 113, 227, 0.08);
+    fill: rgba(0, 113, 227, 0.1);
     stroke: var(--accent);
     pointer-events: none;
     display: none;
@@ -470,91 +526,100 @@
 <body>
 <div class="app">
 
+  <!-- 간소화된 상단 리본 -->
   <header class="topbar">
     <div class="brand">
       <h1>PaintnTag</h1>
       <p>한국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요</p>
     </div>
     <div class="topbar-actions">
-      <!-- 접기/펴기 및 지도 숨기기 버튼 추가 -->
-      <button class="btn-ghost" id="toggleTagbarBtn">🏷️ 태그바 접기</button>
-      <button class="btn-ghost" id="toggleInputbarBtn">🔍 검색창 접기</button>
-      <button class="btn-ghost active-toggle" id="toggleMapKRBtn">🇰🇷 한국 지도</button>
-      <button class="btn-ghost active-toggle" id="toggleMapJPBtn">🇯🇵 일본 지도</button>
       <button class="btn-ghost" id="tagRegionsBtn">📋 태그별 지역</button>
       <button class="btn-ghost" id="resetAllBtn">⟲ 전체 초기화</button>
       <button class="btn-ghost" id="exportBtn">⬇ 내보내기</button>
       <button class="btn-ghost" id="importBtn">⬆ 불러오기</button>
-      <!-- 설정 버튼을 맨 오른쪽으로 이동 -->
       <button class="btn-ghost" id="settingsBtn">⚙️ 설정</button>
       <input type="file" id="importFile" accept="application/json" hidden>
     </div>
   </header>
 
-  <section class="tagbar" id="tagBarSection">
-    <span class="tagbar-label">태그</span>
-    <div class="tag-rail" id="tagRail"></div>
-    <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
+  <!-- 1. 태그 창 (우측 접기/펴기 버튼) -->
+  <section class="section-panel" id="tagBarSection">
+    <div class="panel-header-bar">
+      <span class="panel-label">🏷️ 태그 관리</span>
+      <button class="fold-toggle-btn" id="foldTagbarBtn" title="창 접기/펴기">▲</button>
+    </div>
+    <div class="tagbar-content">
+      <div class="tag-rail" id="tagRail"></div>
+      <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
 
-    <!-- iOS 스타일 커스텀 컬러 피커 팝오버 -->
-    <div class="ios-color-picker" id="iosColorPicker">
-      <div class="picker-segmented-control">
-        <button class="picker-segment-btn active" id="segPresetsBtn">색상표</button>
-        <button class="picker-segment-btn" id="segRgbBtn">RGB 조절</button>
-      </div>
-
-      <div class="ios-color-grid" id="iosColorGrid"></div>
-
-      <div class="rgb-control-panel" id="rgbControlPanel">
-        <div class="rgb-preview-row">
-          <div class="rgb-preview-box" id="rgbPreviewBox"></div>
-          <div class="rgb-hex-input-wrap">
-            <span class="rgb-hex-label">#</span>
-            <input type="text" class="rgb-hex-input" id="rgbHexInput" maxlength="6" spellcheck="false">
-          </div>
+      <!-- iOS 스타일 커스텀 컬러 피커 팝오버 -->
+      <div class="ios-color-picker" id="iosColorPicker">
+        <div class="picker-segmented-control">
+          <button class="picker-segment-btn active" id="segPresetsBtn">색상표</button>
+          <button class="picker-segment-btn" id="segRgbBtn">RGB 조절</button>
         </div>
-        <div class="rgb-slider-group">
-          <div class="rgb-slider-row">
-            <span class="rgb-slider-label r">R</span>
-            <input type="range" class="rgb-slider" id="sliderR" min="0" max="255">
-            <input type="number" class="rgb-number-input" id="numR" min="0" max="255">
+
+        <div class="ios-color-grid" id="iosColorGrid"></div>
+
+        <div class="rgb-control-panel" id="rgbControlPanel">
+          <div class="rgb-preview-row">
+            <div class="rgb-preview-box" id="rgbPreviewBox"></div>
+            <div class="rgb-hex-input-wrap">
+              <span class="rgb-hex-label">#</span>
+              <input type="text" class="rgb-hex-input" id="rgbHexInput" maxlength="6" spellcheck="false">
+            </div>
           </div>
-          <div class="rgb-slider-row">
-            <span class="rgb-slider-label g">G</span>
-            <input type="range" class="rgb-slider" id="sliderG" min="0" max="255">
-            <input type="number" class="rgb-number-input" id="numG" min="0" max="255">
-          </div>
-          <div class="rgb-slider-row">
-            <span class="rgb-slider-label b">B</span>
-            <input type="range" class="rgb-slider" id="sliderB" min="0" max="255">
-            <input type="number" class="rgb-number-input" id="numB" min="0" max="255">
+          <div class="rgb-slider-group">
+            <div class="rgb-slider-row">
+              <span class="rgb-slider-label r">R</span>
+              <input type="range" class="rgb-slider" id="sliderR" min="0" max="255">
+              <input type="number" class="rgb-number-input" id="numR" min="0" max="255">
+            </div>
+            <div class="rgb-slider-row">
+              <span class="rgb-slider-label g">G</span>
+              <input type="range" class="rgb-slider" id="sliderG" min="0" max="255">
+              <input type="number" class="rgb-number-input" id="numG" min="0" max="255">
+            </div>
+            <div class="rgb-slider-row">
+              <span class="rgb-slider-label b">B</span>
+              <input type="range" class="rgb-slider" id="sliderB" min="0" max="255">
+              <input type="number" class="rgb-number-input" id="numB" min="0" max="255">
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="inputbar" id="inputBarSection">
-    <div class="search-row">
-      <div class="active-tag-select-wrap">
-        <span class="dot" id="activeTagDot"></span>
-        <select id="activeTagSelect" aria-label="활성 태그"></select>
-      </div>
-      <div class="search-wrap">
-        <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시 / 종로구, 東京都 / 千代田区">
-        <div class="dropdown" id="searchDropdown"></div>
-      </div>
+  <!-- 2. 검색 및 입력 창 (우측 접기/펴기 버튼) -->
+  <section class="section-panel" id="inputBarSection">
+    <div class="panel-header-bar">
+      <span class="panel-label">🔍 지역 검색 및 일괄 입력</span>
+      <button class="fold-toggle-btn" id="foldInputbarBtn" title="창 접기/펴기">▲</button>
     </div>
-    <button class="bulk-toggle" id="toggleBulk">여러 개 한 번에 입력 ⌄</button>
-    <div class="bulk-panel" id="bulkPanel">
-      <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역을 입력하세요.&#10;예: 서울특별시 / 종로구, 東京都 / 千代田区"></textarea>
-      <div class="bulk-actions">
-        <button class="btn-primary" id="bulkAddBtn">일괄 추가</button>
-        <span class="bulk-result" id="bulkResult"></span>
+    <div class="inputbar-content">
+      <div class="search-row">
+        <div class="active-tag-select-wrap">
+          <span class="dot" id="activeTagDot"></span>
+          <select id="activeTagSelect" aria-label="활성 태그"></select>
+        </div>
+        <div class="search-wrap">
+          <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시 / 종로구, 東京都 / 千代田区">
+          <div class="dropdown" id="searchDropdown"></div>
+        </div>
+      </div>
+      <button class="bulk-toggle" id="toggleBulk">여러 개 한 번에 입력 ⌄</button>
+      <div class="bulk-panel" id="bulkPanel">
+        <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역을 입력하세요.&#10;예: 서울특별시 / 종로구, 東京都 / 千代田区"></textarea>
+        <div class="bulk-actions">
+          <button class="btn-primary" id="bulkAddBtn">일괄 추가</button>
+          <span class="bulk-result" id="bulkResult"></span>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- 3 & 4. 지도 영역 (개별 우측 접기/펴기 버튼 적용) -->
   <main class="maps">
     <section class="map-panel" id="mapPanelKR">
       <div class="panel-header">
@@ -565,6 +630,7 @@
         <div class="panel-tools">
           <button class="icon-btn" id="zoomResetKR" title="확대 초기화" aria-label="확대 초기화">⟲</button>
           <button class="icon-btn" id="pngKR" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
+          <button class="icon-btn" id="foldMapKRBtn" title="접기/펴기" aria-label="접기/펴기">▲</button>
         </div>
       </div>
       <div class="map-canvas" id="map-kr">
@@ -584,6 +650,7 @@
         <div class="panel-tools">
           <button class="icon-btn" id="zoomResetJP" title="확대 초기화" aria-label="확대 초기화">⟲</button>
           <button class="icon-btn" id="pngJP" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
+          <button class="icon-btn" id="foldMapJPBtn" title="접기/펴기" aria-label="접기/펴기">▲</button>
         </div>
       </div>
       <div class="map-canvas" id="map-jp">
@@ -677,7 +744,6 @@
       resetAll: "⟲ 전체 초기화",
       export: "⬇ 내보내기",
       import: "⬆ 불러오기",
-      tagLabel: "태그",
       addTag: "+ 새 태그",
       searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "여러 개 한 번에 입력 ⌄",
@@ -723,7 +789,6 @@
       resetAll: "⟲ Reset All",
       export: "⬇ Export",
       import: "⬆ Import",
-      tagLabel: "TAGS",
       addTag: "+ New Tag",
       searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "Bulk Input ⌄",
@@ -769,7 +834,6 @@
       resetAll: "⟲ 全初期化",
       export: "⬇ エクスポート",
       import: "⬆ インポート",
-      tagLabel: "タグ",
       addTag: "+ 新規タグ",
       searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "一括入力 ⌄",
@@ -862,11 +926,7 @@
     countries: { kr: null, jp: null },
     theme: 'light',
     lang: 'ko',
-    isEaster: false,
-    showTagbar: true,
-    showInputbar: true,
-    showMapKR: true,
-    showMapJP: true
+    isEaster: false
   };
 
   var svgRefs = {};
@@ -1034,7 +1094,6 @@
     
     var overlayG = svg.append('g').attr('class','overlay-g').style('pointer-events','none');
     
-    // 마우스 호버 일반 경계선
     var hoverPath = overlayG.append('path')
       .attr('fill', 'none')
       .attr('stroke', 'var(--map-hover-stroke)')
@@ -1042,7 +1101,6 @@
       .attr('vector-effect', 'non-scaling-stroke')
       .attr('stroke-linejoin', 'round');
 
-    // 검색 시 아웃라인 반짝임(Glow) 전용 레이어
     var searchHighlightPath = overlayG.append('path')
       .attr('class', 'search-highlight-path');
 
@@ -1243,7 +1301,7 @@
     var picker = document.getElementById('iosColorPicker');
     
     var rect = anchorEl.getBoundingClientRect();
-    var tagbarRect = document.querySelector('.tagbar').getBoundingClientRect();
+    var tagbarRect = document.getElementById('tagBarSection').getBoundingClientRect();
     var left = rect.left - tagbarRect.left;
     if (left + 300 > window.innerWidth) {
       left = window.innerWidth - 310;
@@ -1574,7 +1632,6 @@
     }
   });
 
-  /* 검색 결과 호버 시 경계선 아웃라인 반짝임(Glow) 처리 함수 */
   function highlightSearchResult(m) {
     clearSearchHighlight();
     if (!m) return;
@@ -1589,7 +1646,6 @@
     var geoToDraw = null;
 
     if (m.isParent) {
-      // 상위 행정구역: topojson.merge를 활용하여 내부 경계를 제거하고 외곽선만 합성
       var rawTopo = countryData.rawTopo;
       var objName = countryData.objName;
       var allGeoms = rawTopo.objects[objName].geometries || [];
@@ -1613,7 +1669,6 @@
         geoToDraw = topojson.merge(rawTopo, matchingGeoms);
       }
     } else {
-      // 단일 시군구/시정촌
       geoToDraw = m.feature;
     }
 
@@ -1958,7 +2013,6 @@
     document.getElementById('resetAllBtn').textContent = t('resetAll');
     document.getElementById('exportBtn').textContent = t('export');
     document.getElementById('importBtn').textContent = t('import');
-    document.querySelector('.tagbar-label').textContent = t('tagLabel');
     document.getElementById('addTagBtn').textContent = t('addTag');
     document.getElementById('searchInput').placeholder = t('searchPlaceholder');
     document.getElementById('toggleBulk').textContent = t('bulkToggle');
@@ -2052,6 +2106,32 @@
     });
   }
 
+  // 각 패널별 우측 접기/펴기 이벤트 바인딩
+  function setupPanelToggles() {
+    var bindToggle = function(btnId, panelId, onExpand) {
+      var btn = document.getElementById(btnId);
+      var panel = document.getElementById(panelId);
+      if (!btn || !panel) return;
+      
+      btn.addEventListener('click', function() {
+        var isCollapsed = panel.classList.toggle('collapsed');
+        btn.textContent = isCollapsed ? '▼' : '▲';
+        if (!isCollapsed && typeof onExpand === 'function') {
+          setTimeout(onExpand, 50);
+        }
+      });
+    };
+
+    bindToggle('foldTagbarBtn', 'tagBarSection');
+    bindToggle('foldInputbarBtn', 'inputBarSection');
+    bindToggle('foldMapKRBtn', 'mapPanelKR', function() {
+      if (state.countries.kr) renderMap('kr');
+    });
+    bindToggle('foldMapJPBtn', 'mapPanelJP', function() {
+      if (state.countries.jp) renderMap('jp');
+    });
+  }
+
   window.addEventListener('DOMContentLoaded', function(){
     setupColorPickerUI();
     addTag(t('defaultTagVisit'), IOS_PALETTE[0]);
@@ -2060,71 +2140,7 @@
     renderTags();
     init();
 
-    // 1. 태그바 & 검색창 접기/펴기 이벤트
-    document.getElementById('toggleTagbarBtn').addEventListener('click', function(){
-      state.showTagbar = !state.showTagbar;
-      var el = document.getElementById('tagBarSection');
-      if (state.showTagbar) {
-        el.classList.remove('collapsed');
-        this.textContent = '🏷️ 태그바 접기';
-        this.classList.remove('off-toggle');
-      } else {
-        el.classList.add('collapsed');
-        this.textContent = '🏷️ 태그바 펴기';
-        this.classList.add('off-toggle');
-      }
-    });
-
-    document.getElementById('toggleInputbarBtn').addEventListener('click', function(){
-      state.showInputbar = !state.showInputbar;
-      var el = document.getElementById('inputBarSection');
-      if (state.showInputbar) {
-        el.classList.remove('collapsed');
-        this.textContent = '🔍 검색창 접기';
-        this.classList.remove('off-toggle');
-      } else {
-        el.classList.add('collapsed');
-        this.textContent = '🔍 검색창 펴기';
-        this.classList.add('off-toggle');
-      }
-    });
-
-    // 2. 한국 지도 / 일본 지도 개별 숨기기 토글 이벤트
-    document.getElementById('toggleMapKRBtn').addEventListener('click', function(){
-      state.showMapKR = !state.showMapKR;
-      var panel = document.getElementById('mapPanelKR');
-      if (state.showMapKR) {
-        panel.classList.remove('hidden');
-        this.classList.add('active-toggle');
-        this.classList.remove('off-toggle');
-      } else {
-        panel.classList.add('hidden');
-        this.classList.remove('active-toggle');
-        this.classList.add('off-toggle');
-      }
-      setTimeout(function(){
-        if (state.showMapKR) renderMap('kr');
-        if (state.showMapJP) renderMap('jp');
-      }, 50);
-    });
-
-    document.getElementById('toggleMapJPBtn').addEventListener('click', function(){
-      state.showMapJP = !state.showMapJP;
-      var panel = document.getElementById('mapPanelJP');
-      if (state.showMapJP) {
-        panel.classList.remove('hidden');
-        this.classList.add('active-toggle');
-        this.classList.remove('off-toggle');
-      } else {
-        panel.classList.add('hidden');
-        this.classList.remove('active-toggle');
-        this.classList.add('off-toggle');
-      }
-      setTimeout(function(){
-        if (state.showMapKR) renderMap('kr');
-        if (state.showMapJP) renderMap('jp');
-      }, 50);
-    });
+    setupPanelToggles();
 
     document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
     document.getElementById('resetAllBtn').addEventListener('click', resetAll);
@@ -2198,8 +2214,8 @@
     window.addEventListener('resize', function(){
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function(){
-        if (state.countries.kr && state.showMapKR) renderMap('kr');
-        if (state.countries.jp && state.showMapJP) renderMap('jp');
+        if (state.countries.kr && !document.getElementById('mapPanelKR').classList.contains('collapsed')) renderMap('kr');
+        if (state.countries.jp && !document.getElementById('mapPanelJP').classList.contains('collapsed')) renderMap('jp');
       }, 200);
     });
   });
