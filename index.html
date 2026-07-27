@@ -456,14 +456,14 @@
     <div class="tag-rail" id="tagRail"></div>
     <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
 
-    <!-- 고급 iOS 스타일 커스텀 컬러 피커 팝오버 -->
+    <!-- iOS 스타일 커스텀 컬러 피커 팝오버 -->
     <div class="ios-color-picker" id="iosColorPicker">
       <div class="picker-segmented-control">
         <button class="picker-segment-btn active" id="segPresetsBtn">색상표</button>
         <button class="picker-segment-btn" id="segRgbBtn">RGB 조절</button>
       </div>
 
-      <!-- 1. 20개 감성 팔레트 Grid -->
+      <!-- 1. 20개 프리셋 팔레트 Grid (5열) -->
       <div class="ios-color-grid" id="iosColorGrid"></div>
 
       <!-- 2. 커스텀 RGB 조절 패널 -->
@@ -622,14 +622,19 @@
   var KR_TOPO_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
   var JP_TOPO_URL = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
 
-  /* 요청사항 반영: 민트색 2개(#0dffef, #39c5bb) + 눈 아프지 않은 맑은 원색 계열 + 무채색 5개 포함 총 20개 프리셋 */
+  /*
+   * 요청사항 반영 20개 팔레트 구성:
+   * 1. 지정 민트 2종 유지 (#0DFFEF, #39C5BB)
+   * 2. 중복되던 시안/청록 계열 삭제 -> 부족했던 '딥 네이비(#1E3A8A)' 및 '클래식 브라운(#8B4513)' 보완
+   * 3. 원색/스펙트럼 13종 + 무채색 5종
+   */
   var IOS_PALETTE = [
-    // 1. 민트 2종 (요청사항 반영)
+    // 1. 지정 민트 2종 (유지)
     '#0DFFEF', '#39C5BB',
-    // 2. 선명하고 맑은 원색 스펙트럼 (눈 아프지 않은 선명톤 13개)
+    // 2. 고르게 분포된 원색 스펙트럼 (13종)
     '#FF3B30', '#FF6B00', '#FF9500', '#FFCC00', '#A3E635', '#22C55E',
-    '#00E5FF', '#00B4D8', '#007AFF', '#5856D6', '#AF52DE', '#FF2D55', '#E11D48',
-    // 3. 무채색 계열 5종
+    '#007AFF', '#1E3A8A', '#8B4513', '#5856D6', '#AF52DE', '#FF2D55', '#E11D48',
+    // 3. 무채색 계열 (5종)
     '#FFFFFF', '#D1D5DB', '#6B7280', '#374151', '#111827'
   ];
 
@@ -1426,7 +1431,6 @@
           delete state.assignments[item.key];
           assignmentsChanged();
           renderTagRegionsList(tagId);
-          // 드롭다운 카운트 갱신
           var select = document.getElementById('tagRegionsSelect');
           Array.from(select.options).forEach(function(opt){
             if (opt.value === tagId) {
@@ -1963,7 +1967,7 @@
     document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
     document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
 
-    // 설정 모달 관련
+    // 설정 모달
     var settingsModal = document.getElementById('settingsModal');
     document.getElementById('settingsBtn').addEventListener('click', function(){
       settingsModal.classList.add('open');
@@ -1975,7 +1979,7 @@
       if (e.target === settingsModal) settingsModal.classList.remove('open');
     });
 
-    // 태그별 지역 보기 모달 관련
+    // 태그별 지역 보기 모달
     var tagRegionsModal = document.getElementById('tagRegionsModal');
     document.getElementById('tagRegionsBtn').addEventListener('click', function(){
       openTagRegionsModal();
