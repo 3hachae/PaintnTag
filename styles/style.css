@@ -172,6 +172,11 @@ button, input, select, textarea {
   overflow: visible !important; /* 색상 조절 창이 삐져나갈 수 있도록 지정 */
 }
 
+/* 태그 영역 패널을 검색 영역 패널보다 레이어 우선순위를 높임 */
+.section-panel:first-of-type {
+  z-index: 300 !important;
+}
+
 .panel-header-bar {
   display: flex;
   align-items: center;
@@ -262,7 +267,7 @@ body.dark-theme .panel-header-bar { background: rgba(255, 255, 255, 0.02); }
    -------------------------------------------------------------------------- */
 .ios-color-picker {
   position: absolute;
-  z-index: 20 !important; /* 모든 요소(검색창 z-index 500)보다 훨씬 높은 최상위 레이어 */
+  z-index: 999999 !important; /* 모든 요소(검색창 z-index 500)보다 훨씬 높은 최상위 레이어 */
   top: calc(100% + 12px);
   left: 0;
   background: var(--glass-bg-hover);
