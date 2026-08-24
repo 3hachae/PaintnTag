@@ -262,7 +262,7 @@ body.dark-theme .panel-header-bar { background: rgba(255, 255, 255, 0.02); }
    -------------------------------------------------------------------------- */
 .ios-color-picker {
   position: absolute;
-  z-index: 500 !important; /* 모든 요소(검색창 z-index 500)보다 훨씬 높은 최상위 레이어 */
+  z-index: 3000 !important; /* 모든 요소(검색창 z-index 500)보다 훨씬 높은 최상위 레이어 */
   top: calc(100% + 12px);
   left: 0;
   background: var(--glass-bg-hover);
