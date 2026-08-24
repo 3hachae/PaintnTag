@@ -1087,6 +1087,22 @@
     });
   }
 
+  function setLoading(country, isLoading) {
+    var el = document.getElementById('loading-' + country);
+    if (el) el.style.display = isLoading ? 'flex' : 'none';
+  }
+
+  function showLoadError() {
+    ['kr', 'jp'].forEach(function(c) {
+      var el = document.getElementById('loading-' + c);
+      if (el) {
+        el.innerHTML = '<div class="error-msg">' + t('loadError') + '</div>' +
+                       '<button class="retry-btn" onclick="location.reload()">' + t('retry') + '</button>';
+        el.style.display = 'flex';
+      }
+    });
+  }
+
   function init(){
     Promise.all([
       loadCountry(KR_TOPO_URL, 'kr'),
@@ -1199,6 +1215,20 @@
       var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
       return tag ? tag.color : 'var(--map-fill)';
     });
+  }
+
+  function flashNeedTag() {
+    showToast(t('needTag'));
+    var addBtn = document.getElementById('addTagBtn');
+    if (addBtn) {
+      addBtn.style.transition = 'transform 0.15s, border-color 0.15s';
+      addBtn.style.transform = 'scale(1.08)';
+      addBtn.style.borderColor = 'var(--danger)';
+      setTimeout(function() {
+        addBtn.style.transform = 'none';
+        addBtn.style.borderColor = '';
+      }, 300);
+    }
   }
 
   function toggleAssign(key){
@@ -2192,182 +2222,132 @@
     toast.textContent = msg;
     toast.classList.add('visible');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ toast.classList.remove('visible'); }, 1800);
-  }
-  function flashNeedTag(){ showToast(t('needTag')); }
-
-  function setLoading(country, isLoading){
-    var el = document.getElementById('loading-' + country);
-    if (el) el.style.display = isLoading ? 'flex' : 'none';
-  }
-  function showLoadError(){
-    ['kr','jp'].forEach(function(c){
-      var el = document.getElementById('loading-' + c);
-      if (!el) return;
-      el.innerHTML = '';
-      var msg = document.createElement('div');
-      msg.className = 'error-msg';
-      msg.textContent = t('loadError');
-      var btn = document.createElement('button');
-      btn.className = 'retry-btn';
-      btn.textContent = t('retry');
-      btn.addEventListener('click', function(){ location.reload(); });
-      el.appendChild(msg);
-      el.appendChild(btn);
-      el.style.display = 'flex';
-    });
+    toastTimer = setTimeout(function(){
+      toast.classList.remove('visible');
+    }, 2000);
   }
 
-  // 각 패널별 우측 접기/펴기 이벤트 바인딩
-  function setupPanelToggles() {
-    var bindToggle = function(btnId, panelId, onExpand) {
-      var btn = document.getElementById(btnId);
-      var panel = document.getElementById(panelId);
-      if (!btn || !panel) return;
-      
-      btn.addEventListener('click', function() {
-        var isCollapsed = panel.classList.toggle('collapsed');
-        btn.textContent = isCollapsed ? '▼' : '▲';
-        if (!isCollapsed && typeof onExpand === 'function') {
-          setTimeout(onExpand, 50);
-        }
-      });
-    };
-
-    bindToggle('foldTagbarBtn', 'tagBarSection');
-    bindToggle('foldInputbarBtn', 'inputBarSection');
-    bindToggle('foldMapKRBtn', 'mapPanelKR', function() {
-      if (state.countries.kr) renderMap('kr');
-    });
-    bindToggle('foldMapJPBtn', 'mapPanelJP', function() {
-      if (state.countries.jp) renderMap('jp');
-    });
-  }
-
-  window.addEventListener('DOMContentLoaded', function(){
-    setupColorPickerUI();
-    addTag(t('defaultTagVisit'), IOS_PALETTE[0]);
-    addTag(t('defaultTagPlan'), IOS_PALETTE[4]);
-    state.activeTagId = state.tags[0].id;
-    renderTags();
-    init();
-
-    setupPanelToggles();
-
-    document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
+  // --- 이벤트 리스너 바인딩 및 앱 초기화 ---
+  function setupEventListeners() {
+    // 상단 리본
+    document.getElementById('tagRegionsBtn').addEventListener('click', function(){ openTagRegionsModal(); });
     document.getElementById('resetAllBtn').addEventListener('click', resetAll);
     document.getElementById('exportBtn').addEventListener('click', exportData);
-    document.getElementById('importBtn').addEventListener('click', function(){
-      document.getElementById('importFile').click();
+    document.getElementById('importBtn').addEventListener('click', function(){ document.getElementById('importFile').click(); });
+    document.getElementById('importFile').addEventListener('change', function(e){ if (e.target.files.length) importData(e.target.files[0]); e.target.value = ''; });
+    document.getElementById('settingsBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.add('open'); });
+
+    // 접기/펴기 버튼
+    document.getElementById('foldTagbarBtn').addEventListener('click', function(){
+      var sec = document.getElementById('tagBarSection');
+      sec.classList.toggle('collapsed');
+      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
     });
-    document.getElementById('importFile').addEventListener('change', function(e){
-      if (e.target.files[0]) importData(e.target.files[0]);
-      e.target.value = '';
+    document.getElementById('foldInputbarBtn').addEventListener('click', function(){
+      var sec = document.getElementById('inputBarSection');
+      sec.classList.toggle('collapsed');
+      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
     });
-    document.getElementById('activeTagSelect').addEventListener('change', function(e){
-      setActiveTag(e.target.value);
+    document.getElementById('foldMapKRBtn').addEventListener('click', function(){
+      var panel = document.getElementById('mapPanelKR');
+      panel.classList.toggle('collapsed');
+      this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
     });
-    document.getElementById('toggleBulk').addEventListener('click', function(){
-      document.getElementById('bulkPanel').classList.toggle('open');
+    document.getElementById('foldMapJPBtn').addEventListener('click', function(){
+      var panel = document.getElementById('mapPanelJP');
+      panel.classList.toggle('collapsed');
+      this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
     });
-    document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
+
+    // 지도 패널 도구
     document.getElementById('zoomResetKR').addEventListener('click', function(){ resetZoom('kr'); });
-    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
     document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
+    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
     document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
 
-    var settingsModal = document.getElementById('settingsModal');
-    document.getElementById('settingsBtn').addEventListener('click', function(){
-      settingsModal.classList.add('open');
-    });
-    document.getElementById('modalCloseBtn').addEventListener('click', function(){
-      settingsModal.classList.remove('open');
-    });
-    settingsModal.addEventListener('click', function(e){
-      if (e.target === settingsModal) settingsModal.classList.remove('open');
-    });
+    // 태그 관리
+    document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
+    setupColorPickerUI();
 
-    var tagRegionsModal = document.getElementById('tagRegionsModal');
-    document.getElementById('tagRegionsBtn').addEventListener('click', function(){
-      openTagRegionsModal();
+    // 입력 및 검색
+    document.getElementById('activeTagSelect').addEventListener('change', function(e){ setActiveTag(e.target.value); });
+    document.getElementById('toggleBulk').addEventListener('click', function(){
+      var p = document.getElementById('bulkPanel');
+      p.classList.toggle('open');
     });
-    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){
-      tagRegionsModal.classList.remove('open');
-    });
-    tagRegionsModal.addEventListener('click', function(e){
-      if (e.target === tagRegionsModal) tagRegionsModal.classList.remove('open');
-    });
-    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){
-      renderTagRegionsList(e.target.value);
-    });
+    document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
 
-    // 태그별 지역 편집 및 삭제 이벤트 핸들러
-    document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
-      isTagRegionsEditing = !isTagRegionsEditing;
-      this.textContent = isTagRegionsEditing ? t('done') : t('edit');
-      var selectAllCb = document.getElementById('selectAllTagRegions');
-      if (selectAllCb) selectAllCb.checked = false;
-
-      renderTagRegionsList(document.getElementById('tagRegionsSelect').value);
-    });
-
-    document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
-      var isChecked = e.target.checked;
-      document.querySelectorAll('.region-select-cb').forEach(function(cb){
-        cb.checked = isChecked;
-      });
-      updateSelectAllStatus();
-    });
-
-    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
-      var tagId = document.getElementById('tagRegionsSelect').value;
-      var checkedCbs = document.querySelectorAll('.region-select-cb:checked');
-      if (checkedCbs.length === 0) {
-        showToast(t('selectToDelete'));
-        return;
-      }
-      checkedCbs.forEach(function(cb){
-        var key = cb.dataset.key;
-        delete state.assignments[key];
-      });
-      assignmentsChanged();
-      var selectAllCb = document.getElementById('selectAllTagRegions');
-      if (selectAllCb) selectAllCb.checked = false;
-
-      renderTagRegionsList(tagId);
-      updateTagSelectOptionText(tagId);
-    });
-
-    document.querySelectorAll('.tab-btn').forEach(function(btn){
+    // 설정 모달
+    document.getElementById('modalCloseBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.remove('open'); });
+    document.querySelectorAll('#settingsModal .tab-btn').forEach(function(btn){
       btn.addEventListener('click', function(){
-        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-        document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+        document.querySelectorAll('#settingsModal .tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('#settingsModal .tab-content').forEach(function(c){ c.classList.remove('active'); });
         btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
+        var targetId = btn.dataset.tab;
+        var targetEl = document.getElementById(targetId);
+        if (targetEl) targetEl.classList.add('active');
       });
     });
-
     document.getElementById('themeSelect').addEventListener('change', function(e){
       state.theme = e.target.value;
+      state.isEaster = false;
       applyTheme();
+      applyColors('kr'); applyColors('jp');
     });
-
     document.getElementById('langSelect').addEventListener('change', function(e){
       state.lang = e.target.value;
       updateLanguageUI();
     });
-
     document.getElementById('creatorImg').addEventListener('click', toggleTheme);
 
-    var resizeTimer;
-    window.addEventListener('resize', function(){
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function(){
-        if (state.countries.kr && !document.getElementById('mapPanelKR').classList.contains('collapsed')) renderMap('kr');
-        if (state.countries.jp && !document.getElementById('mapPanelJP').classList.contains('collapsed')) renderMap('jp');
-      }, 200);
+    // 태그별 지역 모달
+    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){ document.getElementById('tagRegionsModal').classList.remove('open'); });
+    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){ renderTagRegionsList(e.target.value); });
+    document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
+      isTagRegionsEditing = !isTagRegionsEditing;
+      this.textContent = isTagRegionsEditing ? t('done') : t('edit');
+      var currentTagId = document.getElementById('tagRegionsSelect').value;
+      renderTagRegionsList(currentTagId);
     });
-  });
+    document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
+      var checked = e.target.checked;
+      document.querySelectorAll('.region-select-cb').forEach(function(cb){ cb.checked = checked; });
+      updateSelectAllStatus();
+    });
+    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
+      var currentTagId = document.getElementById('tagRegionsSelect').value;
+      var selectedCbs = document.querySelectorAll('.region-select-cb:checked');
+      if (selectedCbs.length === 0) {
+        showToast(t('selectToDelete'));
+        return;
+      }
+      selectedCbs.forEach(function(cb){
+        var key = cb.dataset.key;
+        if (state.assignments[key] === currentTagId) {
+          delete state.assignments[key];
+        }
+      });
+      assignmentsChanged();
+      renderTagRegionsList(currentTagId);
+      updateTagSelectOptionText(currentTagId);
+      showToast(selectedCbs.length + '개 지역 삭제 완료');
+    });
+
+    // 모달 배경 클릭 시 닫기
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+      overlay.addEventListener('click', function(e){
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+  }
+
+  // 앱 시동
+  setupEventListeners();
+  addTag(t('defaultTagVisit'), '#007AFF');
+  addTag(t('defaultTagPlan'), '#FF9500');
+  updateLanguageUI();
+  init();
 
 })();
 </script>
