@@ -683,6 +683,34 @@ body.easter-theme .btn-primary { color: #000000; }
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 30000 !important;
 }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+/* 내보내기 및 툴바 버튼 (icon-btn) Drop Shadow 및 Inset Highlight 음영 적용 */
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.icon-btn:hover {
+  background: var(--bg);
+  color: var(--text-1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  transform: translateY(-1.5px);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+}
 
 @media (max-width: 900px) {
   body { overflow: auto; }
