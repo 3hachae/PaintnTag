@@ -2036,10 +2036,28 @@
     state.assignments = {};
     assignmentsChanged();
   }
-
-  function exportPNG(country){
+function exportPNG(country){
     var countryData = state.countries[country];
     if (!countryData || !countryData.features) return;
+
+    // 기본 파일명 및 사용자 입력 받기
+    var defaultName = (country === 'kr' ? 'korea-map' : 'japan-map');
+    var userInput = prompt('저장할 파일 이름과 확장자(.png, .jpg, .svg)를 입력하세요:', defaultName + '.png');
+    if (!userInput) return; // 취소 누른 경우
+
+    var lastDot = userInput.lastIndexOf('.');
+    var filename = userInput;
+    var ext = 'png';
+
+    if (lastDot !== -1) {
+      filename = userInput.substring(0, lastDot);
+      ext = userInput.substring(lastDot + 1).toLowerCase();
+    }
+
+    if (!filename.trim()) filename = defaultName;
+    if (['png', 'jpg', 'jpeg', 'svg'].indexOf(ext) === -1) {
+      ext = 'png'; // 지원하지 않는 확장자 입력 시 기본 png 설정
+    }
 
     var exportSize = 3000;
     var padding = 120;
@@ -2091,6 +2109,19 @@
     var xml = new XMLSerializer().serializeToString(svg.node());
     document.body.removeChild(offscreenContainer);
 
+    // SVG 저장 선택 시
+    if (ext === 'svg') {
+      var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(svgBlob);
+      a.download = filename + '.svg';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      return;
+    }
+
+    // PNG / JPG 저장 선택 시
+    var mimeType = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
     var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
     var url = URL.createObjectURL(svgBlob);
     var img = new Image();
@@ -2100,20 +2131,26 @@
       canvas.width = exportSize;
       canvas.height = exportSize;
       var ctx = canvas.getContext('2d');
+
+      if (mimeType === 'image/jpeg') {
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, exportSize, exportSize);
+      }
+
       ctx.drawImage(img, 0, 0);
 
       canvas.toBlob(function(blob){
         var a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = (country==='kr'?'korea':'japan') + '-map-hd.png';
+        a.download = filename + '.' + (ext === 'jpeg' ? 'jpg' : ext);
         a.click();
-        URL.revokeObjectURL(url);
-      });
+        URL.revokeObjectURL(a.href);
+      }, mimeType, 0.95);
     };
     img.onerror = function(){ showToast(t('exportFail')); };
     img.src = url;
   }
-
+  
   function resetZoom(country){
     var ref = svgRefs[country];
     if (!ref) return;
