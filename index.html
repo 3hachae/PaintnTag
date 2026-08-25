@@ -2036,121 +2036,156 @@
     state.assignments = {};
     assignmentsChanged();
   }
-function exportPNG(country){
+function showExportModal(defaultName, onConfirm) {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
+
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:#ffffff;padding:24px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.2);width:320px;box-sizing:border-box;color:#333;';
+
+    modal.innerHTML = 
+      '<h3 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111;">지도 내보내기</h3>' +
+      '<div style="margin-bottom:14px;">' +
+        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">파일 이름</label>' +
+        '<input type="text" id="exportFileName" value="' + defaultName + '" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-size:14px;outline:none;" />' +
+      '</div>' +
+      '<div style="margin-bottom:20px;">' +
+        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">확장자 선택</label>' +
+        '<select id="exportExt" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-size:14px;background:#fff;outline:none;cursor:pointer;">' +
+          '<option value="png">PNG (.png)</option>' +
+          '<option value="jpg">JPG (.jpg)</option>' +
+          '<option value="svg">SVG (.svg)</option>' +
+        '</select>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:flex-end;gap:8px;">' +
+        '<button id="cancelExportBtn" style="padding:8px 14px;border:1px solid #ccc;background:#fff;color:#333;border-radius:6px;cursor:pointer;font-size:14px;">취소</button>' +
+        '<button id="confirmExportBtn" style="padding:8px 14px;border:none;background:#007aff;color:#fff;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;">저장</button>' +
+      '</div>';
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    var input = modal.querySelector('#exportFileName');
+    input.focus();
+    input.select();
+
+    function cleanup() {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }
+
+    modal.querySelector('#cancelExportBtn').onclick = cleanup;
+    
+    modal.querySelector('#confirmExportBtn').onclick = function() {
+      var name = input.value.trim() || defaultName;
+      var ext = modal.querySelector('#exportExt').value;
+      cleanup();
+      onConfirm(name, ext);
+    };
+
+    overlay.onclick = function(e) {
+      if (e.target === overlay) cleanup();
+    };
+  }
+
+  function exportPNG(country) {
     var countryData = state.countries[country];
     if (!countryData || !countryData.features) return;
 
-    // 기본 파일명 및 사용자 입력 받기
     var defaultName = (country === 'kr' ? 'korea-map' : 'japan-map');
-    var userInput = prompt('저장할 파일 이름과 확장자(.png, .jpg, .svg)를 입력하세요:', defaultName + '.png');
-    if (!userInput) return; // 취소 누른 경우
 
-    var lastDot = userInput.lastIndexOf('.');
-    var filename = userInput;
-    var ext = 'png';
+    showExportModal(defaultName, function(filename, ext) {
+      var exportSize = 3000;
+      var padding = 120;
 
-    if (lastDot !== -1) {
-      filename = userInput.substring(0, lastDot);
-      ext = userInput.substring(lastDot + 1).toLowerCase();
-    }
+      var fc = { type:'FeatureCollection', features: countryData.features };
+      var projection = d3.geoMercator();
+      projection.fitExtent([[padding, padding], [exportSize - padding, exportSize - padding]], fc);
+      var pathGen = d3.geoPath(projection);
 
-    if (!filename.trim()) filename = defaultName;
-    if (['png', 'jpg', 'jpeg', 'svg'].indexOf(ext) === -1) {
-      ext = 'png'; // 지원하지 않는 확장자 입력 시 기본 png 설정
-    }
+      var offscreenContainer = document.createElement('div');
+      offscreenContainer.style.position = 'absolute';
+      offscreenContainer.style.top = '-9999px';
+      offscreenContainer.style.left = '-9999px';
+      document.body.appendChild(offscreenContainer);
 
-    var exportSize = 3000;
-    var padding = 120;
+      var svg = d3.select(offscreenContainer).append('svg')
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('width', exportSize)
+        .attr('height', exportSize)
+        .attr('viewBox', '0 0 ' + exportSize + ' ' + exportSize);
 
-    var fc = { type:'FeatureCollection', features: countryData.features };
-    var projection = d3.geoMercator();
-    projection.fitExtent([[padding, padding], [exportSize - padding, exportSize - padding]], fc);
-    var pathGen = d3.geoPath(projection);
+      var bgColor = (state.theme === 'dark' || state.isEaster) ? '#161618' : '#FFFFFF';
+      svg.append('rect')
+        .attr('width', exportSize)
+        .attr('height', exportSize)
+        .attr('fill', bgColor);
 
-    var offscreenContainer = document.createElement('div');
-    offscreenContainer.style.position = 'absolute';
-    offscreenContainer.style.top = '-9999px';
-    offscreenContainer.style.left = '-9999px';
-    document.body.appendChild(offscreenContainer);
+      var g = svg.append('g');
 
-    var svg = d3.select(offscreenContainer).append('svg')
-      .attr('xmlns', 'http://www.w3.org/2000/svg')
-      .attr('width', exportSize)
-      .attr('height', exportSize)
-      .attr('viewBox', '0 0 ' + exportSize + ' ' + exportSize);
+      var mapFill = (state.theme === 'dark') ? '#323236' : (state.isEaster ? '#0F4247' : '#E5E5EA');
+      var mapStroke = (state.theme === 'dark') ? '#161618' : (state.isEaster ? '#031011' : '#FFFFFF');
+      var strokeW = country === 'jp' ? 1.2 : 2.0;
 
-    var bgColor = (state.theme === 'dark' || state.isEaster) ? '#161618' : '#FFFFFF';
-    svg.append('rect')
-      .attr('width', exportSize)
-      .attr('height', exportSize)
-      .attr('fill', bgColor);
+      g.selectAll('path')
+        .data(countryData.features)
+        .enter()
+        .append('path')
+        .attr('d', pathGen)
+        .attr('fill', function(d){
+          var info = regionInfo(d, country);
+          var tagId = state.assignments[info.key];
+          var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
+          return tag ? tag.color : mapFill;
+        })
+        .attr('stroke', mapStroke)
+        .attr('stroke-width', strokeW)
+        .attr('stroke-linejoin', 'round');
 
-    var g = svg.append('g');
+      var xml = new XMLSerializer().serializeToString(svg.node());
+      document.body.removeChild(offscreenContainer);
 
-    var mapFill = (state.theme === 'dark') ? '#323236' : (state.isEaster ? '#0F4247' : '#E5E5EA');
-    var mapStroke = (state.theme === 'dark') ? '#161618' : (state.isEaster ? '#031011' : '#FFFFFF');
-    var strokeW = country === 'jp' ? 1.2 : 2.0;
-
-    g.selectAll('path')
-      .data(countryData.features)
-      .enter()
-      .append('path')
-      .attr('d', pathGen)
-      .attr('fill', function(d){
-        var info = regionInfo(d, country);
-        var tagId = state.assignments[info.key];
-        var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
-        return tag ? tag.color : mapFill;
-      })
-      .attr('stroke', mapStroke)
-      .attr('stroke-width', strokeW)
-      .attr('stroke-linejoin', 'round');
-
-    var xml = new XMLSerializer().serializeToString(svg.node());
-    document.body.removeChild(offscreenContainer);
-
-    // SVG 저장 선택 시
-    if (ext === 'svg') {
-      var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(svgBlob);
-      a.download = filename + '.svg';
-      a.click();
-      URL.revokeObjectURL(a.href);
-      return;
-    }
-
-    // PNG / JPG 저장 선택 시
-    var mimeType = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
-    var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
-    var url = URL.createObjectURL(svgBlob);
-    var img = new Image();
-
-    img.onload = function(){
-      var canvas = document.createElement('canvas');
-      canvas.width = exportSize;
-      canvas.height = exportSize;
-      var ctx = canvas.getContext('2d');
-
-      if (mimeType === 'image/jpeg') {
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, exportSize, exportSize);
-      }
-
-      ctx.drawImage(img, 0, 0);
-
-      canvas.toBlob(function(blob){
+      if (ext === 'svg') {
+        var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
         var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename + '.' + (ext === 'jpeg' ? 'jpg' : ext);
+        a.href = URL.createObjectURL(svgBlob);
+        a.download = filename + '.svg';
         a.click();
         URL.revokeObjectURL(a.href);
-      }, mimeType, 0.95);
-    };
-    img.onerror = function(){ showToast(t('exportFail')); };
-    img.src = url;
+        return;
+      }
+
+      var mimeType = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
+      var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
+      var url = URL.createObjectURL(svgBlob);
+      var img = new Image();
+
+      img.onload = function(){
+        var canvas = document.createElement('canvas');
+        canvas.width = exportSize;
+        canvas.height = exportSize;
+        var ctx = canvas.getContext('2d');
+
+        if (mimeType === 'image/jpeg') {
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, exportSize, exportSize);
+        }
+
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(function(blob){
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename + '.' + (ext === 'jpeg' ? 'jpg' : ext);
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }, mimeType, 0.95);
+      };
+      img.onerror = function(){ showToast(t('exportFail')); };
+      img.src = url;
+    });
   }
-  
   function resetZoom(country){
     var ref = svgRefs[country];
     if (!ref) return;
