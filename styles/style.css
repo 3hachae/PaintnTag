@@ -172,7 +172,7 @@ button, input, select, textarea {
   overflow: visible !important;
 }
 
-/* 첫 번째 패널(태그 영역)을 검색 영역 패널(z-index: 200)보다 훨씬 상위 레이어(1000)로 상향 */
+/* 첫 번째 패널(태그 영역) - z-index: 1000 설정 */
 .section-panel:first-of-type {
   z-index: 1000 !important;
 }
@@ -220,7 +220,7 @@ body.dark-theme .panel-header-bar { background: rgba(255, 255, 255, 0.02); }
 .section-panel.collapsed .inputbar-content { display: none !important; }
 .section-panel.collapsed .panel-header-bar { border-bottom: none; }
 
-/* 태그 레일의 스크롤 및 자름(Clipping) 현상 방지 설정 */
+/* 태그 레일 설정 */
 .tag-rail { 
   display: flex; 
   gap: 10px; 
@@ -275,7 +275,7 @@ body.dark-theme .panel-header-bar { background: rgba(255, 255, 255, 0.02); }
 .chip-swatch:hover { transform: scale(1.18); }
 
 /* --------------------------------------------------------------------------
-   색상 조절 창 (iOS Color Picker Popover) - 최상위 설정
+   색상 조절 창 (iOS Color Picker Popover)
    -------------------------------------------------------------------------- */
 .ios-color-picker {
   position: absolute;
@@ -553,11 +553,11 @@ body.easter-theme .btn-primary { color: #000000; }
 .map-canvas svg:active { cursor: grabbing; }
 .map-canvas path { transition: fill 0.25s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; vector-effect: non-scaling-stroke; }
 
-/* Modals */
 .modal-overlay {
   position: fixed; inset: 0; background: var(--modal-overlay);
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  display: none; align-items: center; justify-content: center; z-index: 1000;
+  display: none; align-items: center; justify-content: center; 
+  z-index: 10000 !important; /* 태그 영역(1000)보다 위에 오도록 설정 */
 }
 .modal-overlay.open { display: flex; animation: iosPop 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .modal {
@@ -582,9 +582,9 @@ body.easter-theme .btn-primary { color: #000000; }
 .tab-content { display: none; padding: 22px; }
 .tab-content.active { display: block; }
 
-/* Tooltip & Toast */
+/* Tooltip & Toast (모달창보다도 위에 표시) */
 .tooltip {
-  position: fixed; z-index: 2000;
+  position: fixed; z-index: 11000 !important;
   background: rgba(20, 20, 25, 0.78);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -602,7 +602,7 @@ body.easter-theme .btn-primary { color: #000000; }
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff; padding: 10px 24px; border-radius: var(--radius-pill);
   font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2100;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 12000 !important;
 }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 
