@@ -83,6 +83,79 @@ body.easter-theme {
   --modal-overlay: rgba(0, 255, 239, 0.25);
 }
 
+/* --------------------------------------------------------------------------
+   Export Modal & Glass Form Elements
+   -------------------------------------------------------------------------- */
+.modal-export {
+  padding: 22px;
+  width: 340px;
+  animation: iosPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-export .modal-header {
+  padding: 0 0 12px 0;
+  margin-bottom: 18px;
+}
+
+.modal-field {
+  margin-bottom: 16px;
+}
+
+.modal-field.last {
+  margin-bottom: 24px;
+}
+
+.modal-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.glass-input, .glass-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  color: var(--text-1);
+  font-size: 13.5px;
+  font-weight: 500;
+  outline: none;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-input:focus, .glass-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), var(--glass-shadow);
+  background: var(--glass-bg-hover);
+}
+
+.glass-select {
+  cursor: pointer;
+}
+
+.glass-select option {
+  background: var(--text-1);
+  color: var(--text-2);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions .btn-ghost {
+  padding: 8px 18px;
+}
+
+.modal-actions .btn-primary {
+  padding: 8px 20px;
+}
+
 /* 폰트 Pretendard JP 전체 통일 */
 * {
   box-sizing: border-box;
