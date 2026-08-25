@@ -532,7 +532,6 @@
 <body>
 <div class="app">
 
-  <!-- 간소화된 상단 리본 -->
   <header class="topbar">
     <div class="brand">
       <h1>PaintnTag</h1>
@@ -548,7 +547,6 @@
     </div>
   </header>
 
-  <!-- 1. 태그 창 (우측 접기/펴기 버튼) -->
   <section class="section-panel" id="tagBarSection">
     <div class="panel-header-bar">
       <span class="panel-label">🏷️ 태그 관리</span>
@@ -558,7 +556,6 @@
       <div class="tag-rail" id="tagRail"></div>
       <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
 
-      <!-- iOS 스타일 커스텀 컬러 피커 팝오버 -->
       <div class="ios-color-picker" id="iosColorPicker">
         <div class="picker-segmented-control">
           <button class="picker-segment-btn active" id="segPresetsBtn">색상표</button>
@@ -597,7 +594,6 @@
     </div>
   </section>
 
-  <!-- 2. 검색 및 입력 창 (우측 접기/펴기 버튼) -->
   <section class="section-panel" id="inputBarSection">
     <div class="panel-header-bar">
       <span class="panel-label">🔍 지역 검색 및 일괄 입력</span>
@@ -625,7 +621,6 @@
     </div>
   </section>
 
-  <!-- 3 & 4. 지도 영역 (개별 우측 접기/펴기 버튼 적용) -->
   <main class="maps">
     <section class="map-panel" id="mapPanelKR">
       <div class="panel-header">
@@ -670,7 +665,6 @@
 
 </div>
 
-<!-- 설정 모달 -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <div class="modal-header">
@@ -708,7 +702,6 @@
   </div>
 </div>
 
-<!-- 태그별 지역 보기 모달 -->
 <div class="modal-overlay" id="tagRegionsModal">
   <div class="modal">
     <div class="modal-header">
@@ -723,7 +716,6 @@
         <span style="font-size: 13px; font-weight: 600; color: var(--text-2); flex: none;" id="selectTagLabel">태그 선택:</span>
         <select id="tagRegionsSelect" class="setting-select" style="flex: 1; max-width: 100%;"></select>
       </div>
-      <!-- 편집 도구 모음 (편집 모드 시 표시) -->
       <div id="tagRegionsEditTools" style="display: none; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
         <label style="font-size: 12.5px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-1); font-weight: 600;">
           <input type="checkbox" id="selectAllTagRegions"> <span id="selectAllLabel">전체 선택</span>
@@ -954,16 +946,9 @@
     '大阪市': ['osaka'], '堺市': ['sakai'], '京都市': ['kyoto'], '神戸市': ['kobe'], '横浜市': ['yokohama'], '名古屋市': ['nagoya'], '札幌市': ['sapporo'], '仙台市': ['sendai'], '広島市': ['hiroshima']
   };
 
-  var COMBINED_JEONNAM_GWANGJU_KEYWORDS = [
-    '전남광주통합특별시', '전남광주', '전광시', '광주특별시', 'jeonnam-gwangju', 'jeonnamgwangju'
-  ];
-
-  var defaultTagId = 'tag-' + Date.now();
   var state = {
-    tags: [
-      { id: defaultTagId, name: '방문', color: '#39C5BB' }
-    ],
-    activeTagId: defaultTagId,
+    tags: [],
+    activeTagId: null,
     editingTagForPicker: null,
     assignments: {},
     countries: { kr: null, jp: null },
@@ -994,6 +979,15 @@
     return '#' + toHex(r) + toHex(g) + toHex(b);
   }
 
+  function topologyToFeatures(topology){
+    if (typeof topojson !== 'undefined' && topojson.feature) {
+      var objName = Object.keys(topology.objects)[0];
+      var geojson = topojson.feature(topology, topology.objects[objName]);
+      return geojson.features || [];
+    }
+    return [];
+  }
+
   function normalizeSearchTerm(str) {
     if (!str) return '';
     var s = String(str).toLowerCase().trim().replace(/[\s\-_]+/g, '');
@@ -1003,20 +997,23 @@
     return s;
   }
 
-  function isJeonnamGwangjuCombined(term) {
-    var norm = normalizeSearchTerm(term);
-    return COMBINED_JEONNAM_GWANGJU_KEYWORDS.some(function(keyword) {
-      return normalizeSearchTerm(keyword) === norm;
+  // 광주 전남 통합 입력 키워드 감지 판별 함수
+  function isGwangjuJeonnamQuery(str) {
+    if (!str) return false;
+    var raw = String(str).toLowerCase().replace(/[\s\-_]/g, '');
+    var targets = [
+      '광주전남통합',
+      '광주전남통합특별시',
+      '전남광주통합특별시',
+      '전남광주통합',
+      '전남광주',
+      '광주특별시',
+      'jeonnamgwangju',
+      'gwangjujeonnam'
+    ];
+    return targets.some(function(t) {
+      return raw === t || raw.indexOf(t) !== -1;
     });
-  }
-
-  function topologyToFeatures(topology){
-    if (typeof topojson !== 'undefined' && topojson.feature) {
-      var objName = Object.keys(topology.objects)[0];
-      var geojson = topojson.feature(topology, topology.objects[objName]);
-      return geojson.features || [];
-    }
-    return [];
   }
 
   function regionInfo(feature, country){
@@ -1702,26 +1699,28 @@
 
   function searchMatches(q){
     var nq = normalizeSearchTerm(q);
-    if (!nq) return [];
+    if (!nq && !isGwangjuJeonnamQuery(q)) return [];
     var results = [];
 
-    if (isJeonnamGwangjuCombined(q) && state.countries.kr) {
-      var jgItems = state.countries.kr.index.filter(function(item) {
-        return item.info && (item.info.prefix === '24' || item.info.prefix === '36');
-      });
-      if (jgItems.length > 0) {
-        results.push({
-          isParent: true,
-          parentName: '전남·광주 통합',
-          codePrefix: 'JG',
-          display: '전남·광주 통합 (광주+전남 전체 ' + jgItems.length + '개 지역)',
-          country: 'kr',
-          items: jgItems
-        });
-      }
-    }
-
     if (state.countries.kr) {
+      // 1. 광주 전남 통합 입력 확인
+      if (isGwangjuJeonnamQuery(q)) {
+        var integratedItems = state.countries.kr.index.filter(function(item) {
+          return item.info.prefix === '24' || item.info.prefix === '36';
+        });
+        if (integratedItems.length > 0) {
+          results.push({
+            isParent: true,
+            parentName: '광주 전남 통합',
+            isIntegratedGwangjuJeonnam: true,
+            display: '광주 전남 통합 전체 (' + integratedItems.length + '개 지역)',
+            country: 'kr',
+            items: integratedItems
+          });
+        }
+      }
+
+      // 2. 일반 시도 단위 통합 검색
       var addedParents = {};
       Object.keys(KR_SIDO).forEach(function(code) {
         var names = KR_SIDO[code];
@@ -1769,15 +1768,17 @@
       });
     }
 
-    var pool = searchIndexAll;
-    var matchedMunis = pool.filter(function(r){
-      return r.aliases.some(function(a){
-        var na = normalizeSearchTerm(a);
-        return na.indexOf(nq) !== -1;
+    if (nq) {
+      var pool = searchIndexAll;
+      var matchedMunis = pool.filter(function(r){
+        return r.aliases.some(function(a){
+          var na = normalizeSearchTerm(a);
+          return na.indexOf(nq) !== -1;
+        });
       });
-    });
+      results = results.concat(matchedMunis);
+    }
 
-    results = results.concat(matchedMunis);
     return results.slice(0, 12);
   }
 
@@ -1814,11 +1815,11 @@
       var matchingGeoms = [];
 
       if (country === 'kr') {
-        if (m.codePrefix === 'JG') {
+        if (m.isIntegratedGwangjuJeonnam || m.parentName === '광주 전남 통합') {
           matchingGeoms = allGeoms.filter(function(g){
             var cStr = String(g.properties.code);
-            var px = cStr.slice(0, 2);
-            return px === '24' || px === '36';
+            var prefix = (cStr === '37310' || g.properties.name === '군위군') ? '22' : cStr.slice(0, 2);
+            return prefix === '24' || prefix === '36';
           });
         } else {
           var codePrefix = m.codePrefix;
@@ -1918,16 +1919,18 @@
   function findRegionsByInput(raw){
     var q = raw.trim();
     if (!q) return { status:'empty' };
-    var nq = normalizeSearchTerm(q);
 
-    if (isJeonnamGwangjuCombined(q) && state.countries.kr) {
-      var jgItems = state.countries.kr.index.filter(function(item) {
-        return item.info && (item.info.prefix === '24' || item.info.prefix === '36');
+    // 광주 전남 통합 입력 처리
+    if (isGwangjuJeonnamQuery(q) && state.countries.kr) {
+      var integratedItems = state.countries.kr.index.filter(function(item){
+        return item.info.prefix === '24' || item.info.prefix === '36';
       });
-      if (jgItems.length > 0) {
-        return { status: 'parent', parentName: '전남·광주 통합', items: jgItems };
+      if (integratedItems.length > 0) {
+        return { status: 'parent', parentName: '광주 전남 통합', items: integratedItems };
       }
     }
+
+    var nq = normalizeSearchTerm(q);
 
     var krParentName = null;
     Object.keys(KR_SIDO).forEach(function(code){
@@ -2300,6 +2303,7 @@
     if (selectAllLabel) selectAllLabel.textContent = t('selectAll');
     
     updateSelectAllStatus();
+
     updatePanelCounts();
   }
 
@@ -2374,91 +2378,83 @@
     });
 
     document.getElementById('zoomResetKR').addEventListener('click', function(){ resetZoom('kr'); });
-    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
     document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
+    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
     document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
 
     document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
-    document.getElementById('activeTagSelect').addEventListener('change', function(e){ setActiveTag(e.target.value); });
+    setupColorPickerUI();
 
+    document.getElementById('activeTagSelect').addEventListener('change', function(e){ setActiveTag(e.target.value); });
     document.getElementById('toggleBulk').addEventListener('click', function(){
-      var panel = document.getElementById('bulkPanel');
-      panel.classList.toggle('open');
+      var p = document.getElementById('bulkPanel');
+      p.classList.toggle('open');
     });
     document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
 
-    document.getElementById('modalCloseBtn').addEventListener('click', function(){
-      document.getElementById('settingsModal').classList.remove('open');
-    });
-
+    document.getElementById('modalCloseBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.remove('open'); });
     document.querySelectorAll('#settingsModal .tab-btn').forEach(function(btn){
       btn.addEventListener('click', function(){
         document.querySelectorAll('#settingsModal .tab-btn').forEach(function(b){ b.classList.remove('active'); });
         document.querySelectorAll('#settingsModal .tab-content').forEach(function(c){ c.classList.remove('active'); });
         btn.classList.add('active');
-        var tabId = btn.dataset.tab;
-        document.getElementById(tabId).classList.add('active');
+        var targetId = btn.dataset.tab;
+        var targetEl = document.getElementById(targetId);
+        if (targetEl) targetEl.classList.add('active');
       });
     });
-
     document.getElementById('themeSelect').addEventListener('change', function(e){
       state.theme = e.target.value;
       state.isEaster = false;
       applyTheme();
+      applyColors('kr'); applyColors('jp');
     });
-
     document.getElementById('langSelect').addEventListener('change', function(e){
       state.lang = e.target.value;
       updateLanguageUI();
     });
-
     document.getElementById('creatorImg').addEventListener('click', toggleTheme);
 
-    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){
-      document.getElementById('tagRegionsModal').classList.remove('open');
-    });
-
-    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){
-      renderTagRegionsList(e.target.value);
-    });
-
+    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){ document.getElementById('tagRegionsModal').classList.remove('open'); });
+    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){ renderTagRegionsList(e.target.value); });
+    
     document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
       isTagRegionsEditing = !isTagRegionsEditing;
       this.textContent = isTagRegionsEditing ? t('done') : t('edit');
-      var selectId = document.getElementById('tagRegionsSelect').value;
-      renderTagRegionsList(selectId);
+      renderTagRegionsList(document.getElementById('tagRegionsSelect').value);
     });
 
     document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
-      var checked = e.target.checked;
-      document.querySelectorAll('.region-select-cb').forEach(function(cb){
-        cb.checked = checked;
-      });
+      var isChecked = e.target.checked;
+      document.querySelectorAll('.region-select-cb').forEach(function(cb){ cb.checked = isChecked; });
       updateSelectAllStatus();
     });
 
     document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
-      var tagId = document.getElementById('tagRegionsSelect').value;
       var checkedCbs = document.querySelectorAll('.region-select-cb:checked');
       if (checkedCbs.length === 0) {
         showToast(t('selectToDelete'));
         return;
       }
+      var activeSelect = document.getElementById('tagRegionsSelect');
+      var currentTagId = activeSelect ? activeSelect.value : null;
+
       checkedCbs.forEach(function(cb){
         var key = cb.dataset.key;
-        delete state.assignments[key];
+        if (key && state.assignments[key]) {
+          delete state.assignments[key];
+        }
       });
+
       assignmentsChanged();
-      renderTagRegionsList(tagId);
-      updateTagSelectOptionText(tagId);
+      renderTagRegionsList(currentTagId);
+      updateTagSelectOptionText(currentTagId);
     });
   }
 
-  setupColorPickerUI();
-  renderTags();
-  applyTheme();
-  updateLanguageUI();
   setupEventListeners();
+  addTag(t('defaultTagVisit'), '#0DFFEF');
+  addTag(t('defaultTagPlan'), '#FF3B30');
   init();
 
 })();
