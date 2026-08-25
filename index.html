@@ -930,6 +930,48 @@
     '39':['제주특별자치도','제주도','jeju']
   };
 
+  // 전남·광주 통합 검색 키워드 정의
+var COMBINED_JG_KEYWORDS = [
+  '전남광주통합특별시',
+  '전남광주',
+  '전광시',
+  '광주특별시',
+  'jeonnam-gwangju',
+  'jeonnamgwangju'
+];
+
+// 통합 키워드 여부 판별 함수
+function isJGCombined(term) {
+  var norm = normalizeSearchTerm(term);
+  return COMBINED_JEONNAM_GWANGJU_KEYWORDS.some(function(keyword) {
+    return normalizeSearchTerm(keyword) === norm;
+  });
+}
+
+// 검색 및 일괄 입력(Bulk Add) 처리 시 통합 선택 실행
+function processRegionSelection(term) {
+  if (!state.activeTagId) {
+    flashNeedTag();
+    return false;
+  }
+
+  // 전남·광주 통합 키워드 입력인 경우
+  if (isJGCombined(term)) {
+    var count = 0;
+    state.countries.kr.index.forEach(function(item) {
+      // 광주(prefix: '24') 및 전남(prefix: '36') 소속 시군구 전체 선택
+      if (item.info.prefix === '24' || item.info.prefix === '36') {
+        state.assignments[item.key] = state.activeTagId;
+        count++;
+      }
+    });
+    assignmentsChanged();
+    return true;
+  }
+
+  return false;
+}
+
   var JP_PREFECTURES = {
     '北海道': ['hokkaido', '홋카이도', '북해도'], '青森県': ['aomori', '아오모리'], '岩手県': ['iwate', '이와테'],
     '宮城県': ['miyagi', '미야기'], '秋田県': ['akita', '아키타'], '山形県': ['yamagata', '야마가타'],
@@ -2419,6 +2461,31 @@ function showExportModal(defaultName, onConfirm) {
   addTag(t('defaultTagPlan'), '#007AFF');
   updateLanguageUI();
   init();
+  // 초기화 실행 시 기본 민트색 '방문' 태그 생성
+function initDefaultTags() {
+  if (state.tags.length === 0) {
+    // 민트색(#39C5BB)으로 '방문' 태그 추가 및 활성화
+    addTag(t('defaultTagVisit') || '방문', '#39C5BB');
+  }
+}
+
+// init() 함수 내 지도 로드 완료 후 호출
+Promise.all([
+  loadCountry(KR_TOPO_URL, 'kr'),
+  loadCountry(JP_TOPO_URL, 'jp')
+]).then(function(results){
+  state.countries.kr = results[0];
+  state.countries.jp = results[1];
+  buildSearchIndex();
+
+  // 기본
+  initDefaultTags();
+  
+  renderMap('kr');
+  renderMap('jp');
+  setLoading('kr', false);
+  setLoading('jp', false);
+});
 
 })();
 </script>
