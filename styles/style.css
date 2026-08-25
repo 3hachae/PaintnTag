@@ -28,7 +28,7 @@
   --radius-md: 18px;
   --radius-lg: 26px;
   --radius-pill: 9999px;
-  --modal-overlay: rgba(0, 0, 0, 0.25);
+  --modal-overlay: rgba(0, 0, 0, 0.35);
   
   --blur-val: blur(28px) saturate(200%);
 }
@@ -80,7 +80,7 @@ body.easter-theme {
   --map-fill: rgba(13, 255, 239, 0.08);
   --map-stroke: #031011;
   --map-hover-stroke: #0DFFEF;
-  --modal-overlay: rgba(0, 255, 239, 0.15);
+  --modal-overlay: rgba(0, 255, 239, 0.25);
 }
 
 /* 폰트 Pretendard JP 전체 통일 */
@@ -172,7 +172,7 @@ button, input, select, textarea {
   overflow: visible !important;
 }
 
-/* 첫 번째 패널(태그 영역) - z-index: 1000 설정 */
+/* 태그 패널 - z-index: 1000 */
 .section-panel:first-of-type {
   z-index: 1000 !important;
 }
@@ -220,7 +220,6 @@ body.dark-theme .panel-header-bar { background: rgba(255, 255, 255, 0.02); }
 .section-panel.collapsed .inputbar-content { display: none !important; }
 .section-panel.collapsed .panel-header-bar { border-bottom: none; }
 
-/* 태그 레일 설정 */
 .tag-rail { 
   display: flex; 
   gap: 10px; 
@@ -275,11 +274,11 @@ body.dark-theme .panel-header-bar { background: rgba(255, 255, 255, 0.02); }
 .chip-swatch:hover { transform: scale(1.18); }
 
 /* --------------------------------------------------------------------------
-   색상 조절 창 (iOS Color Picker Popover)
+   색상 조절 창 (iOS Color Picker Popover) - z-index: 2000 (설정창 10000보다 낮게 지정)
    -------------------------------------------------------------------------- */
 .ios-color-picker {
   position: absolute;
-  z-index: 999999 !important;
+  z-index: 2000 !important;
   top: calc(100% + 12px);
   left: 0;
   background: var(--glass-bg-hover);
@@ -553,11 +552,15 @@ body.easter-theme .btn-primary { color: #000000; }
 .map-canvas svg:active { cursor: grabbing; }
 .map-canvas path { transition: fill 0.25s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; vector-effect: non-scaling-stroke; }
 
+/* --------------------------------------------------------------------------
+   Modals (설정창 & 반투명 검은 배경)
+   - z-index: 10000 으로 지정되어 다른 모든 UI 및 컬러피커(2000) 위로 올라옵니다.
+   -------------------------------------------------------------------------- */
 .modal-overlay {
   position: fixed; inset: 0; background: var(--modal-overlay);
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   display: none; align-items: center; justify-content: center; 
-  z-index: 10000 !important; /* 태그 영역(1000)보다 위에 오도록 설정 */
+  z-index: 10000 !important;
 }
 .modal-overlay.open { display: flex; animation: iosPop 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .modal {
@@ -569,6 +572,8 @@ body.easter-theme .btn-primary { color: #000000; }
   width: 90%; max-width: 460px;
   box-shadow: var(--glass-shadow), 0 24px 48px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  position: relative;
+  z-index: 10001 !important; /* 반투명 배경 바로 위에 모달창 위치 */
 }
 .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--glass-border-subtle); }
 .modal-header h3 { margin: 0; font-size: 17px; font-weight: 700; }
@@ -582,9 +587,9 @@ body.easter-theme .btn-primary { color: #000000; }
 .tab-content { display: none; padding: 22px; }
 .tab-content.active { display: block; }
 
-/* Tooltip & Toast (모달창보다도 위에 표시) */
+/* Tooltip & Toast (최상위 설정) */
 .tooltip {
-  position: fixed; z-index: 11000 !important;
+  position: fixed; z-index: 20000 !important;
   background: rgba(20, 20, 25, 0.78);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -602,7 +607,7 @@ body.easter-theme .btn-primary { color: #000000; }
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff; padding: 10px 24px; border-radius: var(--radius-pill);
   font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 12000 !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 30000 !important;
 }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 
