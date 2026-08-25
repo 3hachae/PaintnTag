@@ -2479,21 +2479,24 @@ function showExportModal(defaultName, onConfirm) {
     });
   }
 
-  // 앱 시동
-  setupEventListeners();
-  addTag(t('defaultTagVisit'), '#0DFFEF');
-  addTag(t('defaultTagPlan'), '#007AFF');
-  updateLanguageUI();
-  init();
-  // 초기화 실행 시 기본 민트색 '방문' 태그 생성
-function initDefaultTags() {
-  if (state.tags.length === 0) {
-    // 민트색(#39C5BB)으로 '방문' 태그 추가 및 활성화
-    addTag(t('defaultTagVisit') || '방문', '#39C5BB');
-  }
-}
+function init() {
 
-// init() 함수 내 지도 로드 완료 후 호출
+  if (state.tags.length === 0) {
+    const visitTag = addTag(t('defaultTagVisit'), '#0DFFEF');
+    addTag(t('defaultTagPlan'), '#007AFF');
+
+    setActiveTag(visitTag.id); 
+  }
+
+
+  setupEventListeners();
+  updateLanguageUI();
+  
+
+init();
+
+initDefaultTags();
+  
 Promise.all([
   loadCountry(KR_TOPO_URL, 'kr'),
   loadCountry(JP_TOPO_URL, 'jp')
