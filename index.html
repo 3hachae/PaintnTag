@@ -930,7 +930,19 @@
     '39':['제주특별자치도','제주도','jeju']
   };
 
-// 전남·광주 통합 검색 키워드 정의
+// 1. 상태(State) 초기화 - 별도 태그 생성 함수 호출 없이 '방문'을 기본 선택 태그로 설정
+var defaultTagId = 'tag-' + Date.now();
+
+var state = {
+  tags: [
+    { id: defaultTagId, name: '방문', color: '#39C5BB' } // 기존 '예정' 대신 민트색 '방문'으로 기본 세팅
+  ],
+  activeTagId: defaultTagId, // '방문' 태그 기본 선택 상태
+  assignments: {},
+  countries: { kr: null, jp: null }
+};
+
+// 2. 전남·광주 통합 키워드 목록
 var COMBINED_JEONNAM_GWANGJU_KEYWORDS = [
   '전남광주통합특별시',
   '전남광주',
@@ -940,7 +952,12 @@ var COMBINED_JEONNAM_GWANGJU_KEYWORDS = [
   'jeonnamgwangju'
 ];
 
-// 통합 키워드 여부 판별 함수
+// 문자열 정규화 (공백 및 대소문자 제거)
+function normalizeSearchTerm(term) {
+  return (term || '').toString().trim().toLowerCase().replace(/\s+/g, '');
+}
+
+// 전남·광주 키워드 일치 여부 확인
 function isJeonnamGwangjuCombined(term) {
   var norm = normalizeSearchTerm(term);
   return COMBINED_JEONNAM_GWANGJU_KEYWORDS.some(function(keyword) {
@@ -948,27 +965,35 @@ function isJeonnamGwangjuCombined(term) {
   });
 }
 
-// 검색 및 일괄 입력(Bulk Add) 처리 시 통합 선택 실행
-function processRegionSelection(term) {
+// 3. 검색 및 시군구 선택 로직
+function handleRegionSearchOrSelect(term) {
   if (!state.activeTagId) {
-    flashNeedTag();
+    if (typeof flashNeedTag === 'function') flashNeedTag();
     return false;
   }
 
-  // 전남·광주 통합 키워드 입력인 경우
+  // 전남·광주 통합 검색 처리
   if (isJeonnamGwangjuCombined(term)) {
-    var count = 0;
-    state.countries.kr.index.forEach(function(item) {
-      // 광주(prefix: '24') 및 전남(prefix: '36') 소속 시군구 전체 선택
-      if (item.info.prefix === '24' || item.info.prefix === '36') {
-        state.assignments[item.key] = state.activeTagId;
-        count++;
-      }
-    });
-    assignmentsChanged();
+    var updated = false;
+    
+    // 한국 지도(kr) 인덱스 순회
+    if (state.countries.kr && state.countries.kr.index) {
+      state.countries.kr.index.forEach(function(item) {
+        // 광주광역시(prefix: '24') 및 전라남도(prefix: '36')에 속한 모든 지역 일괄 지정
+        if (item.info && (item.info.prefix === '24' || item.info.prefix === '36')) {
+          state.assignments[item.key] = state.activeTagId;
+          updated = true;
+        }
+      });
+    }
+
+    if (updated && typeof assignmentsChanged === 'function') {
+      assignmentsChanged();
+    }
     return true;
   }
 
+  // 기존 단일 지역 검색 처리 logic...
   return false;
 }
   var JP_PREFECTURES = {
