@@ -433,7 +433,6 @@
   .map-canvas svg:active{cursor:grabbing;}
   .map-canvas path{transition:fill .2s;cursor:pointer;vector-effect:non-scaling-stroke;}
 
-  /* 깔끔하고 또렷한 아웃라인 애니메이션 (블러/Glow 완전 제거) */
   @keyframes outlineGlow {
     0% {
       stroke-opacity: 0.3;
@@ -543,9 +542,9 @@
     </div>
     <div class="topbar-actions">
       <button class="btn-ghost" id="tagRegionsBtn">📋 태그별 지역</button>
-      <button class="btn-ghost" id="resetAllBtn">⟲ 전체 초기화</button>
+      <button class="btn-ghost" id="resetAllBtn">🔄️ 전체 초기화</button>
       <button class="btn-ghost" id="exportBtn">⬇ 내보내기</button>
-      <button class="btn-ghost" id="importBtn">⬆ 불러오기</button>
+      <button class="btn-ghost" id="importBtn">⬆️ 불러오기</button>
       <button class="btn-ghost" id="settingsBtn">⚙️ 설정</button>
       <input type="file" id="importFile" accept="application/json" hidden>
     </div>
@@ -637,7 +636,7 @@
           <span class="sub" id="count-kr">0개 색칠됨</span>
         </div>
         <div class="panel-tools">
-          <button class="icon-btn" id="zoomResetKR" title="확대 초기화" aria-label="확대 초기화">⟲</button>
+          <button class="icon-btn" id="zoomResetKR" title="확대 초기화" aria-label="확대 초기화">🔄️</button>
           <button class="icon-btn" id="pngKR" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
           <button class="icon-btn" id="foldMapKRBtn" title="접기/펴기" aria-label="접기/펴기">▲</button>
         </div>
@@ -657,7 +656,7 @@
           <span class="sub" id="count-jp">0개 색칠됨</span>
         </div>
         <div class="panel-tools">
-          <button class="icon-btn" id="zoomResetJP" title="확대 초기화" aria-label="확대 초기화">⟲</button>
+          <button class="icon-btn" id="zoomResetJP" title="확대 초기화" aria-label="확대 초기화">🔄️</button>
           <button class="icon-btn" id="pngJP" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
           <button class="icon-btn" id="foldMapJPBtn" title="접기/펴기" aria-label="접기/펴기">▲</button>
         </div>
@@ -762,9 +761,9 @@
       headerSub: "한국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요",
       tagRegionsBtn: "📋 태그별 지역",
       settings: "⚙️ 설정",
-      resetAll: "⟲ 전체 초기화",
+      resetAll: "🔄️ 전체 초기화",
       export: "⬇ 내보내기",
-      import: "⬆ 불러오기",
+      import: "⬆️ 불러오기",
       addTag: "+ 새 태그",
       searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "여러 개 한 번에 입력 ⌄",
@@ -813,9 +812,9 @@
       headerSub: "Color Korean and Japanese municipalities with your custom tags",
       tagRegionsBtn: "📋 Regions by Tag",
       settings: "⚙️ Settings",
-      resetAll: "⟲ Reset All",
+      resetAll: "🔄️ Reset All",
       export: "⬇ Export",
-      import: "⬆ Import",
+      import: "⬆️ Import",
       addTag: "+ New Tag",
       searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "Bulk Input ⌄",
@@ -831,7 +830,7 @@
       themeLight: "Light Mode",
       themeDark: "Dark Mode",
       langLabel: "Language",
-      creatorName: "Chae Junyeong",
+      creatorName: "Chae Junyeong / Hachae",
       creatorDesc: "Developer of PaintnTag",
       defaultTagVisit: "Visited",
       defaultTagPlan: "Plan",
@@ -864,9 +863,9 @@
       headerSub: "韓国の市・郡・区、日本の市町村をオリジナルタグで塗ってみよう",
       tagRegionsBtn: "📋 タグ別地域",
       settings: "⚙️ 設定",
-      resetAll: "⟲ 全初期化",
+      resetAll: "🔄️ 全初期化",
       export: "⬇ エクスポート",
-      import: "⬆ インポート",
+      import: "⬆️ インポート",
       addTag: "+ 新規タグ",
       searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "一括入力 ⌄",
@@ -913,6 +912,7 @@
 
   var KR_SIDO = {
     '11':['서울특별시','서울','seoul'], 
+    '12':['전남광주통합특별시', '전남광주', '전광', '광주특별시', 'Jeonnam-Gwangju', "Jeonnamgwangju"]
     '21':['부산광역시','부산','busan'], 
     '22':['대구광역시','대구','daegu'],
     '23':['인천광역시','인천','incheon'], 
