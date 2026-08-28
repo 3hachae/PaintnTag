@@ -2478,6 +2478,8 @@ function detectDefaultLanguage() {
   return 'en';
 }
 
+var currentLang = localStorage.getItem('paintntag_lang') || detectDefaultLanguage();  
+
 })();
 </script>
 </body>
