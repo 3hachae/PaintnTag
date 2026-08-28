@@ -2457,6 +2457,27 @@
   addTag(t('defaultTagPlan'), '#007AFF');
   init();
 
+  // 사용자의 국가/언어 환경을 자동 감지하는 함수
+function detectDefaultLanguage() {
+  // 1. 브라우저 기본 언어 확인 (예: ko-KR, ja-JP 등)
+  var userLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  
+  if (userLang.startsWith('ko')) return 'ko';
+  if (userLang.startsWith('ja')) return 'ja';
+
+  // 2. 타임존(Timezone)을 통해 국가 보완 확인
+  try {
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz === 'Asia/Seoul') return 'ko';
+    if (tz === 'Asia/Tokyo') return 'ja';
+  } catch (e) {
+    // 타임존 조회가 지원되지 않는 환경 예외 처리
+  }
+
+  // 3. 그 외 모든 국가/언어는 기본 영어('en')
+  return 'en';
+}
+
 })();
 </script>
 </body>
