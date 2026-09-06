@@ -798,94 +798,26 @@
   ];
 
   var KR_REGIONS = {
-    'all': {
-      name: { ko: '전체 (대한민국)', en: 'All (South Korea)', ja: '全国 (大韓民国)' },
-      label: { ko: '대한민국', en: 'South Korea', ja: '大韓民国' },
-      prefixes: null
-    },
-    'capital': {
-      name: { ko: '수도권 (서울·인천·경기)', en: 'Capital Region (Seoul/Incheon/Gyeonggi)', ja: '首都圏 (ソウル・仁川・京畿)' },
-      label: { ko: '수도권', en: 'Capital Region', ja: '首都圏' },
-      prefixes: ['11', '23', '31']
-    },
-    'buk': {
-      name: { ko: '부울경 (부산·울산·경남)', en: 'Southeast (Busan/Ulsan/Gyeongnam)', ja: '釜山・蔚山・慶南' },
-      label: { ko: '부울경', en: 'Southeast', ja: '釜山・蔚山・慶南' },
-      prefixes: ['21', '26', '38']
-    },
-    'tk': {
-      name: { ko: '대구·경북', en: 'Daegu · Gyeongbuk', ja: '大邱・慶北' },
-      label: { ko: '대구·경북', en: 'Daegu · Gyeongbuk', ja: '大邱・慶北' },
-      prefixes: ['22', '37']
-    },
-    'chungcheong': {
-      name: { ko: '충청권 (대전·세종·충북·충남)', en: 'Chungcheong Region', ja: '忠清圏 (大田・世宗・忠北・忠南)' },
-      label: { ko: '충청권', en: 'Chungcheong', ja: '忠清圏' },
-      prefixes: ['25', '29', '33', '34']
-    },
-    'honam': {
-      name: { ko: '호남권 (광주·전북·전남)', en: 'Honam Region', ja: '湖南圏 (光州・全北・全南)' },
-      label: { ko: '호남권', en: 'Honam', ja: '湖南圏' },
-      prefixes: ['24', '35', '36']
-    },
-    'gangwon': {
-      name: { ko: '강원권', en: 'Gangwon Region', ja: '江原圏' },
-      label: { ko: '강원권', en: 'Gangwon', ja: '江原圏' },
-      prefixes: ['32']
-    },
-    'jeju': {
-      name: { ko: '제주권', en: 'Jeju Region', ja: '済州圏' },
-      label: { ko: '제주권', en: 'Jeju', ja: '済州圏' },
-      prefixes: ['39']
-    }
+    'all': { name: '전체 (대한민국)', label: '대한민국', prefixes: null },
+    'capital': { name: '수도권 (서울·인천·경기)', label: '수도권', prefixes: ['11', '23', '31'] },
+    'buk': { name: '부울경 (부산·울산·경남)', label: '부울경', prefixes: ['21', '26', '38'] },
+    'tk': { name: '대구·경북', label: '대구·경북', prefixes: ['22', '37'] },
+    'chungcheong': { name: '충청권 (대전·세종·충북·충남)', label: '충청권', prefixes: ['25', '29', '33', '34'] },
+    'honam': { name: '호남권 (광주·전북·전남)', label: '호남권', prefixes: ['24', '35', '36'] },
+    'gangwon': { name: '강원권', label: '강원권', prefixes: ['32'] },
+    'jeju': { name: '제주권', label: '제주권', prefixes: ['39'] }
   };
 
   var JP_REGIONS = {
-    'all': {
-      name: { ko: '전체 (일본)', en: 'All (Japan)', ja: '全国 (日本)' },
-      label: { ko: '일본', en: 'Japan', ja: '日本' },
-      prefs: null
-    },
-    'hokkaido': {
-      name: { ko: '홋카이도', en: 'Hokkaido', ja: '北海道' },
-      label: { ko: '홋카이도', en: 'Hokkaido', ja: '北海道' },
-      prefs: ['北海道']
-    },
-    'tohoku': {
-      name: { ko: '도호쿠', en: 'Tohoku', ja: '東北' },
-      label: { ko: '도호쿠', en: 'Tohoku', ja: '東北' },
-      prefs: ['青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県']
-    },
-    'kanto': {
-      name: { ko: '간토', en: 'Kanto', ja: '関東' },
-      label: { ko: '간토', en: 'Kanto', ja: '関東' },
-      prefs: ['茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県']
-    },
-    'chubu': {
-      name: { ko: '주부', en: 'Chubu', ja: '中部' },
-      label: { ko: '주부', en: 'Chubu', ja: '中部' },
-      prefs: ['新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県', '静岡県', '愛知県']
-    },
-    'kansai': {
-      name: { ko: '간사이 (킨키)', en: 'Kansai (Kinki)', ja: '関西 (近畿)' },
-      label: { ko: '간사이', en: 'Kansai', ja: '関西' },
-      prefs: ['三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県']
-    },
-    'chugoku': {
-      name: { ko: '주고쿠', en: 'Chugoku', ja: '中国' },
-      label: { ko: '주고쿠', en: 'Chugoku', ja: '中国' },
-      prefs: ['鳥取県', '島根県', '岡山県', '広島県', '山口県']
-    },
-    'shikoku': {
-      name: { ko: '시코쿠', en: 'Shikoku', ja: '四国' },
-      label: { ko: '시코쿠', en: 'Shikoku', ja: '四国' },
-      prefs: ['徳島県', '香川県', '愛媛県', '高知県']
-    },
-    'kyushu': {
-      name: { ko: '큐슈·오키나와', en: 'Kyushu & Okinawa', ja: '九州・沖縄' },
-      label: { ko: '큐슈·오키나와', en: 'Kyushu/Okinawa', ja: '九州・沖縄' },
-      prefs: ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県']
-    }
+    'all': { name: '전체 (일본)', label: '일본', prefs: null },
+    'hokkaido': { name: '홋카이도', label: '홋카이도', prefs: ['北海道'] },
+    'tohoku': { name: '도호쿠', label: '도호쿠', prefs: ['青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県'] },
+    'kanto': { name: '간토', label: '간토', prefs: ['茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県'] },
+    'chubu': { name: '주부', label: '주부', prefs: ['新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県', '静岡県', '愛知県'] },
+    'kansai': { name: '간사이 (킨키)', label: '간사이', prefs: ['三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県'] },
+    'chugoku': { name: '주고쿠', label: '주고쿠', prefs: ['鳥取県', '島根県', '岡山県', '広島県', '山口県'] },
+    'shikoku': { name: '시코쿠', label: '시코쿠', prefs: ['徳島県', '香川県', '愛媛県', '高知県'] },
+    'kyushu': { name: '큐슈·오키나와', label: '큐슈·오키나와', prefs: ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'] }
   };
 
   var i18n = {
@@ -893,8 +825,6 @@
       title: "PaintnTag — 한국 · 일본",
       headerTitle: "PaintnTag",
       headerSub: "한국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요",
-      tagManageLabel: "🏷️ 태그 관리",
-      searchBulkLabel: "🔍 지역 검색 및 일괄 입력",
       tagRegionsBtn: "📋 태그별 지역",
       settings: "⚙️ 설정",
       resetAll: "🔄️ 전체 초기화",
@@ -940,29 +870,21 @@
       selectAll: "전체 선택",
       deleteSelected: "삭제",
       deleteAll: "전체 삭제",
-      selectToDelete: "삭제할 지역을 선택해 주세요.",
-      regionSelectModalTitle: "권역 선택",
-      exportMapTitle: "지도 내보내기",
-      fileNameLabel: "파일 이름",
-      extSelectLabel: "확장자 선택",
-      cancel: "취소",
-      save: "저장"
+      selectToDelete: "삭제할 지역을 선택해 주세요."
     },
     en: {
       title: "PaintnTag — Korea · Japan",
       headerTitle: "PaintnTag",
       headerSub: "Color Korean and Japanese municipalities with your custom tags",
-      tagManageLabel: "🏷️ Tag Management",
-      searchBulkLabel: "🔍 Region Search & Bulk Input",
       tagRegionsBtn: "📋 Regions by Tag",
       settings: "⚙️ Settings",
       resetAll: "🔄️ Reset All",
       export: "⬇ Export",
       import: "⬆️ Import",
       addTag: "+ New Tag",
-      searchPlaceholder: "Seoul / Jongno-gu, Tokyo / Chiyoda-ku",
+      searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "Bulk Input ⌄",
-      bulkPlaceholder: "Enter multiple locations separated by commas or newlines.\ne.g. Seoul / Jongno-gu, Tokyo / Chiyoda-ku",
+      bulkPlaceholder: "Enter multiple locations separated by commas or newlines.\ne.g. 서울특별시 / 종로구, 東京都 / 千代田区",
       bulkBtn: "Add All",
       krTitle: "South Korea",
       jpTitle: "Japan",
@@ -974,7 +896,7 @@
       themeLight: "Light Mode",
       themeDark: "Dark Mode",
       langLabel: "Language",
-      creatorName: "Chae Junyeong (Hachae)",
+      creatorName: "Chae Junyeong / Hachae",
       creatorDesc: "Developer of PaintnTag",
       defaultTagVisit: "Visited",
       defaultTagPlan: "Plan",
@@ -999,29 +921,21 @@
       selectAll: "Select All",
       deleteSelected: "Delete",
       deleteAll: "Delete All",
-      selectToDelete: "Please select regions to delete.",
-      regionSelectModalTitle: "Select Region",
-      exportMapTitle: "Export Map",
-      fileNameLabel: "File Name",
-      extSelectLabel: "Format",
-      cancel: "Cancel",
-      save: "Save"
+      selectToDelete: "Please select regions to delete."
     },
     ja: {
       title: "PaintnTag — 韓国 · 日本",
       headerTitle: "PaintnTag",
       headerSub: "韓国の市・郡・区、日本の市町村をオリジナルタグで塗ってみよう",
-      tagManageLabel: "🏷️ タグ管理",
-      searchBulkLabel: "🔍 지역 검색 및 일괄 입력",
       tagRegionsBtn: "📋 タグ別地域",
       settings: "⚙️ 設定",
       resetAll: "🔄️ 全初期化",
       export: "⬇ エクスポート",
       import: "⬆️ インポート",
       addTag: "+ 新規タグ",
-      searchPlaceholder: "ソウル特別市 / 鍾路区、東京都 / 千代田区",
+      searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
       bulkToggle: "一括入力 ⌄",
-      bulkPlaceholder: "カンマ(,)や改行で複数の地域を入力できます。\n例: ソウル特別市 / 鍾路区、東京都 / 千代田区",
+      bulkPlaceholder: "カンマ(,)や改行で複数の地域を入力できます。\n例: 서울특별시 / 종로구, 東京都 / 千代田区",
       bulkBtn: "一括追加",
       krTitle: "大韓民国",
       jpTitle: "日本",
@@ -1058,13 +972,7 @@
       selectAll: "すべて選択",
       deleteSelected: "削除",
       deleteAll: "全削除",
-      selectToDelete: "削除する地域を選択してください。",
-      regionSelectModalTitle: "広域選択",
-      exportMapTitle: "マップを出力",
-      fileNameLabel: "ファイル名",
-      extSelectLabel: "拡張子選択",
-      cancel: "キャンセル",
-      save: "保存"
+      selectToDelete: "削除する地域を選択してください。"
     }
   };
 
@@ -1110,7 +1018,7 @@
   var JP_CITIES = {
     '福岡市': ['fukuoka'], '博多区': ['hakata'], '中央区': ['chuo'], '東区': ['higashi'], '南区': ['minami'], '西区': ['nishi'], '城南区': ['jonan'], '早良区': ['sawara'],
     '北九州市': ['kitakyushu'], '小倉北区': ['kokurakita', 'kokura'], '小倉南区': ['kokuraminami'], '門司区': ['moji'], '八幡西区': ['yahatanishi', 'yahata'], '八幡東区': ['yahatahigashi'], '戸畑区': ['tobata'], '若松区': ['wakamatsu'],
-    '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '大田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'],
+    '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '대田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'],
     '大阪市': ['osaka'], '堺市': ['sakai'], '京都市': ['kyoto'], '神戸市': ['kobe'], '横浜市': ['yokohama'], '名古屋市': ['nagoya'], '札幌市': ['sapporo'], '仙台市': ['sendai'], '広島市': ['hiroshima']
   };
 
@@ -1135,13 +1043,11 @@
   }
 
   function getRegionTitle(country, regionKey) {
-    var lang = state.lang || 'ko';
     if (!regionKey || regionKey === 'all') {
       return country === 'kr' ? t('krTitle') : t('jpTitle');
     }
     var reg = country === 'kr' ? KR_REGIONS[regionKey] : JP_REGIONS[regionKey];
-    if (!reg) return country === 'kr' ? t('krTitle') : t('jpTitle');
-    return reg.label[lang] || reg.label.ko || (country === 'kr' ? t('krTitle') : t('jpTitle'));
+    return reg ? reg.label : (country === 'kr' ? t('krTitle') : t('jpTitle'));
   }
 
   function hexToRgb(hex) {
@@ -1308,96 +1214,6 @@
     });
   }
 
-  function updateLanguageUI() {
-    document.title = t('title');
-    var brandH1 = document.querySelector('.brand h1');
-    if (brandH1) brandH1.textContent = t('headerTitle');
-    var brandP = document.querySelector('.brand p');
-    if (brandP) brandP.textContent = t('headerSub');
-
-    var tagRegionsBtn = document.getElementById('tagRegionsBtn');
-    if (tagRegionsBtn) tagRegionsBtn.textContent = t('tagRegionsBtn');
-    var resetAllBtn = document.getElementById('resetAllBtn');
-    if (resetAllBtn) resetAllBtn.textContent = t('resetAll');
-    var exportBtn = document.getElementById('exportBtn');
-    if (exportBtn) exportBtn.textContent = t('export');
-    var importBtn = document.getElementById('importBtn');
-    if (importBtn) importBtn.textContent = t('import');
-    var settingsBtn = document.getElementById('settingsBtn');
-    if (settingsBtn) settingsBtn.textContent = t('settings');
-
-    var tagBarSectionLabel = document.querySelector('#tagBarSection .panel-label');
-    if (tagBarSectionLabel) tagBarSectionLabel.textContent = t('tagManageLabel');
-    var addTagBtn = document.getElementById('addTagBtn');
-    if (addTagBtn) addTagBtn.textContent = t('addTag');
-
-    var inputBarSectionLabel = document.querySelector('#inputBarSection .panel-label');
-    if (inputBarSectionLabel) inputBarSectionLabel.textContent = t('searchBulkLabel');
-
-    var searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.placeholder = t('searchPlaceholder');
-
-    var toggleBulk = document.getElementById('toggleBulk');
-    if (toggleBulk) toggleBulk.textContent = t('bulkToggle');
-
-    var bulkInput = document.getElementById('bulkInput');
-    if (bulkInput) bulkInput.placeholder = t('bulkPlaceholder');
-
-    var bulkAddBtn = document.getElementById('bulkAddBtn');
-    if (bulkAddBtn) bulkAddBtn.textContent = t('bulkBtn');
-
-    var titleKR = document.getElementById('title-kr');
-    if (titleKR) titleKR.textContent = getRegionTitle('kr', state.regionFilter.kr);
-
-    var titleJP = document.getElementById('title-jp');
-    if (titleJP) titleJP.textContent = getRegionTitle('jp', state.regionFilter.jp);
-
-    updatePanelCounts();
-
-    var settingsModalTitle = document.querySelector('#settingsModal .modal-header h3');
-    if (settingsModalTitle) settingsModalTitle.textContent = t('modalTitle');
-
-    var tabTheme = document.querySelector('[data-tab="tab-theme"]');
-    if (tabTheme) tabTheme.textContent = t('tabTheme');
-    var tabCreator = document.querySelector('[data-tab="tab-creator"]');
-    if (tabCreator) tabCreator.textContent = t('tabCreator');
-
-    var settingLabels = document.querySelectorAll('#tab-theme .setting-label');
-    if (settingLabels[0]) settingLabels[0].textContent = t('themeMode');
-    if (settingLabels[1]) settingLabels[1].textContent = t('langLabel');
-
-    var themeSelect = document.getElementById('themeSelect');
-    if (themeSelect && themeSelect.options.length >= 2) {
-      themeSelect.options[0].textContent = t('themeLight');
-      themeSelect.options[1].textContent = t('themeDark');
-    }
-
-    var creatorName = document.querySelector('.creator-name');
-    if (creatorName) creatorName.textContent = t('creatorName');
-    var creatorDesc = document.querySelector('.creator-desc');
-    if (creatorDesc) creatorDesc.textContent = t('creatorDesc');
-
-    var tagRegionsModalTitle = document.getElementById('tagRegionsModalTitle');
-    if (tagRegionsModalTitle) tagRegionsModalTitle.textContent = t('tagRegionsTitle');
-    var selectTagLabel = document.getElementById('selectTagLabel');
-    if (selectTagLabel) selectTagLabel.textContent = t('selectTagLabel');
-
-    var tagRegionsEditBtn = document.getElementById('tagRegionsEditBtn');
-    if (tagRegionsEditBtn) {
-      tagRegionsEditBtn.textContent = isTagRegionsEditing ? t('done') : t('edit');
-    }
-
-    var selectAllLabel = document.getElementById('selectAllLabel');
-    if (selectAllLabel) selectAllLabel.textContent = t('selectAll');
-
-    updateSelectAllStatus();
-
-    ['kr', 'jp'].forEach(function(c) {
-      var loadingSpan = document.querySelector('#loading-' + c + ' span');
-      if (loadingSpan) loadingSpan.textContent = t('loading');
-    });
-  }
-
   function init(){
     Promise.all([
       loadCountry(KR_TOPO_URL, 'kr'),
@@ -1516,9 +1332,8 @@
     var isKr = country === 'kr';
     var currentKey = state.regionFilter[country] || 'all';
     var regionsDict = isKr ? KR_REGIONS : JP_REGIONS;
-    var lang = state.lang || 'ko';
 
-    titleEl.textContent = (isKr ? t('krTitle') : t('jpTitle')) + ' ' + t('regionSelectModalTitle');
+    titleEl.textContent = (isKr ? t('krTitle') : t('jpTitle')) + ' 권역 선택';
     listEl.innerHTML = '';
 
     Object.keys(regionsDict).forEach(function(key) {
@@ -1527,7 +1342,7 @@
       item.className = 'region-select-item' + (key === currentKey ? ' active' : '');
 
       var nameSpan = document.createElement('span');
-      nameSpan.textContent = reg.name[lang] || reg.name.ko;
+      nameSpan.textContent = reg.name;
       item.appendChild(nameSpan);
 
       if (key === currentKey) {
@@ -2423,13 +2238,13 @@
     modal.style.cssText = 'background:#ffffff;padding:24px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.2);width:320px;box-sizing:border-box;color:#333;';
 
     modal.innerHTML = 
-      '<h3 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111;">' + t('exportMapTitle') + '</h3>' +
+      '<h3 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111;">지도 내보내기</h3>' +
       '<div style="margin-bottom:14px;">' +
-        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">' + t('fileNameLabel') + '</label>' +
+        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">파일 이름</label>' +
         '<input type="text" id="exportFileName" value="' + defaultName + '" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-size:14px;outline:none;" />' +
       '</div>' +
       '<div style="margin-bottom:20px;">' +
-        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">' + t('extSelectLabel') + '</label>' +
+        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">확장자 선택</label>' +
         '<select id="exportExt" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-size:14px;background:#fff;outline:none;cursor:pointer;">' +
           '<option value="png">PNG (.png)</option>' +
           '<option value="jpg">JPG (.jpg)</option>' +
@@ -2437,8 +2252,8 @@
         '</select>' +
       '</div>' +
       '<div style="display:flex;justify-content:flex-end;gap:8px;">' +
-        '<button id="cancelExportBtn" style="padding:8px 14px;border:1px solid #ccc;background:#fff;color:#333;border-radius:6px;cursor:pointer;font-size:14px;">' + t('cancel') + '</button>' +
-        '<button id="confirmExportBtn" style="padding:8px 14px;border:none;background:#007aff;color:#fff;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;">' + t('save') + '</button>' +
+        '<button id="cancelExportBtn" style="padding:8px 14px;border:1px solid #ccc;background:#fff;color:#333;border-radius:6px;cursor:pointer;font-size:14px;">취소</button>' +
+        '<button id="confirmExportBtn" style="padding:8px 14px;border:none;background:#007aff;color:#fff;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;">저장</button>' +
       '</div>';
 
     overlay.appendChild(modal);
@@ -2529,13 +2344,12 @@
       document.body.removeChild(offscreenContainer);
 
       if (ext === 'svg') {
-        var blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
-        var url = URL.createObjectURL(blob);
+        var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
         var a = document.createElement('a');
-        a.href = url;
+        a.href = URL.createObjectURL(svgBlob);
         a.download = filename + '.svg';
         a.click();
-        URL.revokeObjectURL(url);
+        URL.revokeObjectURL(a.href);
         return;
       }
 
@@ -2548,25 +2362,20 @@
         canvas.width = exportSize;
         canvas.height = exportSize;
         var ctx = canvas.getContext('2d');
-        if (ext === 'jpg' || ext === 'jpeg') {
+        if (ext === 'jpg') {
           ctx.fillStyle = bgColor;
           ctx.fillRect(0, 0, exportSize, exportSize);
         }
         ctx.drawImage(img, 0, 0);
         URL.revokeObjectURL(url);
 
-        var mimeType = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
-        canvas.toBlob(function(blob) {
-          if (!blob) {
-            showToast(t('exportFail'));
-            return;
-          }
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = filename + '.' + (ext === 'jpeg' ? 'jpg' : ext);
-          a.click();
-          URL.revokeObjectURL(a.href);
-        }, mimeType, 0.95);
+        var mimeType = ext === 'jpg' ? 'image/jpeg' : 'image/png';
+        var dataUrl = canvas.toDataURL(mimeType, 0.95);
+
+        var downloadLink = document.createElement('a');
+        downloadLink.href = dataUrl;
+        downloadLink.download = filename + '.' + ext;
+        downloadLink.click();
       };
       img.onerror = function() {
         URL.revokeObjectURL(url);
@@ -2576,234 +2385,240 @@
     });
   }
 
-  var tooltip = document.getElementById('tooltip');
-  function showTooltip(event, name, tagId){
-    if (!tooltip) return;
+  function showTooltip(e, name, tagId) {
+    var tt = document.getElementById('tooltip');
+    if (!tt) return;
     var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
     var html = '<div class="tooltip-name">' + name + '</div>';
     if (tag) {
-      html += '<div class="tooltip-tag"><span class="tooltip-dot" style="background:' + tag.color + '"></span><span>' + tag.name + '</span></div>';
+      html += '<div class="tooltip-tag"><span class="tooltip-dot" style="background:' + tag.color + '"></span>' + tag.name + '</div>';
     }
-    tooltip.innerHTML = html;
-    tooltip.classList.add('visible');
-    moveTooltip(event);
-  }
-  function moveTooltip(event){
-    if (!tooltip) return;
-    var x = event.clientX + 12;
-    var y = event.clientY + 12;
-    if (x + 200 > window.innerWidth) x = event.clientX - 180;
-    if (y + 60 > window.innerHeight) y = event.clientY - 50;
-    tooltip.style.left = x + 'px';
-    tooltip.style.top = y + 'px';
-  }
-  function hideTooltip(){
-    if (!tooltip) return;
-    tooltip.classList.remove('visible');
+    tt.innerHTML = html;
+    tt.classList.add('visible');
+    moveTooltip(e);
   }
 
-  function showToast(msg){
+  function moveTooltip(e) {
+    var tt = document.getElementById('tooltip');
+    if (!tt) return;
+    tt.style.left = (e.clientX + 12) + 'px';
+    tt.style.top = (e.clientY + 12) + 'px';
+  }
+
+  function hideTooltip() {
+    var tt = document.getElementById('tooltip');
+    if (tt) tt.classList.remove('visible');
+  }
+
+  function showToast(msg) {
     var toast = document.getElementById('toast');
     if (!toast) return;
     toast.textContent = msg;
     toast.classList.add('visible');
-    setTimeout(function(){ toast.classList.remove('visible'); }, 2200);
+    setTimeout(function() {
+      toast.classList.remove('visible');
+    }, 2400);
+  }
+
+  function applyLanguage() {
+    document.title = t('title');
+    var h1 = document.querySelector('.brand h1'); if(h1) h1.textContent = t('headerTitle');
+    var p = document.querySelector('.brand p'); if(p) p.textContent = t('headerSub');
+    var trb = document.getElementById('tagRegionsBtn'); if(trb) trb.textContent = t('tagRegionsBtn');
+    var sb = document.getElementById('settingsBtn'); if(sb) sb.textContent = t('settings');
+    var rab = document.getElementById('resetAllBtn'); if(rab) rab.textContent = t('resetAll');
+    var eb = document.getElementById('exportBtn'); if(eb) eb.textContent = t('export');
+    var ib = document.getElementById('importBtn'); if(ib) ib.textContent = t('import');
+    var atb = document.getElementById('addTagBtn'); if(atb) atb.textContent = t('addTag');
+    var si = document.getElementById('searchInput'); if(si) si.placeholder = t('searchPlaceholder');
+    var tb = document.getElementById('toggleBulk'); if(tb) tb.textContent = t('bulkToggle');
+    var bi = document.getElementById('bulkInput'); if(bi) bi.placeholder = t('bulkPlaceholder');
+    var bab = document.getElementById('bulkAddBtn'); if(bab) bab.textContent = t('bulkBtn');
+    var tk = document.getElementById('title-kr'); if(tk && (state.regionFilter.kr === 'all')) tk.textContent = t('krTitle');
+    var tj = document.getElementById('title-jp'); if(tj && (state.regionFilter.jp === 'all')) tj.textContent = t('jpTitle');
+    
+    var mh = document.querySelector('#settingsModal .modal-header h3'); if(mh) mh.textContent = t('modalTitle');
+    var tb1 = document.querySelector('[data-tab="tab-theme"]'); if(tb1) tb1.textContent = t('tabTheme');
+    var tb2 = document.querySelector('[data-tab="tab-creator"]'); if(tb2) tb2.textContent = t('tabCreator');
+    
+    var sls = document.querySelectorAll('.setting-label');
+    if(sls[0]) sls[0].textContent = t('themeMode');
+    if(sls[1]) sls[1].textContent = t('langLabel');
+
+    var optL = document.querySelector('#themeSelect option[value="light"]'); if(optL) optL.textContent = t('themeLight');
+    var optD = document.querySelector('#themeSelect option[value="dark"]'); if(optD) optD.textContent = t('themeDark');
+
+    var cn = document.querySelector('.creator-name'); if(cn) cn.textContent = t('creatorName');
+    var cd = document.querySelector('.creator-desc'); if(cd) cd.textContent = t('creatorDesc');
+
+    var trmt = document.getElementById('tagRegionsModalTitle'); if(trmt) trmt.textContent = t('tagRegionsTitle');
+    var stl = document.getElementById('selectTagLabel'); if(stl) stl.textContent = t('selectTagLabel');
+    var sal = document.getElementById('selectAllLabel'); if(sal) sal.textContent = t('selectAll');
+
+    updatePanelCounts();
   }
 
   function setupEventListeners() {
-    document.getElementById('tagRegionsBtn').addEventListener('click', function() {
-      openTagRegionsModal();
-    });
+    setupColorPickerUI();
 
-    document.getElementById('resetAllBtn').addEventListener('click', function() {
-      resetAll();
-    });
-
-    document.getElementById('exportBtn').addEventListener('click', function() {
-      exportData();
-    });
-
-    document.getElementById('importBtn').addEventListener('click', function() {
-      document.getElementById('importFile').click();
-    });
-
-    document.getElementById('importFile').addEventListener('change', function(e) {
-      if (e.target.files && e.target.files[0]) {
-        importData(e.target.files[0]);
-      }
-    });
-
-    document.getElementById('settingsBtn').addEventListener('click', function() {
-      document.getElementById('settingsModal').classList.add('open');
-    });
-
-    document.getElementById('modalCloseBtn').addEventListener('click', function() {
-      document.getElementById('settingsModal').classList.remove('open');
-    });
-
-    document.querySelectorAll('#settingsModal .tab-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('#settingsModal .tab-btn').forEach(function(b) { b.classList.remove('active'); });
-        document.querySelectorAll('#settingsModal .tab-content').forEach(function(c) { c.classList.remove('active'); });
-        btn.classList.add('active');
-        var targetId = btn.dataset.tab;
-        var targetContent = document.getElementById(targetId);
-        if (targetContent) targetContent.classList.add('active');
-      });
-    });
-
-    document.getElementById('themeSelect').addEventListener('change', function(e) {
-      state.theme = e.target.value;
-      state.isEaster = false;
-      document.body.className = state.theme === 'dark' ? 'dark-theme' : '';
-      applyColors('kr'); applyColors('jp');
-    });
-
-    var langSelect = document.getElementById('langSelect');
-    langSelect.value = state.lang;
-    langSelect.addEventListener('change', function(e) {
-      state.lang = e.target.value;
-      updateLanguageUI();
-    });
-
-    document.getElementById('addTagBtn').addEventListener('click', function() {
+    document.getElementById('addTagBtn').addEventListener('click', function(){
       addTag();
     });
 
-    document.getElementById('foldTagbarBtn').addEventListener('click', function() {
-      var section = document.getElementById('tagBarSection');
-      section.classList.toggle('collapsed');
-      this.textContent = section.classList.contains('collapsed') ? '▼' : '▲';
+    document.getElementById('activeTagSelect').addEventListener('change', function(e){
+      setActiveTag(e.target.value);
     });
 
-    document.getElementById('foldInputbarBtn').addEventListener('click', function() {
-      var section = document.getElementById('inputBarSection');
-      section.classList.toggle('collapsed');
-      this.textContent = section.classList.contains('collapsed') ? '▼' : '▲';
-    });
-
-    document.getElementById('toggleBulk').addEventListener('click', function() {
+    document.getElementById('toggleBulk').addEventListener('click', function(){
       var panel = document.getElementById('bulkPanel');
       panel.classList.toggle('open');
     });
 
-    document.getElementById('bulkAddBtn').addEventListener('click', function() {
-      runBulkAdd();
+    document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
+
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('importBtn').addEventListener('click', function(){
+      document.getElementById('importFile').click();
+    });
+    document.getElementById('importFile').addEventListener('change', function(e){
+      if (e.target.files.length) importData(e.target.files[0]);
+      e.target.value = '';
     });
 
-    document.getElementById('title-kr').addEventListener('click', function() {
-      openRegionSelectModal('kr');
+    document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+
+    document.getElementById('foldTagbarBtn').addEventListener('click', function(){
+      var sec = document.getElementById('tagBarSection');
+      sec.classList.toggle('collapsed');
+      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
     });
 
-    document.getElementById('title-jp').addEventListener('click', function() {
-      openRegionSelectModal('jp');
+    document.getElementById('foldInputbarBtn').addEventListener('click', function(){
+      var sec = document.getElementById('inputBarSection');
+      sec.classList.toggle('collapsed');
+      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
     });
 
-    document.getElementById('zoomResetKR').addEventListener('click', function() {
-      if (svgRefs.kr) {
-        svgRefs.kr.svg.transition().duration(500).call(svgRefs.kr.zoom.transform, d3.zoomIdentity);
-      }
-    });
-
-    document.getElementById('zoomResetJP').addEventListener('click', function() {
-      if (svgRefs.jp) {
-        svgRefs.jp.svg.transition().duration(500).call(svgRefs.jp.zoom.transform, d3.zoomIdentity);
-      }
-    });
-
-    document.getElementById('pngKR').addEventListener('click', function() {
-      exportPNG('kr');
-    });
-
-    document.getElementById('pngJP').addEventListener('click', function() {
-      exportPNG('jp');
-    });
-
-    document.getElementById('foldMapKRBtn').addEventListener('click', function() {
+    document.getElementById('foldMapKRBtn').addEventListener('click', function(){
       var panel = document.getElementById('mapPanelKR');
       panel.classList.toggle('collapsed');
       this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
     });
 
-    document.getElementById('foldMapJPBtn').addEventListener('click', function() {
+    document.getElementById('foldMapJPBtn').addEventListener('click', function(){
       var panel = document.getElementById('mapPanelJP');
       panel.classList.toggle('collapsed');
       this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
     });
 
-    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function() {
+    document.getElementById('title-kr').addEventListener('click', function(){ openRegionSelectModal('kr'); });
+    document.getElementById('title-jp').addEventListener('click', function(){ openRegionSelectModal('jp'); });
+
+    document.getElementById('regionSelectCloseBtn').addEventListener('click', function(){
+      document.getElementById('regionSelectModal').classList.remove('open');
+    });
+
+    document.getElementById('zoomResetKR').addEventListener('click', function(){
+      if (svgRefs.kr) svgRefs.kr.svg.transition().duration(500).call(svgRefs.kr.zoom.transform, d3.zoomIdentity);
+    });
+    document.getElementById('zoomResetJP').addEventListener('click', function(){
+      if (svgRefs.jp) svgRefs.jp.svg.transition().duration(500).call(svgRefs.jp.zoom.transform, d3.zoomIdentity);
+    });
+
+    document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
+    document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
+
+    document.getElementById('settingsBtn').addEventListener('click', function(){
+      document.getElementById('settingsModal').classList.add('open');
+    });
+    document.getElementById('modalCloseBtn').addEventListener('click', function(){
+      document.getElementById('settingsModal').classList.remove('open');
+    });
+
+    document.getElementById('tagRegionsBtn').addEventListener('click', function(){
+      openTagRegionsModal(state.activeTagId);
+    });
+    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){
       document.getElementById('tagRegionsModal').classList.remove('open');
     });
 
-    document.getElementById('tagRegionsSelect').addEventListener('change', function(e) {
+    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){
       renderTagRegionsList(e.target.value);
     });
 
-    document.getElementById('tagRegionsEditBtn').addEventListener('click', function() {
+    document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
       isTagRegionsEditing = !isTagRegionsEditing;
       this.textContent = isTagRegionsEditing ? t('done') : t('edit');
-      var select = document.getElementById('tagRegionsSelect');
-      renderTagRegionsList(select.value);
+      var selectVal = document.getElementById('tagRegionsSelect').value;
+      renderTagRegionsList(selectVal);
     });
 
-    document.getElementById('selectAllTagRegions').addEventListener('change', function(e) {
-      var checked = e.target.checked;
-      document.querySelectorAll('.region-select-cb').forEach(function(cb) {
-        cb.checked = checked;
-      });
+    document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
+      var cbs = document.querySelectorAll('.region-select-cb');
+      cbs.forEach(function(cb){ cb.checked = e.target.checked; });
       updateSelectAllStatus();
     });
 
-    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function() {
-      var tagId = document.getElementById('tagRegionsSelect').value;
+    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
       var cbs = document.querySelectorAll('.region-select-cb:checked');
       if (cbs.length === 0) {
         showToast(t('selectToDelete'));
         return;
       }
-      cbs.forEach(function(cb) {
+      cbs.forEach(function(cb){
         var key = cb.dataset.key;
-        if (state.assignments[key] === tagId) {
-          delete state.assignments[key];
-        }
+        if (key) delete state.assignments[key];
       });
       assignmentsChanged();
-      renderTagRegionsList(tagId);
-      updateTagSelectOptionText(tagId);
+      var selectVal = document.getElementById('tagRegionsSelect').value;
+      renderTagRegionsList(selectVal);
+      updateTagSelectOptionText(selectVal);
     });
 
-    document.getElementById('regionSelectCloseBtn').addEventListener('click', function() {
-      document.getElementById('regionSelectModal').classList.remove('open');
+    document.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+        btn.classList.add('active');
+        var tabId = btn.dataset.tab;
+        document.getElementById(tabId).classList.add('active');
+      });
     });
 
-    document.getElementById('creatorImg').addEventListener('click', function() {
-      state.isEaster = !state.isEaster;
-      if (state.isEaster) {
-        document.body.className = 'easter-theme';
-      } else {
-        document.body.className = state.theme === 'dark' ? 'dark-theme' : '';
+    document.getElementById('themeSelect').addEventListener('change', function(e){
+      state.theme = e.target.value;
+      state.isEaster = false;
+      document.body.className = state.theme === 'dark' ? 'dark-theme' : '';
+    });
+
+    document.getElementById('langSelect').addEventListener('change', function(e){
+      state.lang = e.target.value;
+      applyLanguage();
+      renderTags();
+    });
+
+    var creatorClickCount = 0;
+    document.getElementById('creatorImg').addEventListener('click', function(){
+      creatorClickCount++;
+      if (creatorClickCount >= 5) {
+        creatorClickCount = 0;
+        state.isEaster = !state.isEaster;
+        if (state.isEaster) {
+          document.body.className = 'easter-theme';
+          showToast('⚡ EASTER EGG MODE UNLOCKED ⚡');
+        } else {
+          document.body.className = state.theme === 'dark' ? 'dark-theme' : '';
+          showToast(t('themeRestored'));
+        }
       }
-      applyColors('kr'); applyColors('jp');
-    });
-
-    document.getElementById('activeTagSelect').addEventListener('change', function(e) {
-      setActiveTag(e.target.value);
     });
   }
 
-  setupColorPickerUI();
+  addTag(t('defaultTagVisit'), '#0071E3');
+  addTag(t('defaultTagPlan'), '#FF9500');
+
   setupEventListeners();
-
-  if (state.tags.length === 0) {
-    addTag(t('defaultTagVisit'), '#0071E3');
-    addTag(t('defaultTagPlan'), '#FF9500');
-  } else {
-    renderTags();
-  }
-
-  updateLanguageUI();
   init();
-
 })();
 </script>
 </body>
