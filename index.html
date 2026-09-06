@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<link href="styles/style.css" rel="stylesheet" type="text/css" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/icon.svg">
@@ -66,29 +65,30 @@
     --modal-overlay: rgba(0,255,239,0.2);
   }
 
-  *{box-sizing:border-box;}
-  html,body{height:100%;margin:0;}
-  body{
-    font-family:'Pretendard', 'Pretendard JP', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-    background:var(--bg);
-    color:var(--text-1);
-    -webkit-font-smoothing:antialiased;
-    overflow:hidden;
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: 'Pretendard', 'Pretendard JP', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: var(--bg);
+    color: var(--text-1);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
     transition: background 0.3s, color 0.3s;
   }
-  button, input, select, textarea{ font-family:inherit; }
+  button, input, select, textarea { font-family: inherit; }
 
-  .app{height:100vh;display:flex;flex-direction:column;}
+  .app { height: 100vh; display: flex; flex-direction: column; }
 
-  /* Topbar, Tags, Modals ... 기존 CSS 동일하게 유지 */
-  .topbar{flex:none;min-height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 24px;background:var(--surface-2);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
-  .brand h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-0.01em;}
-  .brand p{font-size:12px;color:var(--text-2);margin:2px 0 0;}
-  .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-1);border-radius:980px;padding:7px 14px;font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .btn-ghost:hover{background:rgba(0,0,0,.045);}
-  body.dark-theme .btn-ghost:hover{background:rgba(255,255,255,.08);}
+  /* Header / Topbar */
+  .topbar { flex: none; min-height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 8px 24px; background: var(--surface-2); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+  .brand h1 { font-size: 17px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .brand p { font-size: 12px; color: var(--text-2); margin: 2px 0 0; }
+  .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-1); border-radius: 980px; padding: 7px 14px; font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .btn-ghost:hover { background: rgba(0,0,0,.045); }
+  body.dark-theme .btn-ghost:hover { background: rgba(255,255,255,.08); }
 
+  /* Tagbar Section & Collapsible */
   .section-panel { border-bottom: 1px solid var(--border); background: var(--surface); transition: all 0.2s ease; position: relative; }
   .panel-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 24px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
   .panel-label { font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
@@ -96,82 +96,91 @@
   .fold-toggle-btn:hover { background: var(--bg); color: var(--text-1); border-color: var(--accent); }
 
   .tagbar-content { display: flex; align-items: center; gap: 14px; padding: 10px 24px; position: relative; }
-  .inputbar-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 24px; }
-  .section-panel.collapsed .tagbar-content, .section-panel.collapsed .inputbar-content { display: none !important; }
+  .section-panel.collapsed .tagbar-content { display: none !important; }
   .section-panel.collapsed .panel-header-bar { border-bottom: none; }
 
-  .tag-rail{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px;}
-  .tag-rail::-webkit-scrollbar{display:none;}
-  .chip{display:flex;align-items:center;gap:6px;padding:5px 8px 5px 6px;border-radius:980px;border:1.5px solid var(--border);background:var(--surface-2);flex:none;cursor:pointer;transition:border-color .15s, background .15s, box-shadow .15s;}
-  .chip.active{border-color:var(--accent);background:var(--accent-soft);}
-  .chip-swatch{position:relative;width:22px;height:22px;border-radius:50%;box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);flex:none;cursor:pointer;transition: transform 0.15s ease, box-shadow 0.15s ease;}
-  .chip-swatch:hover {transform: scale(1.1); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.2);}
+  /* Tag Chips & Swatches */
+  .tag-rail { display: flex; gap: 8px; overflow-x: auto; flex: 1; scrollbar-width: none; padding: 2px; }
+  .tag-rail::-webkit-scrollbar { display: none; }
+  .chip { display: flex; align-items: center; gap: 6px; padding: 5px 10px 5px 6px; border-radius: 980px; border: 1.5px solid var(--border); background: var(--surface-2); flex: none; cursor: pointer; transition: all .15s; }
+  .chip.active { border-color: var(--accent); background: var(--accent-soft); }
+  
+  .chip-swatch { position: relative; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1); flex: none; cursor: pointer; transition: transform 0.15s ease; }
+  .chip-swatch:hover { transform: scale(1.1); }
+  .swatch-picker { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 
-  .chip-name{font-size:13px;font-weight:500;outline:none;padding:0 2px;min-width:14px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-1);}
-  .chip-count{font-size:11px;color:var(--text-2);min-width:16px;padding:1px 5px;border-radius:980px;background:rgba(0,0,0,0.06);text-align:center;cursor:pointer;}
-  .chip-count:hover {background:var(--accent); color:#ffffff;}
-  .chip-del{border:none;background:transparent;color:var(--text-2);font-size:15px;line-height:1;width:18px;height:18px;border-radius:50%;cursor:pointer;flex:none;}
-  .chip-del:hover{background:rgba(0,0,0,.07);color:var(--danger);}
-  .add-tag-btn{flex:none;border:1.5px dashed var(--border);background:transparent;color:var(--text-2);border-radius:980px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
-  .add-tag-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .chip-name { font-size: 13px; font-weight: 500; outline: none; padding: 0 4px; min-width: 20px; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-1); border-radius: 4px; }
+  .chip-name:focus { background: var(--surface); box-shadow: 0 0 0 1px var(--accent); }
+  
+  .chip-count { font-size: 11px; color: var(--text-2); min-width: 18px; padding: 2px 6px; border-radius: 980px; background: rgba(0,0,0,0.06); text-align: center; cursor: pointer; font-weight: 600; }
+  body.dark-theme .chip-count { background: rgba(255,255,255,0.1); }
+  .chip-count:hover { background: var(--accent); color: #ffffff; }
+  
+  .chip-del { border: none; background: transparent; color: var(--text-2); font-size: 15px; line-height: 1; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; flex: none; display: flex; align-items: center; justify-content: center; }
+  .chip-del:hover { background: rgba(0,0,0,.07); color: var(--danger); }
 
-  .maps{flex:1;display:flex;min-height:0;}
-  .map-panel{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);position:relative;transition: all 0.2s ease;}
-  .map-panel:last-child{border-right:none;}
-  .map-panel.collapsed { flex: none !important; }
-  .map-panel.collapsed .map-canvas { display: none !important; }
+  .add-tag-btn { flex: none; border: 1.5px dashed var(--border); background: transparent; color: var(--text-2); border-radius: 980px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .add-tag-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* 국가/지역명 클릭 스타일 */
-  .clickable-title {
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 6px;
-    transition: background 0.2s, color 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
+  /* Map Container */
+  .maps { flex: 1; display: flex; min-height: 0; }
+  .map-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--border); position: relative; }
+  .map-panel:last-child { border-right: none; }
+
+  .panel-header { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; }
+  .panel-title { display: flex; align-items: baseline; gap: 7px; }
+  .panel-title h2 { font-size: 15px; font-weight: 600; margin: 0; }
+  .panel-title .sub { font-size: 12px; color: var(--text-2); font-weight: 400; }
+
+  /* clickable region title */
+  .clickable-title { cursor: pointer; padding: 3px 8px; border-radius: 6px; transition: background 0.2s, color 0.2s; display: inline-flex; align-items: center; gap: 4px; }
   .clickable-title:hover { background: rgba(0,0,0,0.05); color: var(--accent); }
   body.dark-theme .clickable-title:hover { background: rgba(255,255,255,0.1); }
 
-  .panel-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}
-  .panel-title{display:flex;align-items:baseline;gap:7px;}
-  .panel-title h2{font-size:15px;font-weight:600;margin:0;}
-  .panel-title .sub{font-size:12px;color:var(--text-2);font-weight:400;}
-  .panel-tools{display:flex;gap:6px;}
-  .icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;}
-  .icon-btn:hover{background:var(--bg);color:var(--text-1);}
+  .panel-tools { display: flex; gap: 6px; }
+  .icon-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
+  .icon-btn:hover { background: var(--bg); color: var(--text-1); }
 
-  .map-canvas{flex:1;position:relative;min-height:0;}
-  .map-canvas svg{width:100%;height:100%;display:block;cursor:grab;}
-  .map-canvas svg:active{cursor:grabbing;}
-  .map-canvas path{transition:fill .2s;cursor:pointer;vector-effect:non-scaling-stroke;}
+  .map-canvas { flex: 1; position: relative; min-height: 0; }
+  .map-canvas svg { width: 100%; height: 100%; display: block; cursor: grab; }
+  .map-canvas svg:active { cursor: grabbing; }
+  .map-canvas path { transition: fill .15s; cursor: pointer; vector-effect: non-scaling-stroke; }
+  .map-canvas path:hover { stroke: var(--map-hover-stroke) !important; stroke-width: 1.5px !important; }
 
-  /* 로딩 상태 / 모달 스타일들... */
-  .loading-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--bg);color:var(--text-2);font-size:13px;z-index:10;}
-  .spinner{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  
-  .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500;}
-  .modal-overlay.open{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:90%;max-width:440px;box-shadow:var(--shadow-md);overflow:hidden;}
-  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
-  .modal-header h3{margin:0;font-size:16px;font-weight:600;}
-  .modal-close{background:transparent;border:none;font-size:20px;color:var(--text-2);cursor:pointer;}
-  
-  /* 지역 선택 모달용 Grid */
+  /* Spinner & Overlay */
+  .loading-state { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: var(--bg); color: var(--text-2); font-size: 13px; z-index: 10; }
+  .spinner { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--border); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Modals */
+  .modal-overlay { position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 500; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 90%; max-width: 520px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: var(--shadow-md); overflow: hidden; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .modal-header h3 { margin: 0; font-size: 16px; font-weight: 600; }
+  .modal-close { background: transparent; border: none; font-size: 20px; color: var(--text-2); cursor: pointer; }
+  .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+
   .region-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .region-btn { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text-1); cursor: pointer; font-size: 13.5px; text-align: left; transition: all 0.15s ease; font-weight: 500; }
+  .region-btn { padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); color: var(--text-1); cursor: pointer; font-size: 13.5px; text-align: left; transition: all 0.15s ease; font-weight: 500; }
   .region-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
 
-  .tooltip{position:fixed;z-index:100;background:rgba(29,29,31,.92);color:#fff;padding:8px 12px;border-radius:10px;font-size:12.5px;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s, transform .12s;backdrop-filter:blur(6px);max-width:220px;}
-  .tooltip.visible{opacity:1;transform:translateY(0);}
+  /* Tag Regions Modal */
+  .tag-group-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .tag-group-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .tag-group-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+  .tag-group-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .region-badge { font-size: 12px; padding: 3px 8px; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); color: var(--text-1); }
 
-  @media (max-width:900px){
-    body{overflow:auto;}
-    .app{height:auto;min-height:100vh;}
-    .maps{flex-direction:column;}
-    .map-panel{border-right:none;border-bottom:1px solid var(--border);min-height:380px;}
+  /* Tooltip */
+  .tooltip { position: fixed; z-index: 1000; background: rgba(29,29,31,.92); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 12.5px; pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s; backdrop-filter: blur(6px); max-width: 240px; box-shadow: var(--shadow-sm); }
+  .tooltip.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .app { height: auto; min-height: 100vh; }
+    .maps { flex-direction: column; }
+    .map-panel { border-right: none; border-bottom: 1px solid var(--border); min-height: 420px; }
   }
 </style>
 </head>
@@ -193,6 +202,7 @@
   <section class="section-panel" id="tagBarSection">
     <div class="panel-header-bar">
       <span class="panel-label">🏷️ 태그 관리</span>
+      <button class="fold-toggle-btn" id="foldTagBarBtn" title="접기/펼치기">▲</button>
     </div>
     <div class="tagbar-content">
       <div class="tag-rail" id="tagRail"></div>
@@ -245,10 +255,52 @@
   <div class="modal">
     <div class="modal-header">
       <h3 id="regionModalTitle">지도 지역 선택</h3>
-      <button class="modal-close" onclick="closeRegionModal()">&times;</button>
+      <button class="modal-close" onclick="closeModal('regionModal')">&times;</button>
     </div>
-    <div class="modal-body" style="padding: 16px;">
+    <div class="modal-body">
       <div id="regionGrid" class="region-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 태그별 지역 보기 모달 -->
+<div class="modal-overlay" id="tagRegionsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📋 태그별 색칠된 지역</h3>
+      <button class="modal-close" onclick="closeModal('tagRegionsModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="tagRegionsModalBody">
+      <!-- 동적 생성 -->
+    </div>
+  </div>
+</div>
+
+<!-- 설정 모달 -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⚙️ 설정 및 테마</h3>
+      <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+    </div>
+    <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <label style="font-weight:600; font-size:13.5px; display:block; margin-bottom:8px;">화면 테마</label>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-ghost" style="flex:1;" onclick="setTheme('light')">☀️ 라이트</button>
+          <button class="btn-ghost" style="flex:1;" onclick="setTheme('dark')">🌙 다크</button>
+          <button class="btn-ghost" style="flex:1;" onclick="setTheme('easter')">⚡ 사이버펑크</button>
+        </div>
+      </div>
+      <hr style="border:none; border-top:1px solid var(--border); margin:4px 0;">
+      <div>
+        <label style="font-weight:600; font-size:13.5px; display:block; margin-bottom:8px;">백업 및 복원</label>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-ghost" style="flex:1;" onclick="exportData()">💾 데이터 내보내기</button>
+          <button class="btn-ghost" style="flex:1;" onclick="document.getElementById('importFileInput').click()">📂 데이터 가져오기</button>
+          <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="importData(event)">
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -259,47 +311,39 @@
 (function(){
   "use strict";
 
-  // 기존 지도 fallback URL
+  // 기본 지도 URL (Fallback)
   var KR_TOPO_URL_DEFAULT = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
   var JP_TOPO_URL_DEFAULT = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
 
-  // 2026 최신 지도 (해당 URL에 데이터가 없을 경우 자동으로 DEFAULT로 대체됩니다)
+  // 2026 최신 지도 및 한반도 URL
   var KR_TOPO_URL_2026 = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2026/json/skorea-municipalities-2026-topo-simple.json';
   var KR_PENINSULA_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2026/json/korea-peninsula-2026-topo-simple.json';
 
-  var IOS_PALETTE = ['#0DFFEF', '#39C5BB', '#FF3B30', '#FF9500', '#22C55E', '#007AFF', '#AF52DE'];
+  var PALETTE = ['#FF3B30', '#007AFF', '#34C759', '#FF9500', '#AF52DE', '#00C7BE', '#FF2D55'];
 
-  // 지도 필터 및 URL 구성 설정 데이터
+  // 권역별/지역별 필터 및 데이터 구성
   var MAP_REGIONS = {
     kr: [
-      { id: 'kr_all', label: '남한 전체 (기본값)', url: KR_TOPO_URL_2026, filter: null },
+      { id: 'kr_all', label: '대한민국 전체 (기본값)', url: KR_TOPO_URL_2026, filter: null },
       { id: 'kr_peninsula', label: '한반도 전체 (남북한)', url: KR_PENINSULA_URL, filter: null },
       { id: 'kr_capital', label: '수도권 (서울/경기/인천)', url: KR_TOPO_URL_2026, filter: ['11','23','31'] },
       { id: 'kr_buulgyeong', label: '부울경 (부산/울산/경남)', url: KR_TOPO_URL_2026, filter: ['21','26','38'] },
-      { id: 'kr_jeju', label: '제주특별자치도', url: KR_TOPO_URL_2026, filter: ['39'] },
-      { id: 'kr_gangwon', label: '강원특별자치도', url: KR_TOPO_URL_2026, filter: ['32'] }
+      { id: 'kr_honam', label: '호남권 (광주/전북/전남)', url: KR_TOPO_URL_2026, filter: ['24','35','36'] },
+      { id: 'kr_chungcheong', label: '충청권 (대전/세종/충북/충남)', url: KR_TOPO_URL_2026, filter: ['25','29','33','34'] },
+      { id: 'kr_daegyeong', label: '대경권 (대구/경북)', url: KR_TOPO_URL_2026, filter: ['22','37'] },
+      { id: 'kr_gangwon', label: '강원특별자치도', url: KR_TOPO_URL_2026, filter: ['32'] },
+      { id: 'kr_jeju', label: '제주특별자치도', url: KR_TOPO_URL_2026, filter: ['39'] }
     ],
     jp: [
       { id: 'jp_all', label: '일본 전체 (기본값)', url: JP_TOPO_URL_DEFAULT, filter: null },
-      { id: 'jp_hokkaido', label: '홋카이도', url: JP_TOPO_URL_DEFAULT, filter: ['北海道'] },
       { id: 'jp_kanto', label: '간토 (도쿄/요코하마 등)', url: JP_TOPO_URL_DEFAULT, filter: ['茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県'] },
       { id: 'jp_kansai', label: '간사이 (오사카/교토 등)', url: JP_TOPO_URL_DEFAULT, filter: ['三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県'] },
-      { id: 'jp_kyushu', label: '규슈 (후쿠오카 등)', url: JP_TOPO_URL_DEFAULT, filter: ['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'] }
+      { id: 'jp_chubu', label: '주부 (나고야/시즈오카 등)', url: JP_TOPO_URL_DEFAULT, filter: ['新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県'] },
+      { id: 'jp_kyushu', label: '규슈 & 오키나와', url: JP_TOPO_URL_DEFAULT, filter: ['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'] },
+      { id: 'jp_hokkaido', label: '홋카이도', url: JP_TOPO_URL_DEFAULT, filter: ['北海道'] },
+      { id: 'jp_tohoku', label: '도호쿠', url: JP_TOPO_URL_DEFAULT, filter: ['青森県','岩手県','宮城県','秋田県','山形県','福島県'] }
     ]
   };
-
-  var state = {
-    tags: [
-      { id: 't1', name: '방문', color: '#FF3B30' },
-      { id: 't2', name: '예정', color: '#007AFF' }
-    ],
-    activeTagId: 't1',
-    assignments: {},
-    countries: { kr: null, jp: null },
-    currentRegionConfig: { kr: MAP_REGIONS.kr[0], jp: MAP_REGIONS.jp[0] }
-  };
-
-  var svgRefs = {};
 
   var KR_SIDO = {
     '11':['서울특별시','서울'], '21':['부산광역시','부산'], '22':['대구광역시','대구'],
@@ -310,23 +354,56 @@
     '38':['경상남도','경남'], '39':['제주특별자치도','제주도']
   };
 
+  var state = {
+    tags: [
+      { id: 't1', name: '방문함', color: '#FF3B30' },
+      { id: 't2', name: '가볼 곳', color: '#007AFF' }
+    ],
+    activeTagId: 't1',
+    assignments: {},
+    theme: 'light',
+    countries: { kr: null, jp: null },
+    currentRegionConfig: { kr: MAP_REGIONS.kr[0], jp: MAP_REGIONS.jp[0] }
+  };
+
+  var svgRefs = {};
+  var tooltip = document.getElementById('tooltip');
+
+  function saveState(){
+    try {
+      localStorage.setItem('paintntag_state', JSON.stringify({
+        tags: state.tags,
+        activeTagId: state.activeTagId,
+        assignments: state.assignments,
+        theme: state.theme
+      }));
+    } catch(e){}
+  }
+
+  function loadState(){
+    try {
+      var raw = localStorage.getItem('paintntag_state');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed.tags) state.tags = parsed.tags;
+        if (parsed.activeTagId) state.activeTagId = parsed.activeTagId;
+        if (parsed.assignments) state.assignments = parsed.assignments;
+        if (parsed.theme) {
+          state.theme = parsed.theme;
+          window.setTheme(state.theme);
+        }
+      }
+    } catch(e){}
+  }
+
   function regionInfo(feature, country){
     var p = feature.properties || {};
     if (country === 'kr'){
       var codeStr = String(p.code || p.id || '');
       var prefix = codeStr.slice(0,2);
-      
       var sido = KR_SIDO[prefix];
-      var display = sido ? (sido[0] + ' ' + p.name) : (p.name || '북한 지역');
-      var aliases = [p.name, display];
-      
-      if (sido) {
-        aliases = aliases.concat(sido);
-      } else if (codeStr && !codeStr.startsWith('1') && !codeStr.startsWith('2') && !codeStr.startsWith('3')) {
-        aliases.push('북한'); // 북한 행정구역 식별용
-      }
-      
-      return { key: 'kr:' + (p.code || p.name), display: display, prefix: prefix, aliases: aliases };
+      var display = sido ? (sido[0] + ' ' + (p.name || '')) : (p.name || '북한 지역');
+      return { key: 'kr:' + (p.code || p.name), display: display, prefix: prefix };
     } else {
       var pref = p.N03_001 || '';
       var town = p.N03_004 || pref;
@@ -344,31 +421,29 @@
     return [];
   }
 
-  // 데이터 로드 & 안전장치 (2026 맵이 없을경우 2018 맵 호출)
   function loadCountry(url, country){
     var el = document.getElementById('loading-' + country);
     if(el) el.style.display = 'flex';
-    
+
     return fetch(url).then(function(res){
       if (!res.ok) {
-        // Fallback 처리
         if (country === 'kr' && url !== KR_TOPO_URL_DEFAULT) {
-          console.warn("최신 지도 URL을 찾을 수 없어 기본 지도로 대체합니다.");
           return fetch(KR_TOPO_URL_DEFAULT).then(r => r.json());
         }
-        throw new Error('network');
+        throw new Error('network error');
       }
       return res.json();
     }).then(function(topo){
       var features = topologyToFeatures(topo);
-      // 필터링 및 렌더링 성능을 위해 info 객체를 미리 매핑해둡니다
       features.forEach(function(f){ f._info = regionInfo(f, country); });
       return { features: features, rawTopo: topo };
     });
   }
 
   function init(){
+    loadState();
     renderTags();
+
     Promise.all([
       loadCountry(state.currentRegionConfig.kr.url, 'kr'),
       loadCountry(state.currentRegionConfig.jp.url, 'jp')
@@ -379,66 +454,36 @@
       renderMap('jp');
     }).catch(function(err){
       console.error(err);
-      alert('지도 데이터를 불러오지 못했습니다.');
+      alert('지도를 불러오는 데 실패했습니다.');
     });
-  }
 
-  // 모달 제어 전역 함수들
-  window.openRegionModal = function(country) {
-    var modal = document.getElementById('regionModal');
-    document.getElementById('regionModalTitle').textContent = country === 'kr' ? '대한민국 지역 선택' : '일본 지역 선택';
-    var grid = document.getElementById('regionGrid');
-    grid.innerHTML = '';
-    
-    MAP_REGIONS[country].forEach(function(config) {
-      var btn = document.createElement('button');
-      btn.className = 'region-btn';
-      if (state.currentRegionConfig[country].id === config.id) {
-        btn.style.borderColor = 'var(--accent)';
-        btn.style.background = 'var(--accent-soft)';
+    // 접기/펼치기 이벤트
+    document.getElementById('foldTagBarBtn').addEventListener('click', function(){
+      var sec = document.getElementById('tagBarSection');
+      sec.classList.toggle('collapsed');
+      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
+    });
+
+    document.getElementById('tagRegionsBtn').addEventListener('click', function(){ openTagRegionsModal(); });
+    document.getElementById('settingsBtn').addEventListener('click', function(){ window.openModal('settingsModal'); });
+    document.getElementById('resetAllBtn').addEventListener('click', function(){
+      if(confirm('모든 색칠 정보를 초기화하시겠습니까?')) {
+        state.assignments = {};
+        saveState();
+        applyColors('kr');
+        applyColors('jp');
       }
-      btn.textContent = config.label;
-      btn.onclick = function() { changeRegion(country, config.id); };
-      grid.appendChild(btn);
     });
-    
-    modal.classList.add('open');
-  };
-
-  window.closeRegionModal = function() {
-    document.getElementById('regionModal').classList.remove('open');
-  };
-
-  // 구역 변경시 지도 재렌더링 기능
-  function changeRegion(country, regionId) {
-    var config = MAP_REGIONS[country].find(r => r.id === regionId);
-    var prevUrl = state.currentRegionConfig[country].url;
-    state.currentRegionConfig[country] = config;
-    
-    document.getElementById('title-' + country).innerHTML = config.label + ' <span style="font-size: 11px;">▼</span>';
-
-    // 새로운 URL(북한 포함 등)일 경우 다시 로드
-    if (config.url !== prevUrl) {
-      loadCountry(config.url, country).then(res => {
-        state.countries[country] = res;
-        renderMap(country);
-        closeRegionModal();
-      }).catch(err => console.error(err));
-    } else {
-      // 필터값만 달라졌을 경우 그대로 필터 적용해 렌더링
-      renderMap(country);
-      closeRegionModal();
-    }
   }
 
+  // 지도 렌더링 (선택 영역 확대 fitExtent)
   function renderMap(country){
     var container = document.getElementById('map-' + country);
     if (!container) return;
-    
-    // 로딩 숨김
+
     var el = document.getElementById('loading-' + country);
     if(el) el.style.display = 'none';
-    
+
     container.innerHTML = '';
     var svgHolder = document.createElement('div');
     svgHolder.style.width = '100%'; svgHolder.style.height = '100%';
@@ -447,11 +492,10 @@
     var rect = container.getBoundingClientRect();
     var width = Math.max(rect.width, 100);
     var height = Math.max(rect.height, 100);
-    
+
     var features = state.countries[country] ? state.countries[country].features : [];
     var filter = state.currentRegionConfig[country].filter;
-    
-    // 필터값에 맞게 구역 자르기
+
     if (filter) {
       features = features.filter(function(f) {
         if (country === 'kr') return filter.indexOf(f._info.prefix) !== -1;
@@ -461,7 +505,7 @@
 
     var fc = { type:'FeatureCollection', features: features };
 
-    // fitExtent로 선택된 영역만 화면 꽉차게 조정
+    // D3 fitExtent 사용 (선택 권역에 맞게 꽉 차게 피팅)
     var projection = d3.geoMercator();
     projection.fitExtent([[16,16],[width-16,height-16]], fc);
     var pathGen = d3.geoPath(projection);
@@ -471,7 +515,6 @@
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
     var g = svg.append('g').attr('class','map-g');
-    
     var strokeW = country === 'jp' ? 0.35 : 0.6;
 
     var paths = g.selectAll('path')
@@ -484,29 +527,52 @@
       .attr('stroke-width', strokeW)
       .attr('vector-effect', 'non-scaling-stroke')
       .attr('stroke-linejoin', 'round')
-      .attr('data-key', function(d){ return d._info.key; })
       .on('click', function(event, d){
-        if (!state.activeTagId) return alert('태그를 선택하세요');
+        if (!state.activeTagId) return alert('먼저 활성화할 태그를 선택해주세요.');
         var k = d._info.key;
         if (state.assignments[k] === state.activeTagId) delete state.assignments[k];
         else state.assignments[k] = state.activeTagId;
+        
+        saveState();
         applyColors(country);
+        renderTags(); // 카운트 배지 갱신
+      })
+      .on('mouseover', function(event, d){
+        var info = d._info;
+        var tagId = state.assignments[info.key];
+        var tag = tagId ? state.tags.find(t => t.id === tagId) : null;
+
+        var html = '<div style="font-weight:600;margin-bottom:2px;">' + info.display + '</div>';
+        if (tag) {
+          html += '<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;">' +
+                  '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + tag.color + ';"></span>' +
+                  '<span>' + tag.name + '</span></div>';
+        } else {
+          html += '<div style="font-size:11px;color:var(--text-2);">색칠 안 됨</div>';
+        }
+        tooltip.innerHTML = html;
+        tooltip.classList.add('visible');
+      })
+      .on('mousemove', function(event){
+        tooltip.style.left = (event.clientX + 12) + 'px';
+        tooltip.style.top = (event.clientY + 12) + 'px';
+      })
+      .on('mouseout', function(){
+        tooltip.classList.remove('visible');
       });
 
-    var maxZoom = country === 'jp' ? 50 : 15;
+    var maxZoom = country === 'jp' ? 40 : 20;
     var zoom = d3.zoom().scaleExtent([1, maxZoom]).on('zoom', function(event){
       g.attr('transform', event.transform);
     });
     svg.call(zoom);
-    
-    // 확대 초기화 버튼 바인딩
+
     var resetBtn = document.getElementById('zoomReset' + (country === 'kr' ? 'KR' : 'JP'));
     if(resetBtn) {
-      // 기존 이벤트 제거후 재할당위해 복제
       var newBtn = resetBtn.cloneNode(true);
       resetBtn.parentNode.replaceChild(newBtn, resetBtn);
       newBtn.addEventListener('click', function(){
-        svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+        svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
       });
     }
 
@@ -520,56 +586,250 @@
 
     ref.paths.attr('fill', function(d){
       var tagId = state.assignments[d._info.key];
-      var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
+      var tag = tagId && state.tags.find(t => t.id === tagId);
       return tag ? tag.color : 'var(--map-fill)';
     });
-    
-    // 선택 카운트 갱신
-    var n = 0;
-    Object.keys(state.assignments).forEach(function(k){ if (k.indexOf(country+':') === 0) n++; });
-    document.getElementById('count-' + country).textContent = n + '개 색칠됨';
+
+    var count = 0;
+    Object.keys(state.assignments).forEach(function(k){
+      if (k.indexOf(country + ':') === 0) count++;
+    });
+    document.getElementById('count-' + country).textContent = count + '개 색칠됨';
   }
 
-  // 간단한 태그 렌더링 시스템
+  // 태그 렌더링 및 기능 (색상 변경, 이름 편집, 삭제, 카운트)
   function renderTags(){
     var rail = document.getElementById('tagRail');
     rail.innerHTML = '';
+
     state.tags.forEach(function(tag){
+      var count = Object.values(state.assignments).filter(id => id === tag.id).length;
+
       var chip = document.createElement('div');
       chip.className = 'chip' + (tag.id === state.activeTagId ? ' active' : '');
-      chip.onclick = function() { state.activeTagId = tag.id; renderTags(); };
-      
+      chip.onclick = function(e) {
+        if (e.target.classList.contains('chip-del') || e.target.classList.contains('swatch-picker') || e.target.classList.contains('chip-count')) return;
+        state.activeTagId = tag.id;
+        saveState();
+        renderTags();
+      };
+
+      // 색상 변경 Swatch
       var swatch = document.createElement('div');
       swatch.className = 'chip-swatch';
       swatch.style.background = tag.color;
-      
+
+      var colorPicker = document.createElement('input');
+      colorPicker.type = 'color';
+      colorPicker.className = 'swatch-picker';
+      colorPicker.value = tag.color;
+      colorPicker.oninput = function(e){
+        tag.color = e.target.value;
+        swatch.style.background = tag.color;
+        applyColors('kr');
+        applyColors('jp');
+      };
+      colorPicker.onchange = function(){ saveState(); };
+      swatch.appendChild(colorPicker);
+
+      // 이름 편집 Name Span
       var nameSpan = document.createElement('span');
       nameSpan.className = 'chip-name';
       nameSpan.textContent = tag.name;
+      nameSpan.contentEditable = "true";
+      nameSpan.spellcheck = false;
+      nameSpan.onblur = function(){
+        tag.name = nameSpan.textContent.trim() || '태그';
+        saveState();
+      };
+      nameSpan.onkeydown = function(e){
+        if (e.key === 'Enter') { e.preventDefault(); nameSpan.blur(); }
+      };
+
+      // 카운트 배지
+      var countBadge = document.createElement('span');
+      countBadge.className = 'chip-count';
+      countBadge.textContent = count;
+      countBadge.onclick = function(e){
+        e.stopPropagation();
+        openTagRegionsModal(tag.id);
+      };
+
+      // 삭제 버튼
+      var delBtn = document.createElement('button');
+      delBtn.className = 'chip-del';
+      delBtn.innerHTML = '&times;';
+      delBtn.onclick = function(e){
+        e.stopPropagation();
+        if (state.tags.length <= 1) return alert('최소 1개 이상의 태그가 필요합니다.');
+        if (confirm('\'' + tag.name + '\' 태그를 삭제하시겠습니까? 관련 색칠도 지워집니다.')) {
+          state.tags = state.tags.filter(t => t.id !== tag.id);
+          Object.keys(state.assignments).forEach(k => {
+            if (state.assignments[k] === tag.id) delete state.assignments[k];
+          });
+          if (state.activeTagId === tag.id) state.activeTagId = state.tags[0].id;
+          saveState();
+          renderTags();
+          applyColors('kr');
+          applyColors('jp');
+        }
+      };
 
       chip.appendChild(swatch);
       chip.appendChild(nameSpan);
+      chip.appendChild(countBadge);
+      chip.appendChild(delBtn);
       rail.appendChild(chip);
     });
   }
 
   document.getElementById('addTagBtn').addEventListener('click', function(){
-    state.tags.push({ 
-      id: 't' + Math.random().toString(36).substr(2,5), 
-      name: '새 태그', 
-      color: IOS_PALETTE[state.tags.length % IOS_PALETTE.length] 
-    });
-    state.activeTagId = state.tags[state.tags.length - 1].id;
+    var newId = 't_' + Date.now();
+    var nextColor = PALETTE[state.tags.length % PALETTE.length];
+    state.tags.push({ id: newId, name: '새 태그 ' + (state.tags.length + 1), color: nextColor });
+    state.activeTagId = newId;
+    saveState();
     renderTags();
   });
 
-  document.getElementById('resetAllBtn').addEventListener('click', function(){
-    if(confirm('모든 색칠을 초기화하시겠습니까?')) {
-      state.assignments = {};
-      applyColors('kr');
-      applyColors('jp');
+  // 모달 제어 함수들
+  window.openModal = function(id) { document.getElementById(id).classList.add('open'); };
+  window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+
+  window.openRegionModal = function(country) {
+    document.getElementById('regionModalTitle').textContent = country === 'kr' ? '대한민국 지역 선택' : '일본 지역 선택';
+    var grid = document.getElementById('regionGrid');
+    grid.innerHTML = '';
+
+    MAP_REGIONS[country].forEach(function(config) {
+      var btn = document.createElement('button');
+      btn.className = 'region-btn';
+      if (state.currentRegionConfig[country].id === config.id) {
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.background = 'var(--accent-soft)';
+      }
+      btn.textContent = config.label;
+      btn.onclick = function() {
+        changeRegion(country, config.id);
+        window.closeModal('regionModal');
+      };
+      grid.appendChild(btn);
+    });
+    window.openModal('regionModal');
+  };
+
+  function changeRegion(country, regionId) {
+    var config = MAP_REGIONS[country].find(r => r.id === regionId);
+    var prevUrl = state.currentRegionConfig[country].url;
+    state.currentRegionConfig[country] = config;
+
+    document.getElementById('title-' + country).innerHTML = config.label + ' <span style="font-size: 11px;">▼</span>';
+
+    if (config.url !== prevUrl) {
+      loadCountry(config.url, country).then(res => {
+        state.countries[country] = res;
+        renderMap(country);
+      });
+    } else {
+      renderMap(country);
     }
-  });
+  }
+
+  function openTagRegionsModal(filterTagId){
+    var body = document.getElementById('tagRegionsModalBody');
+    body.innerHTML = '';
+
+    var allFeatures = [];
+    if (state.countries.kr) allFeatures = allFeatures.concat(state.countries.kr.features);
+    if (state.countries.jp) allFeatures = allFeatures.concat(state.countries.jp.features);
+
+    var featureMap = {};
+    allFeatures.forEach(f => { featureMap[f._info.key] = f._info.display; });
+
+    var targetTags = filterTagId ? state.tags.filter(t => t.id === filterTagId) : state.tags;
+
+    targetTags.forEach(tag => {
+      var assignedKeys = Object.keys(state.assignments).filter(k => state.assignments[k] === tag.id);
+      
+      var card = document.createElement('div');
+      card.className = 'tag-group-card';
+
+      var header = document.createElement('div');
+      header.className = 'tag-group-header';
+      header.innerHTML = '<div class="tag-group-title">' +
+        '<span style="width:12px;height:12px;border-radius:50%;background:' + tag.color + ';"></span>' +
+        '<span>' + tag.name + ' (' + assignedKeys.length + '개)</span>' +
+        '</div>';
+
+      var list = document.createElement('div');
+      list.className = 'tag-group-list';
+
+      if (assignedKeys.length === 0) {
+        list.innerHTML = '<span style="font-size:12px;color:var(--text-2);">색칠된 지역이 없습니다.</span>';
+      } else {
+        assignedKeys.forEach(k => {
+          var name = featureMap[k] || k;
+          var badge = document.createElement('span');
+          badge.className = 'region-badge';
+          badge.textContent = name;
+          list.appendChild(badge);
+        });
+      }
+
+      card.appendChild(header);
+      card.appendChild(list);
+      body.appendChild(card);
+    });
+
+    window.openModal('tagRegionsModal');
+  }
+
+  // 테마 및 데이터 백업/복원
+  window.setTheme = function(theme) {
+    document.body.classList.remove('dark-theme', 'easter-theme');
+    if (theme === 'dark') document.body.classList.add('dark-theme');
+    else if (theme === 'easter') document.body.classList.add('easter-theme');
+    state.theme = theme;
+    saveState();
+  };
+
+  window.exportData = function() {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+      tags: state.tags,
+      assignments: state.assignments
+    }));
+    var downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "paintntag_backup.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  window.importData = function(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var parsed = JSON.parse(e.target.result);
+        if (parsed.tags && parsed.assignments) {
+          state.tags = parsed.tags;
+          state.assignments = parsed.assignments;
+          state.activeTagId = state.tags[0].id;
+          saveState();
+          renderTags();
+          applyColors('kr');
+          applyColors('jp');
+          alert('데이터를 성공적으로 가져왔습니다.');
+          window.closeModal('settingsModal');
+        }
+      } catch(err) {
+        alert('올바르지 않은 백업 파일입니다.');
+      }
+    };
+    reader.readAsText(file);
+  };
 
   init();
 })();
