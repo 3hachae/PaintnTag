@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<link href="styles/style.css" rel="stylesheet" type="text/css" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/icon.svg">
@@ -23,7 +22,6 @@
     --danger: #FF3B30;
     --map-fill: #E5E5EA;
     --map-stroke: #FFFFFF;
-    --map-hover-stroke: #0071E3;
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -44,7 +42,6 @@
     --danger: #FF453A;
     --map-fill: #323236;
     --map-stroke: #161618;
-    --map-hover-stroke: #0DFFEF;
     --modal-overlay: rgba(0,0,0,0.7);
   }
 
@@ -144,13 +141,24 @@
   .map-panel{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);position:relative;}
   .map-panel:last-child{border-right:none;}
 
-  .panel-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}
+  .panel-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;gap:8px;}
   .panel-title{display:flex;align-items:baseline;gap:7px;}
   .panel-title h2{font-size:14px;font-weight:600;margin:0;}
   .panel-title .sub{font-size:12px;color:var(--text-2);font-weight:400;}
-  .panel-tools{display:flex;gap:6px;}
+  .panel-tools{display:flex;gap:6px;align-items:center;}
   .icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;}
   .icon-btn:hover{background:var(--bg);color:var(--text-1);}
+
+  .view-mode-select {
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-1);
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+  }
 
   .map-canvas{flex:1;position:relative;min-height:0;}
   .map-canvas svg{width:100%;height:100%;display:block;cursor:grab;}
@@ -203,7 +211,7 @@
   .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:980px;padding:8px 18px;font-size:12.5px;font-weight:600;cursor:pointer;}
   .btn-primary:hover{opacity:0.9;}
 
-  .tooltip{position:fixed;z-index:100;background:rgba(29,29,31,.92);color:#fff;padding:8px 12px;border-radius:10px;font-size:12.5px;pointer-events:none;opacity:0;backdrop-filter:blur(6px);}
+  .tooltip{position:fixed;z-index:100;background:rgba(29,29,31,.92);color:#fff;padding:8px 12px;border-radius:10px;font-size:12.5px;pointer-events:none;opacity:0;backdrop-filter:blur(6px);transition:opacity 0.15s;}
   .tooltip.visible{opacity:1;}
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,8px);background:rgba(29,29,31,.94);color:#fff;padding:10px 18px;border-radius:980px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:600;}
   .toast.visible{opacity:1;transform:translate(-50%,0);}
@@ -215,9 +223,10 @@
   <header class="topbar">
     <div class="brand">
       <h1>PaintnTag</h1>
-      <p>대한민국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요</p>
+      <p>대한민국 시군구/권역 · 일본 시정촌/도도부현을 나만의 태그로 칠해보세요</p>
     </div>
     <div class="topbar-actions">
+      <button class="btn-ghost" id="themeToggleBtn">🌙 다크 모드</button>
       <button class="btn-ghost" id="resetAllBtn">🔄️ 전체 초기화</button>
       <button class="btn-ghost" id="exportBtn">⬇️ 지도 다운로드</button>
       <button class="btn-ghost" id="settingsBtn">⚙️ 설정</button>
@@ -247,7 +256,7 @@
           <select id="activeTagSelect" aria-label="활성 태그"></select>
         </div>
         <div class="search-wrap">
-          <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시, 부산광역시, 東京都 등 입력">
+          <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시, 부산광역시, 東京都, 大阪府 등 입력">
           <div class="dropdown" id="searchDropdown"></div>
         </div>
       </div>
@@ -258,10 +267,15 @@
     <section class="map-panel" id="mapPanelKR">
       <div class="panel-header">
         <div class="panel-title">
-          <h2 class="clickable-title" id="titleKR" title="대한민국 권역 색칠/초기화">대한민국 (최신 시군구)</h2>
+          <h2 class="clickable-title" id="titleKR" title="대한민국 권역 색칠/초기화">대한민국</h2>
           <span class="sub" id="count-kr">0개 색칠됨</span>
         </div>
         <div class="panel-tools">
+          <select class="view-mode-select" id="modeSelectKR" title="지도 권역/상세 모드 변경">
+            <option value="detailed">시군구 (상세)</option>
+            <option value="sido">17개 시·도 (광역)</option>
+            <option value="region">8대 권역</option>
+          </select>
           <button class="icon-btn" id="zoomResetKR" title="확대 초기화">🔄️</button>
           <button class="icon-btn" id="downloadKRBtn" title="이미지로 다운로드">⬇</button>
         </div>
@@ -274,10 +288,14 @@
     <section class="map-panel" id="mapPanelJP">
       <div class="panel-header">
         <div class="panel-title">
-          <h2 class="clickable-title" id="titleJP" title="일본 지도 설정">일본 (시정촌)</h2>
+          <h2 class="clickable-title" id="titleJP" title="일본 지도 설정">일본</h2>
           <span class="sub" id="count-jp">0개 색칠됨</span>
         </div>
         <div class="panel-tools">
+          <select class="view-mode-select" id="modeSelectJP" title="지도 권역/상세 모드 변경">
+            <option value="detailed">시정촌 (상세)</option>
+            <option value="pref">47개 도도부현 (광역)</option>
+          </select>
           <button class="icon-btn" id="zoomResetJP" title="확대 초기화">🔄️</button>
           <button class="icon-btn" id="downloadJPBtn" title="이미지로 다운로드">⬇</button>
         </div>
@@ -324,7 +342,7 @@
   </div>
 </div>
 
-<!-- 국가명 클릭 시 팝업 (대한민국 8개 권역 일괄 선택/해제 기능) -->
+<!-- 대한민국 8개 권역 일괄 선택/해제 모달 -->
 <div class="modal-overlay" id="mapSelectModal">
   <div class="modal">
     <div class="modal-header">
@@ -337,6 +355,23 @@
   </div>
 </div>
 
+<!-- 설정 모달 -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>앱 설정</h3>
+      <button class="modal-close" id="settingsCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--text-2); margin-top:0;">PaintnTag 지도 맞춤 설정</p>
+      <div class="form-group">
+        <label>테마 선택</label>
+        <button class="btn-ghost" id="modalThemeToggleBtn" style="width:100%; text-align:center;">다크 모드 전환</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="tooltip" id="tooltip"></div>
 <div class="toast" id="toast"></div>
 
@@ -344,11 +379,9 @@
 (function(){
   "use strict";
 
-  // 최신 최적화 지도 URL (2024년 행정구역 기준)
   var KR_TOPO_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
   var JP_TOPO_URL = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
 
-  // 요청받은 대한민국 8개 권역 정렬 순서
   var KR_REGION_GROUPS = [
     { id: 'capital', name: '수도권', codes: ['11', '23', '31'] },
     { id: 'buulgyeong', name: '부울경', codes: ['21', '26', '38'] },
@@ -375,8 +408,9 @@
       { id: 't2', name: '예정지', color: '#FF9500' }
     ],
     activeTagId: 't1',
-    assignments: {},
-    countries: { kr: null, jp: null }
+    assignments: {}, // Key: regionKey, Value: tagId
+    countries: { kr: null, jp: null },
+    viewMode: { kr: 'detailed', jp: 'detailed' } // kr: detailed, sido, region / jp: detailed, pref
   };
 
   var svgRefs = {};
@@ -395,26 +429,142 @@
       var codeStr = String(p.code || p.id || '');
       var prefix = codeStr.length >= 2 ? codeStr.slice(0,2) : codeStr;
       var name = p.name || p.name_kor || '알 수 없음';
-      if (codeStr === '37310' || name === '군위군') prefix = '22'; // 2023.07 대구광역시 편입 반영
+      if (codeStr === '37310' || name === '군위군') prefix = '22';
 
       var sido = KR_SIDO[prefix];
       var display = name;
       if (sido && codeStr.length > 2 && name !== sido[0]) display = sido[0] + ' ' + name;
 
-      return { key: 'kr:' + (p.code || p.id || name), display: display, shortName: name, prefix: prefix };
+      var regionGrp = KR_REGION_GROUPS.find(function(g){ return g.codes.indexOf(prefix) !== -1; });
+
+      return {
+        key: 'kr:' + (p.code || p.id || name),
+        display: display,
+        shortName: name,
+        prefix: prefix,
+        sidoName: sido ? sido[0] : '기타',
+        regionGroupId: regionGrp ? regionGrp.id : 'other',
+        regionGroupName: regionGrp ? regionGrp.name : '기타'
+      };
     } else {
-      var pref = p.N03_001 || p.name || '';
+      var pref = p.N03_001 || p.name || '미정성';
       var town = p.N03_004 || pref;
       var code = p.N03_007 || (pref + '_' + town);
-      return { key: 'jp:' + code, display: pref + ' ' + town, shortName: town };
+      return {
+        key: 'jp:' + code,
+        display: pref + ' ' + town,
+        shortName: town,
+        prefName: pref
+      };
     }
   }
 
+  // 데이터 로드 및 사전 처리
   function loadCountry(url, country){
     return fetch(url).then(function(res){ return res.json(); }).then(function(topo){
       var features = topologyToFeatures(topo);
       return { features: features, rawTopo: topo };
     });
+  }
+
+  // 모드에 따라 피처 병합 및 가져오기
+  function getRenderFeatures(country) {
+    var countryData = state.countries[country];
+    if (!countryData) return [];
+    var mode = state.viewMode[country];
+
+    if (mode === 'detailed') {
+      return countryData.features;
+    }
+
+    var topo = countryData.rawTopo;
+    var objName = Object.keys(topo.objects)[0];
+    var geometries = topo.objects[objName].geometries;
+
+    if (country === 'kr') {
+      if (mode === 'sido') {
+        // 17개 시도별 병합
+        var sidoGroups = {};
+        geometries.forEach(function(g, i){
+          var code = String(g.properties.code || g.id || '');
+          var prefix = code.slice(0, 2);
+          if (code === '37310' || g.properties.name === '군위군') prefix = '22';
+          if (!sidoGroups[prefix]) sidoGroups[prefix] = [];
+          sidoGroups[prefix].push(g);
+        });
+
+        var mergedFeatures = [];
+        Object.keys(sidoGroups).forEach(function(prefix){
+          var mergedGeom = topojson.merge(topo, sidoGroups[prefix]);
+          var sidoInfo = KR_SIDO[prefix] || ['알 수 없음'];
+          mergedGeom.properties = {
+            isMerged: true,
+            codePrefix: prefix,
+            name: sidoInfo[0],
+            subKeys: sidoGroups[prefix].map(function(g){ return 'kr:' + (g.properties.code || g.id || g.properties.name); })
+          };
+          mergedFeatures.push(mergedGeom);
+        });
+        return mergedFeatures;
+      } else if (mode === 'region') {
+        // 8대 권역별 병합
+        var regionGroupsMap = {};
+        KR_REGION_GROUPS.forEach(function(rg){ regionGroupsMap[rg.id] = []; });
+
+        geometries.forEach(function(g){
+          var code = String(g.properties.code || g.id || '');
+          var prefix = code.slice(0, 2);
+          if (code === '37310' || g.properties.name === '군위군') prefix = '22';
+          var rg = KR_REGION_GROUPS.find(function(r){ return r.codes.indexOf(prefix) !== -1; });
+          var rId = rg ? rg.id : 'other';
+          if (!regionGroupsMap[rId]) regionGroupsMap[rId] = [];
+          regionGroupsMap[rId].push(g);
+        });
+
+        var mergedFeatures = [];
+        KR_REGION_GROUPS.forEach(function(rg){
+          var geoms = regionGroupsMap[rg.id];
+          if (geoms && geoms.length) {
+            var mergedGeom = topojson.merge(topo, geoms);
+            mergedGeom.properties = {
+              isMerged: true,
+              regionId: rg.id,
+              name: rg.name,
+              subKeys: geoms.map(function(g){ return 'kr:' + (g.properties.code || g.id || g.properties.name); })
+            };
+            mergedFeatures.push(mergedGeom);
+          }
+        });
+        return mergedFeatures;
+      }
+    } else if (country === 'jp' && mode === 'pref') {
+      // 47개 도도부현별 병합
+      var prefMap = {};
+      geometries.forEach(function(g){
+        var pref = g.properties.N03_001 || '미정성';
+        if (!prefMap[pref]) prefMap[pref] = [];
+        prefMap[pref].push(g);
+      });
+
+      var mergedFeatures = [];
+      Object.keys(prefMap).forEach(function(pref){
+        var mergedGeom = topojson.merge(topo, prefMap[pref]);
+        mergedGeom.properties = {
+          isMerged: true,
+          prefName: pref,
+          name: pref,
+          subKeys: prefMap[pref].map(function(g){
+            var p = g.properties;
+            var code = p.N03_007 || ((p.N03_001 || '') + '_' + (p.N03_004 || ''));
+            return 'jp:' + code;
+          })
+        };
+        mergedFeatures.push(mergedGeom);
+      });
+      return mergedFeatures;
+    }
+
+    return countryData.features;
   }
 
   function renderMap(country){
@@ -425,9 +575,10 @@
     var rect = container.getBoundingClientRect();
     var width = Math.max(rect.width, 100);
     var height = Math.max(rect.height, 100);
-    var features = state.countries[country] ? state.countries[country].features : [];
+
+    var renderFeatures = getRenderFeatures(country);
     
-    var projection = d3.geoMercator().fitExtent([[16,16],[width-16,height-16]], { type:'FeatureCollection', features: features });
+    var projection = d3.geoMercator().fitExtent([[16,16],[width-16,height-16]], { type:'FeatureCollection', features: renderFeatures });
     var pathGen = d3.geoPath(projection);
 
     var svg = d3.select(container).append('svg')
@@ -436,19 +587,63 @@
 
     var g = svg.append('g');
 
+    var tooltip = document.getElementById('tooltip');
+
     var paths = g.selectAll('path')
-      .data(features)
+      .data(renderFeatures)
       .enter()
       .append('path')
       .attr('d', pathGen)
       .attr('fill', 'var(--map-fill)')
       .attr('stroke', 'var(--map-stroke)')
-      .attr('stroke-width', country === 'jp' ? 0.35 : 0.6)
-      .each(function(d){ d._info = regionInfo(d, country); })
+      .attr('stroke-width', country === 'jp' ? 0.4 : 0.6)
+      .each(function(d){
+        if (d.properties && d.properties.isMerged) {
+          d._info = {
+            key: country + ':merged:' + (d.properties.codePrefix || d.properties.regionId || d.properties.prefName),
+            display: d.properties.name,
+            subKeys: d.properties.subKeys,
+            isMerged: true
+          };
+        } else {
+          d._info = regionInfo(d, country);
+        }
+      })
+      .on('mouseover', function(event, d){
+        var tagNames = [];
+        if (d._info.isMerged) {
+          var count = 0;
+          d._info.subKeys.forEach(function(k){ if (state.assignments[k]) count++; });
+          tooltip.innerHTML = '<strong>' + d._info.display + '</strong><br>선택된 시군구: ' + count + ' / ' + d._info.subKeys.length + '개';
+        } else {
+          var tagId = state.assignments[d._info.key];
+          var tag = state.tags.find(function(t){ return t.id === tagId; });
+          tooltip.innerHTML = '<strong>' + d._info.display + '</strong>' + (tag ? '<br>태그: ' + tag.name : '');
+        }
+        tooltip.classList.add('visible');
+      })
+      .on('mousemove', function(event){
+        tooltip.style.left = (event.clientX + 12) + 'px';
+        tooltip.style.top = (event.clientY + 12) + 'px';
+      })
+      .on('mouseout', function(){
+        tooltip.classList.remove('visible');
+      })
       .on('click', function(event, d){
         if (!state.activeTagId) return;
-        if (state.assignments[d._info.key] === state.activeTagId) delete state.assignments[d._info.key];
-        else state.assignments[d._info.key] = state.activeTagId;
+
+        if (d._info.isMerged) {
+          // 광역/권역 병합 객체 클릭 시 해당 속해있는 모든 시군구 일괄 색칠/해제
+          var allSame = d._info.subKeys.every(function(k){ return state.assignments[k] === state.activeTagId; });
+          d._info.subKeys.forEach(function(k){
+            if (allSame) delete state.assignments[k];
+            else state.assignments[k] = state.activeTagId;
+          });
+        } else {
+          if (state.assignments[d._info.key] === state.activeTagId) delete state.assignments[d._info.key];
+          else state.assignments[d._info.key] = state.activeTagId;
+        }
+
         applyColors(country);
         updateCounts();
       });
@@ -456,28 +651,53 @@
     var zoom = d3.zoom().scaleExtent([1, 30]).on('zoom', function(e){ g.attr('transform', e.transform); });
     svg.call(zoom);
 
-    svgRefs[country] = { svg: svg, paths: paths, zoom: zoom };
+    svgRefs[country] = { svg: svg, paths: paths, zoom: zoom, g: g };
     applyColors(country);
   }
 
   function applyColors(country){
     var ref = svgRefs[country];
     if (!ref) return;
+
     ref.paths.attr('fill', function(d){
-      var tagId = state.assignments[d._info.key];
-      var tag = state.tags.find(function(t){ return t.id === tagId; });
-      return tag ? tag.color : 'var(--map-fill)';
+      if (d._info.isMerged) {
+        // 병합된 피처인 경우 속한 시군구의 과반수 태그 색상 또는 대표 색 표시
+        var counts = {};
+        var maxCount = 0;
+        var dominantTagId = null;
+
+        d._info.subKeys.forEach(function(k){
+          var tid = state.assignments[k];
+          if (tid) {
+            counts[tid] = (counts[tid] || 0) + 1;
+            if (counts[tid] > maxCount) {
+              maxCount = counts[tid];
+              dominantTagId = tid;
+            }
+          }
+        });
+
+        if (dominantTagId) {
+          var tag = state.tags.find(function(t){ return t.id === dominantTagId; });
+          return tag ? tag.color : 'var(--map-fill)';
+        }
+        return 'var(--map-fill)';
+      } else {
+        var tagId = state.assignments[d._info.key];
+        var tag = state.tags.find(function(t){ return t.id === tagId; });
+        return tag ? tag.color : 'var(--map-fill)';
+      }
     });
   }
 
   function updateCounts(){
     ['kr', 'jp'].forEach(function(c){
       var n = Object.keys(state.assignments).filter(function(k){ return k.indexOf(c + ':') === 0; }).length;
-      document.getElementById('count-' + c).textContent = n + '개 색칠됨';
+      document.getElementById('count-' + c).textContent = n + '개 시군구/시정촌 색칠됨';
     });
   }
 
-  // --- 지도 다운로드 기능 ---
+  // --- 지도 다운로드 ---
   function exportMapFile(country, fileName, format) {
     var svgEl = document.querySelector('#map-' + country + ' svg');
     if (!svgEl) { showToast("지도가 로드되지 않았습니다."); return; }
@@ -492,7 +712,7 @@
       link.href = URL.createObjectURL(blob);
       link.download = finalFileName;
       link.click();
-      showToast("SVG 지도 파일이 다운로드되었습니다.");
+      showToast("SVG 지도 파일이 저장되었습니다.");
       return;
     }
 
@@ -508,10 +728,8 @@
     var url = URL.createObjectURL(svgBlob);
 
     img.onload = function() {
-      if (format === 'jpg') {
-        ctx.fillStyle = "#F5F5F7";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      ctx.fillStyle = document.body.classList.contains('dark-theme') ? "#161618" : "#F5F5F7";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.scale(scale, scale);
       ctx.drawImage(img, 0, 0);
 
@@ -528,7 +746,7 @@
     img.src = url;
   }
 
-  // --- 버튼 이벤트 핸들러 복원 ---
+  // --- 이벤트 바인딩 ---
   document.getElementById('exportBtn').addEventListener('click', function(){ openDownloadModal('kr'); });
   document.getElementById('downloadKRBtn').addEventListener('click', function(){ openDownloadModal('kr'); });
   document.getElementById('downloadJPBtn').addEventListener('click', function(){ openDownloadModal('jp'); });
@@ -558,7 +776,40 @@
     }
   });
 
-  // --- 국가명 클릭 시 팝업 및 권역 색칠 기능 ---
+  document.getElementById('zoomResetKR').addEventListener('click', function(){
+    if (svgRefs.kr) svgRefs.kr.svg.transition().duration(500).call(svgRefs.kr.zoom.transform, d3.zoomIdentity);
+  });
+  document.getElementById('zoomResetJP').addEventListener('click', function(){
+    if (svgRefs.jp) svgRefs.jp.svg.transition().duration(500).call(svgRefs.jp.zoom.transform, d3.zoomIdentity);
+  });
+
+  // 권역/상세 모드 변경 이벤트
+  document.getElementById('modeSelectKR').addEventListener('change', function(e){
+    state.viewMode.kr = e.target.value;
+    renderMap('kr');
+  });
+  document.getElementById('modeSelectJP').addEventListener('change', function(e){
+    state.viewMode.jp = e.target.value;
+    renderMap('jp');
+  });
+
+  // 다크모드 토글
+  function toggleTheme(){
+    document.body.classList.toggle('dark-theme');
+    var isDark = document.body.classList.contains('dark-theme');
+    document.getElementById('themeToggleBtn').textContent = isDark ? "☀️ 라이트 모드" : "🌙 다크 모드";
+  }
+  document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+  document.getElementById('modalThemeToggleBtn').addEventListener('click', toggleTheme);
+
+  document.getElementById('settingsBtn').addEventListener('click', function(){
+    document.getElementById('settingsModal').classList.add('open');
+  });
+  document.getElementById('settingsCloseBtn').addEventListener('click', function(){
+    document.getElementById('settingsModal').classList.remove('open');
+  });
+
+  // --- 국가명 클릭 시 8대 권역 일괄 색칠 모달 ---
   document.getElementById('titleKR').addEventListener('click', function(){ openCountryModal('kr'); });
   document.getElementById('titleJP').addEventListener('click', function(){ openCountryModal('jp'); });
   document.getElementById('mapSelectCloseBtn').addEventListener('click', function(){
@@ -566,7 +817,7 @@
   });
 
   function openCountryModal(country) {
-    document.getElementById('mapSelectModalTitle').textContent = (country === 'kr' ? '🇰🇷 대한민국 8대 권역 선택 및 색칠' : '🇯🇵 일본 지도 설정');
+    document.getElementById('mapSelectModalTitle').textContent = (country === 'kr' ? '🇰🇷 대한민국 8대 권역 선택 및 색칠' : '🇯🇵 일본 도도부현 설정');
     var container = document.getElementById('mapSelectOptions');
     container.innerHTML = '';
 
@@ -591,7 +842,7 @@
         container.appendChild(card);
       });
     } else {
-      container.innerHTML = '<p style="font-size:13px; color:var(--text-2);">일본 지역별 옵션 및 토글이 적용되어 있습니다.</p>';
+      container.innerHTML = '<p style="font-size:13px; color:var(--text-2);">일본 지도는 우측 상단 드롭다운을 통해 [시정촌 (상세)] 및 [47개 도도부현 (광역)] 모드를 전환할 수 있습니다.</p>';
     }
     document.getElementById('mapSelectModal').classList.add('open');
   }
@@ -610,11 +861,13 @@
     showToast(group.name + (tagId ? ' 영역 색칠 완료' : ' 영역 지우기 완료'));
   }
 
-  // --- 태그 레일 및 UI 복원 ---
+  // --- 태그 관리 기능 ---
   document.getElementById('addTagBtn').addEventListener('click', function(){
     var name = prompt("새 태그 이름을 입력하세요:", "태그 " + (state.tags.length + 1));
     if (name) {
-      var newTag = { id: 't' + Date.now(), name: name, color: '#' + Math.floor(Math.random()*16777215).toString(16) };
+      var colors = ['#0071E3', '#FF9500', '#34C759', '#AF52DE', '#FF3B30', '#5856D6', '#00C7BE'];
+      var randomColor = colors[Math.floor(Math.random() * colors.length)];
+      var newTag = { id: 't' + Date.now(), name: name, color: randomColor };
       state.tags.push(newTag);
       state.activeTagId = newTag.id;
       renderTags();
@@ -629,11 +882,44 @@
     state.tags.forEach(function(tag){
       var chip = document.createElement('div');
       chip.className = 'chip' + (tag.id === state.activeTagId ? ' active' : '');
-      chip.innerHTML = '<div class="chip-swatch" style="background:' + tag.color + '"></div><span class="chip-name">' + tag.name + '</span>';
+      
+      var count = Object.values(state.assignments).filter(function(v){ return v === tag.id; }).length;
+
+      chip.innerHTML = 
+        '<div class="chip-swatch" style="background:' + tag.color + '" title="색상 변경"></div>' +
+        '<span class="chip-name">' + tag.name + '</span>' +
+        '<span class="chip-count">' + count + '</span>' +
+        (state.tags.length > 1 ? '<button class="chip-del" title="태그 삭제">&times;</button>' : '');
+
+      chip.querySelector('.chip-swatch').addEventListener('click', function(e){
+        e.stopPropagation();
+        var newColor = prompt("태그 색상 Hex 코드를 입력하세요:", tag.color);
+        if (newColor) { tag.color = newColor; renderTags(); applyColors('kr'); applyColors('jp'); }
+      });
+
       chip.addEventListener('click', function(){
         state.activeTagId = tag.id;
         renderTags();
       });
+
+      var delBtn = chip.querySelector('.chip-del');
+      if (delBtn) {
+        delBtn.addEventListener('click', function(e){
+          e.stopPropagation();
+          if (confirm("'" + tag.name + "' 태그를 삭제하시겠습니까?")) {
+            state.tags = state.tags.filter(function(t){ return t.id !== tag.id; });
+            Object.keys(state.assignments).forEach(function(k){
+              if (state.assignments[k] === tag.id) delete state.assignments[k];
+            });
+            if (state.activeTagId === tag.id) state.activeTagId = state.tags[0].id;
+            renderTags();
+            applyColors('kr');
+            applyColors('jp');
+            updateCounts();
+          }
+        });
+      }
+
       rail.appendChild(chip);
 
       var opt = document.createElement('option');
@@ -651,21 +937,72 @@
     renderTags();
   });
 
+  // --- 지역 검색 기능 ---
+  var searchInput = document.getElementById('searchInput');
+  var searchDropdown = document.getElementById('searchDropdown');
+
+  searchInput.addEventListener('input', function(){
+    var query = this.value.trim().toLowerCase();
+    if (!query) { searchDropdown.classList.remove('open'); return; }
+
+    var results = [];
+    ['kr', 'jp'].forEach(function(c){
+      if (!state.countries[c]) return;
+      state.countries[c].features.forEach(function(f){
+        var info = regionInfo(f, c);
+        if (info.display.toLowerCase().indexOf(query) !== -1 || info.shortName.toLowerCase().indexOf(query) !== -1) {
+          results.push({ country: c, info: info, feature: f });
+        }
+      });
+    });
+
+    searchDropdown.innerHTML = '';
+    if (results.length === 0) {
+      searchDropdown.innerHTML = '<div class="dropdown-item" style="color:var(--text-2);">검색 결과가 없습니다.</div>';
+    } else {
+      results.slice(0, 15).forEach(function(res){
+        var item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.innerHTML = '<span>' + (res.country === 'kr' ? '🇰🇷' : '🇯🇵') + '</span> <span>' + res.info.display + '</span>';
+        item.addEventListener('click', function(){
+          if (state.activeTagId) {
+            state.assignments[res.info.key] = state.activeTagId;
+            applyColors(res.country);
+            updateCounts();
+            showToast(res.info.display + ' 선택됨');
+          }
+          searchDropdown.classList.remove('open');
+          searchInput.value = '';
+        });
+        searchDropdown.appendChild(item);
+      });
+    }
+    searchDropdown.classList.add('open');
+  });
+
+  document.addEventListener('click', function(e){
+    if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+      searchDropdown.classList.remove('open');
+    }
+  });
+
   function showToast(msg){
     var t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('visible');
     setTimeout(function(){ t.classList.remove('visible'); }, 2000);
   }
 
-  // 접기/펴기 버튼 핸들러
+  // 접기/펴기
   document.getElementById('foldTagbarBtn').addEventListener('click', function(){
     document.getElementById('tagBarSection').classList.toggle('collapsed');
+    this.textContent = document.getElementById('tagBarSection').classList.contains('collapsed') ? '▼' : '▲';
   });
   document.getElementById('foldInputbarBtn').addEventListener('click', function(){
     document.getElementById('inputBarSection').classList.toggle('collapsed');
+    this.textContent = document.getElementById('inputBarSection').classList.contains('collapsed') ? '▼' : '▲';
   });
 
-  // 초기 로드
+  // 초기화 및 지도 바인딩
   Promise.all([
     loadCountry(KR_TOPO_URL, 'kr'),
     loadCountry(JP_TOPO_URL, 'jp')
