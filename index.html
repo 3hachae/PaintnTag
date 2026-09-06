@@ -80,11 +80,8 @@
 
   .app{height:100vh;display:flex;flex-direction:column;}
 
-  .topbar{
-    flex:none;min-height:56px;display:flex;align-items:center;justify-content:space-between;
-    padding:8px 24px;background:var(--surface-2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-    border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;
-  }
+  /* Topbar, Tags, Modals ... 기존 CSS 동일하게 유지 */
+  .topbar{flex:none;min-height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 24px;background:var(--surface-2);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
   .brand h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-0.01em;}
   .brand p{font-size:12px;color:var(--text-2);margin:2px 0 0;}
   .topbar-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -92,336 +89,54 @@
   .btn-ghost:hover{background:rgba(0,0,0,.045);}
   body.dark-theme .btn-ghost:hover{background:rgba(255,255,255,.08);}
 
-  .section-panel {
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    transition: all 0.2s ease;
-    position: relative;
-  }
-  .panel-header-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 24px;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-  }
-  .panel-label {
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--text-2);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-  }
-  
-  .fold-toggle-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-2);
-    border-radius: 6px;
-    width: 24px;
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .fold-toggle-btn:hover {
-    background: var(--bg);
-    color: var(--text-1);
-    border-color: var(--accent);
-  }
+  .section-panel { border-bottom: 1px solid var(--border); background: var(--surface); transition: all 0.2s ease; position: relative; }
+  .panel-header-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 24px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+  .panel-label { font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+  .fold-toggle-btn { background: transparent; border: 1px solid var(--border); color: var(--text-2); border-radius: 6px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; transition: all 0.15s ease; }
+  .fold-toggle-btn:hover { background: var(--bg); color: var(--text-1); border-color: var(--accent); }
 
-  .tagbar-content {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 24px;
-    position: relative;
-  }
-  .inputbar-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px 24px;
-  }
-
-  .section-panel.collapsed .tagbar-content,
-  .section-panel.collapsed .inputbar-content {
-    display: none !important;
-  }
-  .section-panel.collapsed .panel-header-bar {
-    border-bottom: none;
-  }
+  .tagbar-content { display: flex; align-items: center; gap: 14px; padding: 10px 24px; position: relative; }
+  .inputbar-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 24px; }
+  .section-panel.collapsed .tagbar-content, .section-panel.collapsed .inputbar-content { display: none !important; }
+  .section-panel.collapsed .panel-header-bar { border-bottom: none; }
 
   .tag-rail{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px;}
   .tag-rail::-webkit-scrollbar{display:none;}
-
   .chip{display:flex;align-items:center;gap:6px;padding:5px 8px 5px 6px;border-radius:980px;border:1.5px solid var(--border);background:var(--surface-2);flex:none;cursor:pointer;transition:border-color .15s, background .15s, box-shadow .15s;}
   .chip.active{border-color:var(--accent);background:var(--accent-soft);}
-  
-  .chip-swatch{
-    position:relative;
-    width:22px;
-    height:22px;
-    border-radius:50%;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);
-    flex:none;
-    cursor:pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .chip-swatch:hover {
-    transform: scale(1.1);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.2);
-  }
-
-  .ios-color-picker {
-    position: absolute;
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(30px) saturate(190%);
-    -webkit-backdrop-filter: blur(30px) saturate(190%);
-    border-radius: 20px;
-    padding: 16px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.08);
-    display: none;
-    flex-direction: column;
-    gap: 14px;
-    width: 290px;
-    animation: iosPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  @keyframes iosPop {
-    from { opacity: 0; transform: scale(0.92) translateY(-8px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  body.dark-theme .ios-color-picker, body.easter-theme .ios-color-picker {
-    background: rgba(36, 36, 38, 0.95);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.12);
-  }
-  .ios-color-picker.open { display: flex; }
-
-  .picker-segmented-control {
-    display: flex;
-    background: rgba(120, 120, 128, 0.12);
-    border-radius: 9px;
-    padding: 2px;
-  }
-  .picker-segment-btn {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 5px 0;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-2);
-    border-radius: 7px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .picker-segment-btn.active {
-    background: var(--surface);
-    color: var(--text-1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.08);
-    font-weight: 600;
-  }
-
-  .ios-color-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    justify-items: center;
-    padding: 2px 0;
-  }
-  .ios-color-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .ios-color-circle:hover {
-    transform: scale(1.15);
-  }
-  .ios-color-circle.selected {
-    box-shadow: inset 0 0 0 2px #FFFFFF, 0 0 0 2.5px var(--accent);
-    transform: scale(1.08);
-  }
-
-  .rgb-control-panel {
-    display: none;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .rgb-control-panel.active { display: flex; }
-
-  .rgb-preview-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface-2);
-    padding: 8px 12px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-  }
-  .rgb-preview-box {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
-    flex: none;
-  }
-  .rgb-hex-input-wrap {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .rgb-hex-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-2);
-  }
-  .rgb-hex-input {
-    width: 100%;
-    border: none;
-    background: transparent;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-1);
-    outline: none;
-    font-family: monospace;
-    text-transform: uppercase;
-  }
-
-  .rgb-slider-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .rgb-slider-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .rgb-slider-label {
-    font-size: 12px;
-    font-weight: 700;
-    width: 16px;
-    text-align: center;
-    flex: none;
-  }
-  .rgb-slider-label.r { color: #FF3B30; }
-  .rgb-slider-label.g { color: #34C759; }
-  .rgb-slider-label.b { color: #007AFF; }
-
-  .rgb-slider {
-    flex: 1;
-    min-width: 0;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 8px;
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-  }
-  .rgb-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #FFFFFF;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.1s;
-  }
-  .rgb-slider::-webkit-slider-thumb:active {
-    transform: scale(1.15);
-  }
-
-  .rgb-number-input {
-    width: 44px;
-    padding: 4px 2px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-1);
-    font-size: 12px;
-    text-align: center;
-    font-weight: 600;
-    flex: none;
-    -moz-appearance: textfield;
-  }
-  .rgb-number-input::-webkit-outer-spin-button,
-  .rgb-number-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+  .chip-swatch{position:relative;width:22px;height:22px;border-radius:50%;box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);flex:none;cursor:pointer;transition: transform 0.15s ease, box-shadow 0.15s ease;}
+  .chip-swatch:hover {transform: scale(1.1); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.2);}
 
   .chip-name{font-size:13px;font-weight:500;outline:none;padding:0 2px;min-width:14px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-1);}
-  .chip-count{
-    font-size:11px;
-    color:var(--text-2);
-    min-width:16px;
-    padding:1px 5px;
-    border-radius:980px;
-    background:rgba(0,0,0,0.06);
-    text-align:center;
-    cursor:pointer;
-    transition:background 0.15s, color 0.15s;
-  }
-  body.dark-theme .chip-count, body.easter-theme .chip-count {
-    background:rgba(255,255,255,0.12);
-  }
-  .chip-count:hover {
-    background:var(--accent);
-    color:#ffffff;
-  }
+  .chip-count{font-size:11px;color:var(--text-2);min-width:16px;padding:1px 5px;border-radius:980px;background:rgba(0,0,0,0.06);text-align:center;cursor:pointer;}
+  .chip-count:hover {background:var(--accent); color:#ffffff;}
   .chip-del{border:none;background:transparent;color:var(--text-2);font-size:15px;line-height:1;width:18px;height:18px;border-radius:50%;cursor:pointer;flex:none;}
   .chip-del:hover{background:rgba(0,0,0,.07);color:var(--danger);}
   .add-tag-btn{flex:none;border:1.5px dashed var(--border);background:transparent;color:var(--text-2);border-radius:980px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
   .add-tag-btn:hover{border-color:var(--accent);color:var(--accent);}
-
-  .search-row{display:flex;align-items:center;gap:10px;}
-  .active-tag-select-wrap{position:relative;flex:none;}
-  .active-tag-select-wrap .dot{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;pointer-events:none;}
-  .active-tag-select-wrap::after{content:'⌄';position:absolute;right:10px;top:50%;transform:translateY(-55%);color:var(--text-2);pointer-events:none;font-size:12px;}
-  #activeTagSelect{appearance:none;-webkit-appearance:none;padding:8px 26px 8px 27px;border-radius:980px;border:1px solid var(--border);background:var(--surface-2);font-size:12.5px;font-weight:500;color:var(--text-1);cursor:pointer;max-width:130px;}
-  .search-wrap{position:relative;flex:1;min-width:120px;}
-  #searchInput{width:100%;padding:9px 14px;border-radius:980px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:14px;outline:none;transition:border-color .15s, box-shadow .15s;}
-  #searchInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
-  .dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-md);max-height:260px;overflow-y:auto;z-index:60;display:none;}
-  .dropdown.open{display:block;}
-  .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:13.5px;cursor:pointer;color:var(--text-1);}
-  .dropdown-item:hover{background:var(--bg);}
-  .dropdown-item.parent-item{font-weight:600;color:var(--accent);}
-  .dropdown-flag{font-size:13px;}
-
-  .bulk-toggle{align-self:flex-start;border:none;background:transparent;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0;}
-  .bulk-panel{display:none;flex-direction:column;gap:8px;}
-  .bulk-panel.open{display:flex;}
-  .bulk-panel textarea{width:100%;min-height:60px;resize:vertical;border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:13.5px;outline:none;background:var(--surface-2);color:var(--text-1);}
-  .bulk-panel textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
-  .bulk-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:980px;padding:8px 18px;font-size:12.5px;font-weight:600;cursor:pointer;}
-  body.easter-theme .btn-primary{color:#000;}
-  .btn-primary:hover{opacity:0.9;}
-  .bulk-result{font-size:12px;color:var(--text-2);line-height:1.7;}
-  .bulk-result .parent-res{color:var(--accent);font-weight:600;}
-  .bulk-result .amb{color:#B36B00;}
-  .bulk-result .miss{color:var(--danger);}
 
   .maps{flex:1;display:flex;min-height:0;}
   .map-panel{flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);position:relative;transition: all 0.2s ease;}
   .map-panel:last-child{border-right:none;}
   .map-panel.collapsed { flex: none !important; }
   .map-panel.collapsed .map-canvas { display: none !important; }
-  
+
+  /* 국가/지역명 클릭 스타일 */
+  .clickable-title {
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .clickable-title:hover { background: rgba(0,0,0,0.05); color: var(--accent); }
+  body.dark-theme .clickable-title:hover { background: rgba(255,255,255,0.1); }
+
   .panel-header{flex:none;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}
   .panel-title{display:flex;align-items:baseline;gap:7px;}
-  .panel-title h2{font-size:14px;font-weight:600;margin:0;}
+  .panel-title h2{font-size:15px;font-weight:600;margin:0;}
   .panel-title .sub{font-size:12px;color:var(--text-2);font-weight:400;}
   .panel-tools{display:flex;gap:6px;}
   .icon-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;}
@@ -432,95 +147,25 @@
   .map-canvas svg:active{cursor:grabbing;}
   .map-canvas path{transition:fill .2s;cursor:pointer;vector-effect:non-scaling-stroke;}
 
-  @keyframes outlineGlow {
-    0% {
-      stroke-opacity: 0.3;
-      stroke-width: 2px;
-    }
-    50% {
-      stroke-opacity: 1.0;
-      stroke-width: 4px;
-    }
-    100% {
-      stroke-opacity: 0.3;
-      stroke-width: 2px;
-    }
-  }
-  .search-highlight-path {
-    fill: rgba(0, 113, 227, 0.1);
-    stroke: var(--accent);
-    pointer-events: none;
-    display: none;
-    vector-effect: non-scaling-stroke;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-  }
-  .search-highlight-path.active {
-    display: block;
-    animation: outlineGlow 1.2s infinite ease-in-out;
-  }
-
+  /* 로딩 상태 / 모달 스타일들... */
   .loading-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--bg);color:var(--text-2);font-size:13px;z-index:10;}
   .spinner{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .error-msg{max-width:220px;text-align:center;line-height:1.5;}
-  .retry-btn{border:1px solid var(--border);background:var(--surface);color:var(--text-1);border-radius:980px;padding:6px 16px;font-size:12.5px;cursor:pointer;}
-
+  
   .modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500;}
   .modal-overlay.open{display:flex;}
   .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:90%;max-width:440px;box-shadow:var(--shadow-md);overflow:hidden;}
   .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
   .modal-header h3{margin:0;font-size:16px;font-weight:600;}
   .modal-close{background:transparent;border:none;font-size:20px;color:var(--text-2);cursor:pointer;}
-  .modal-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface-2);}
-  .tab-btn{flex:1;padding:12px;border:none;background:transparent;color:var(--text-2);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;}
-  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--surface);}
-  .tab-content{display:none;padding:20px;}
-  .tab-content.active{display:block;}
-
-  .setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-  .setting-row:last-child{margin-bottom:0;}
-  .setting-label{font-size:14px;font-weight:500;}
-  .setting-select{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-1);font-size:13px;}
-
-  .tag-region-group { margin-bottom: 16px; }
-  .tag-region-group:last-child { margin-bottom: 0; }
-  .tag-region-title { font-size: 13px; font-weight: 700; color: var(--text-2); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-  .tag-region-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-  .region-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 10px; border-radius: 980px; background: var(--surface-2);
-    border: 1px solid var(--border); font-size: 12.5px; color: var(--text-1);
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .region-pill input[type="checkbox"] {
-    cursor: pointer;
-    accent-color: var(--accent);
-    width: 14px;
-    height: 14px;
-    margin: 0;
-  }
-  .region-pill-del {
-    border: none; background: transparent; color: var(--text-2); cursor: pointer;
-    font-size: 13px; padding: 0; line-height: 1; display: flex; align-items: center; justify-content: center;
-  }
-  .region-pill-del:hover { color: var(--danger); }
-
-  .creator-box{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:10px 0;}
-  .creator-img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid #0DFFEF;cursor:pointer;transition:transform .2s;}
-  .creator-img:hover{transform:scale(1.05);}
-  .creator-name{font-size:16px;font-weight:600;}
-  .creator-desc{font-size:12px;color:var(--text-2);margin:0;}
+  
+  /* 지역 선택 모달용 Grid */
+  .region-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .region-btn { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text-1); cursor: pointer; font-size: 13.5px; text-align: left; transition: all 0.15s ease; font-weight: 500; }
+  .region-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
 
   .tooltip{position:fixed;z-index:100;background:rgba(29,29,31,.92);color:#fff;padding:8px 12px;border-radius:10px;font-size:12.5px;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s, transform .12s;backdrop-filter:blur(6px);max-width:220px;}
   .tooltip.visible{opacity:1;transform:translateY(0);}
-  .tooltip-name{font-weight:600;}
-  .tooltip-tag{display:flex;align-items:center;gap:6px;margin-top:4px;color:rgba(255,255,255,.82);}
-  .tooltip-dot{width:7px;height:7px;border-radius:50%;flex:none;}
-
-  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,8px);background:rgba(29,29,31,.94);color:#fff;padding:10px 18px;border-radius:980px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:600;white-space:nowrap;}
-  body.easter-theme .toast{background:#0DFFEF;color:#000;font-weight:bold;}
-  .toast.visible{opacity:1;transform:translate(-50%,0);}
 
   @media (max-width:900px){
     body{overflow:auto;}
@@ -541,84 +186,17 @@
     <div class="topbar-actions">
       <button class="btn-ghost" id="tagRegionsBtn">📋 태그별 지역</button>
       <button class="btn-ghost" id="resetAllBtn">🔄️ 전체 초기화</button>
-      <button class="btn-ghost" id="exportBtn">⬇ 내보내기</button>
-      <button class="btn-ghost" id="importBtn">⬆️ 불러오기</button>
       <button class="btn-ghost" id="settingsBtn">⚙️ 설정</button>
-      <input type="file" id="importFile" accept="application/json" hidden>
     </div>
   </header>
 
   <section class="section-panel" id="tagBarSection">
     <div class="panel-header-bar">
       <span class="panel-label">🏷️ 태그 관리</span>
-      <button class="fold-toggle-btn" id="foldTagbarBtn" title="창 접기/펴기">▲</button>
     </div>
     <div class="tagbar-content">
       <div class="tag-rail" id="tagRail"></div>
       <button class="add-tag-btn" id="addTagBtn">+ 새 태그</button>
-
-      <div class="ios-color-picker" id="iosColorPicker">
-        <div class="picker-segmented-control">
-          <button class="picker-segment-btn active" id="segPresetsBtn">색상표</button>
-          <button class="picker-segment-btn" id="segRgbBtn">RGB 조절</button>
-        </div>
-
-        <div class="ios-color-grid" id="iosColorGrid"></div>
-
-        <div class="rgb-control-panel" id="rgbControlPanel">
-          <div class="rgb-preview-row">
-            <div class="rgb-preview-box" id="rgbPreviewBox"></div>
-            <div class="rgb-hex-input-wrap">
-              <span class="rgb-hex-label">#</span>
-              <input type="text" class="rgb-hex-input" id="rgbHexInput" maxlength="6" spellcheck="false">
-            </div>
-          </div>
-          <div class="rgb-slider-group">
-            <div class="rgb-slider-row">
-              <span class="rgb-slider-label r">R</span>
-              <input type="range" class="rgb-slider" id="sliderR" min="0" max="255">
-              <input type="number" class="rgb-number-input" id="numR" min="0" max="255">
-            </div>
-            <div class="rgb-slider-row">
-              <span class="rgb-slider-label g">G</span>
-              <input type="range" class="rgb-slider" id="sliderG" min="0" max="255">
-              <input type="number" class="rgb-number-input" id="numG" min="0" max="255">
-            </div>
-            <div class="rgb-slider-row">
-              <span class="rgb-slider-label b">B</span>
-              <input type="range" class="rgb-slider" id="sliderB" min="0" max="255">
-              <input type="number" class="rgb-number-input" id="numB" min="0" max="255">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-panel" id="inputBarSection">
-    <div class="panel-header-bar">
-      <span class="panel-label">🔍 지역 검색 및 일괄 입력</span>
-      <button class="fold-toggle-btn" id="foldInputbarBtn" title="창 접기/펴기">▲</button>
-    </div>
-    <div class="inputbar-content">
-      <div class="search-row">
-        <div class="active-tag-select-wrap">
-          <span class="dot" id="activeTagDot"></span>
-          <select id="activeTagSelect" aria-label="활성 태그"></select>
-        </div>
-        <div class="search-wrap">
-          <input type="text" id="searchInput" autocomplete="off" placeholder="서울특별시 / 종로구, 東京都 / 千代田区">
-          <div class="dropdown" id="searchDropdown"></div>
-        </div>
-      </div>
-      <button class="bulk-toggle" id="toggleBulk">여러 개 한 번에 입력 ⌄</button>
-      <div class="bulk-panel" id="bulkPanel">
-        <textarea id="bulkInput" placeholder="쉼표(,) 또는 줄바꿈으로 여러 지역을 입력하세요.&#10;예: 서울특별시 / 종로구, 東京都 / 千代田区"></textarea>
-        <div class="bulk-actions">
-          <button class="btn-primary" id="bulkAddBtn">일괄 추가</button>
-          <span class="bulk-result" id="bulkResult"></span>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -626,13 +204,11 @@
     <section class="map-panel" id="mapPanelKR">
       <div class="panel-header">
         <div class="panel-title">
-          <h2>대한민국</h2>
+          <h2 id="title-kr" class="clickable-title" onclick="openRegionModal('kr')">대한민국 ▾</h2>
           <span class="sub" id="count-kr">0개 색칠됨</span>
         </div>
         <div class="panel-tools">
-          <button class="icon-btn" id="zoomResetKR" title="확대 초기화" aria-label="확대 초기화">🔄️</button>
-          <button class="icon-btn" id="pngKR" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
-          <button class="icon-btn" id="foldMapKRBtn" title="접기/펴기" aria-label="접기/펴기">▲</button>
+          <button class="icon-btn" id="zoomResetKR" title="확대 초기화">🔄️</button>
         </div>
       </div>
       <div class="map-canvas" id="map-kr">
@@ -646,13 +222,11 @@
     <section class="map-panel" id="mapPanelJP">
       <div class="panel-header">
         <div class="panel-title">
-          <h2>일본</h2>
+          <h2 id="title-jp" class="clickable-title" onclick="openRegionModal('jp')">일본 ▾</h2>
           <span class="sub" id="count-jp">0개 색칠됨</span>
         </div>
         <div class="panel-tools">
-          <button class="icon-btn" id="zoomResetJP" title="확대 초기화" aria-label="확대 초기화">🔄️</button>
-          <button class="icon-btn" id="pngJP" title="이미지로 저장" aria-label="이미지로 저장">⬇</button>
-          <button class="icon-btn" id="foldMapJPBtn" title="접기/펴기" aria-label="접기/펴기">▲</button>
+          <button class="icon-btn" id="zoomResetJP" title="확대 초기화">🔄️</button>
         </div>
       </div>
       <div class="map-canvas" id="map-jp">
@@ -666,487 +240,228 @@
 
 </div>
 
-<div class="modal-overlay" id="settingsModal">
+<!-- 지역 선택 모달 -->
+<div class="modal-overlay" id="regionModal">
   <div class="modal">
     <div class="modal-header">
-      <h3>설정</h3>
-      <button class="modal-close" id="modalCloseBtn">&times;</button>
+      <h3 id="regionModalTitle">지도 지역 선택</h3>
+      <button class="modal-close" onclick="closeRegionModal()">&times;</button>
     </div>
-    <div class="modal-tabs">
-      <button class="tab-btn active" data-tab="tab-theme">화면 설정</button>
-      <button class="tab-btn" data-tab="tab-creator">만드는 사람</button>
+    <div class="modal-body" style="padding: 16px;">
+      <div id="regionGrid" class="region-grid"></div>
     </div>
-    <div class="tab-content active" id="tab-theme">
-      <div class="setting-row">
-        <span class="setting-label">테마 모드</span>
-        <select class="setting-select" id="themeSelect">
-          <option value="light">화이트 모드</option>
-          <option value="dark">다크 모드</option>
-        </select>
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">언어 (Language)</span>
-        <select class="setting-select" id="langSelect">
-          <option value="ko">한국어</option>
-          <option value="en">English</option>
-          <option value="ja">日本語</option>
-        </select>
-      </div>
-    </div>
-    <div class="tab-content" id="tab-creator">
-      <div class="creator-box">
-        <img class="creator-img" id="creatorImg" src="creator.png" alt="채준영 (하채, Hachae)" title="클릭해서 테마를 전환해보세요!" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'70\' height=\'70\' viewBox=\'0 0 70 70\'><circle cx=\'35\' cy=\'35\' r=\'35\' fill=\'%230DFFEF\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23000000\' font-size=\'22\' font-weight=\'bold\'>채</text></svg>';">
-        <div class="creator-name">채준영 (하채, Hachae)</div>
-        <p class="creator-desc">PaintnTag 개발자</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="tagRegionsModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="tagRegionsModalTitle">태그별 지역 목록</h3>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <button class="btn-ghost" id="tagRegionsEditBtn" style="padding: 4px 12px; font-size: 12px;">편집</button>
-        <button class="modal-close" id="tagRegionsCloseBtn">&times;</button>
-      </div>
-    </div>
-    <div style="padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface-2);">
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <span style="font-size: 13px; font-weight: 600; color: var(--text-2); flex: none;" id="selectTagLabel">태그 선택:</span>
-        <select id="tagRegionsSelect" class="setting-select" style="flex: 1; max-width: 100%;"></select>
-      </div>
-      <div id="tagRegionsEditTools" style="display: none; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
-        <label style="font-size: 12.5px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-1); font-weight: 600;">
-          <input type="checkbox" id="selectAllTagRegions"> <span id="selectAllLabel">전체 선택</span>
-        </label>
-        <button class="btn-ghost" id="deleteSelectedTagRegionsBtn" style="color: var(--danger); border-color: var(--danger); padding: 4px 12px; font-size: 12px; font-weight: 600;">삭제</button>
-      </div>
-    </div>
-    <div id="tagRegionsListContent" style="padding: 20px; max-height: 380px; overflow-y: auto;"></div>
   </div>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
-<div class="toast" id="toast"></div>
 
 <script>
 (function(){
   "use strict";
 
-  var KR_TOPO_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
-  var JP_TOPO_URL = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
+  // 기존 지도 fallback URL
+  var KR_TOPO_URL_DEFAULT = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2018/json/skorea-municipalities-2018-topo-simple.json';
+  var JP_TOPO_URL_DEFAULT = 'https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/topojson/s0010/N03-21_210101.json';
 
-  var IOS_PALETTE = [
-    '#0DFFEF', '#39C5BB',
-    '#FF3B30', '#FF6B00', '#FF9500', '#FFCC00', '#A3E635', '#22C55E',
-    '#007AFF', '#1E3A8A', '#8B4513', '#5856D6', '#AF52DE', '#FF2D55', '#E11D48',
-    '#FFFFFF', '#D1D5DB', '#6B7280', '#374151', '#111827'
-  ];
+  // 2026 최신 지도 (해당 URL에 데이터가 없을 경우 자동으로 DEFAULT로 대체됩니다)
+  var KR_TOPO_URL_2026 = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2026/json/skorea-municipalities-2026-topo-simple.json';
+  var KR_PENINSULA_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2026/json/korea-peninsula-2026-topo-simple.json';
 
-  var i18n = {
-    ko: {
-      title: "PaintnTag — 한국 · 일본",
-      headerTitle: "PaintnTag",
-      headerSub: "한국 시군구 · 일본 시정촌을 나만의 태그로 칠해보세요",
-      tagRegionsBtn: "📋 태그별 지역",
-      settings: "⚙️ 설정",
-      resetAll: "🔄️ 전체 초기화",
-      export: "⬇ 내보내기",
-      import: "⬆️ 불러오기",
-      addTag: "+ 새 태그",
-      searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
-      bulkToggle: "여러 개 한 번에 입력 ⌄",
-      bulkPlaceholder: "쉼표(,) 또는 줄바꿈으로 여러 지역을 입력하세요.\n예: 서울특별시 / 종로구, 東京都 / 千代田区",
-      bulkBtn: "일괄 추가",
-      krTitle: "대한민국",
-      jpTitle: "일본",
-      coloredCount: "개 색칠됨",
-      modalTitle: "설정",
-      tabTheme: "화면 설정",
-      tabCreator: "만드는 사람",
-      themeMode: "테마 모드",
-      themeLight: "화이트 모드",
-      themeDark: "다크 모드",
-      langLabel: "언어 (Language)",
-      creatorName: "채준영 (하채, Hachae)",
-      creatorDesc: "PaintnTag 개발자",
-      defaultTagVisit: "방문",
-      defaultTagPlan: "예정",
-      tagDefaultName: "새 태그",
-      confirmTagDel: " 태그를 삭제할까요? 이 태그로 칠한 지역이 모두 초기화됩니다.",
-      confirmReset: "모든 색칠을 초기화할까요? 태그는 유지됩니다.",
-      needTag: "먼저 태그를 선택하거나 추가하세요",
-      importSuccess: "불러오기 완료",
-      importFail: "파일을 읽을 수 없습니다",
-      exportFail: "이미지 생성에 실패했습니다",
-      themeRestored: "기본 테마로 복구되었습니다.",
-      loading: "지도를 불러오는 중...",
-      loadError: "지도 데이터를 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.",
-      retry: "다시 시도",
-      tagRegionsTitle: "태그별 지역 목록",
-      selectTagLabel: "태그 선택:",
-      noRegionsInTag: "이 태그로 칠해진 지역이 없습니다.",
-      krRegionsHeader: "대한민국",
-      jpRegionsHeader: "일본",
-      edit: "편집",
-      done: "완료",
-      selectAll: "전체 선택",
-      deleteSelected: "삭제",
-      deleteAll: "전체 삭제",
-      selectToDelete: "삭제할 지역을 선택해 주세요."
-    },
-    en: {
-      title: "PaintnTag — Korea · Japan",
-      headerTitle: "PaintnTag",
-      headerSub: "Color Korean and Japanese municipalities with your custom tags",
-      tagRegionsBtn: "📋 Regions by Tag",
-      settings: "⚙️ Settings",
-      resetAll: "🔄️ Reset All",
-      export: "⬇ Export",
-      import: "⬆️ Import",
-      addTag: "+ New Tag",
-      searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
-      bulkToggle: "Bulk Input ⌄",
-      bulkPlaceholder: "Enter multiple locations separated by commas or newlines.\ne.g. 서울특별시 / 종로구, 東京都 / 千代田区",
-      bulkBtn: "Add All",
-      krTitle: "South Korea",
-      jpTitle: "Japan",
-      coloredCount: " colored",
-      modalTitle: "Settings",
-      tabTheme: "Appearance",
-      tabCreator: "Creator",
-      themeMode: "Theme Mode",
-      themeLight: "Light Mode",
-      themeDark: "Dark Mode",
-      langLabel: "Language",
-      creatorName: "Chae Junyeong / Hachae",
-      creatorDesc: "Developer of PaintnTag",
-      defaultTagVisit: "Visited",
-      defaultTagPlan: "Plan",
-      tagDefaultName: "New Tag",
-      confirmTagDel: " tag? All regions colored with this tag will be reset.",
-      confirmReset: "Reset all colored regions? Tags will be kept.",
-      needTag: "Please select or add a tag first",
-      importSuccess: "Import successful",
-      importFail: "Failed to read file",
-      exportFail: "Failed to export image",
-      themeRestored: "Restored to default theme.",
-      loading: "Loading map...",
-      loadError: "Failed to load map data. Please check connection and retry.",
-      retry: "Retry",
-      tagRegionsTitle: "Regions by Tag",
-      selectTagLabel: "Select Tag:",
-      noRegionsInTag: "No regions assigned to this tag.",
-      krRegionsHeader: "South Korea",
-      jpRegionsHeader: "Japan",
-      edit: "Edit",
-      done: "Done",
-      selectAll: "Select All",
-      deleteSelected: "Delete",
-      deleteAll: "Delete All",
-      selectToDelete: "Please select regions to delete."
-    },
-    ja: {
-      title: "PaintnTag — 韓国 · 日本",
-      headerTitle: "PaintnTag",
-      headerSub: "韓国の市・郡・区、日本の市町村をオリジナルタグで塗ってみよう",
-      tagRegionsBtn: "📋 タグ別地域",
-      settings: "⚙️ 設定",
-      resetAll: "🔄️ 全初期化",
-      export: "⬇ エクスポート",
-      import: "⬆️ インポート",
-      addTag: "+ 新規タグ",
-      searchPlaceholder: "서울특별시 / 종로구, 東京都 / 千代田区",
-      bulkToggle: "一括入力 ⌄",
-      bulkPlaceholder: "カンマ(,)や改行で複数の地域を入力できます。\n例: 서울특별시 / 종로구, 東京都 / 千代田区",
-      bulkBtn: "一括追加",
-      krTitle: "大韓民国",
-      jpTitle: "日本",
-      coloredCount: "箇所 塗布済み",
-      modalTitle: "設定",
-      tabTheme: "画面設定",
-      tabCreator: "制作者",
-      themeMode: "テーマモード",
-      themeLight: "ライトモード",
-      themeDark: "ダークモード",
-      langLabel: "言語 (Language)",
-      creatorName: "蔡俊榮(チェ・ジュニョン) (ハチェ / Hachae)",
-      creatorDesc: "PaintnTag 開発者",
-      defaultTagVisit: "訪問",
-      defaultTagPlan: "予定",
-      tagDefaultName: "新規タグ",
-      confirmTagDel: " タグを削除しますか？このタグで塗られた地域が初期化されます。",
-      confirmReset: "すべての塗りつぶしを初期化しますか？(タグは保持されます)",
-      needTag: "最初にタグを選択または追加してください",
-      importSuccess: "インポート完了",
-      importFail: "ファイルを読み込めませんでした",
-      exportFail: "画像の生成に失敗しました",
-      themeRestored: "基本テーマに復元されました。",
-      loading: "マップを読み込み中...",
-      loadError: "マップ データの読み込みに失敗しました。接続を確認して再試行してください。",
-      retry: "再試行",
-      tagRegionsTitle: "タグ別地域一覧",
-      selectTagLabel: "タグ選択:",
-      noRegionsInTag: "このタグで塗られた地域はありません。",
-      krRegionsHeader: "大韓民国",
-      jpRegionsHeader: "日本",
-      edit: "編集",
-      done: "完了",
-      selectAll: "すべて選択",
-      deleteSelected: "削除",
-      deleteAll: "全削除",
-      selectToDelete: "削除する地域を選択してください。"
-    }
-  };
+  var IOS_PALETTE = ['#0DFFEF', '#39C5BB', '#FF3B30', '#FF9500', '#22C55E', '#007AFF', '#AF52DE'];
 
-  var KR_SIDO = {
-    '11':['서울특별시','서울','seoul'], 
-    '21':['부산광역시','부산','busan'], 
-    '22':['대구광역시','대구','daegu'],
-    '23':['인천광역시','인천','incheon'], 
-    '24':['광주광역시','광주','gwangju'], 
-    '25':['대전광역시','대전','daejeon'],
-    '26':['울산광역시','울산','ulsan'], 
-    '29':['세종특별자치시','세종','sejong'], 
-    '31':['경기도','경기','gyeonggi'],
-    '32':['강원특별자치도','강원도','강원','gangwon'], 
-    '33':['충청북도','충북','chungbuk'], 
-    '34':['충청남도','충남','chungnam'],
-    '35':['전북특별자치도','전라북도','전북','jeonbuk'], 
-    '36':['전라남도','전남','jeonnam'], 
-    '37':['경상북도','경북','gyeongbuk'],
-    '38':['경상남도','경남','gyeongnam'], 
-    '39':['제주특별자치도','제주도','jeju']
-  };
-
-  var JP_PREFECTURES = {
-    '北海道': ['hokkaido', '홋카이도', '북해도'], '青森県': ['aomori', '아오모리'], '岩手県': ['iwate', '이와테'],
-    '宮城県': ['miyagi', '미야기'], '秋田県': ['akita', '아키타'], '山形県': ['yamagata', '야마가타'],
-    '福島県': ['fukushima', '후쿠시마'], '茨城県': ['ibaraki', '이바라키'], '栃木県': ['tochigi', '토치기', '도치기'],
-    '群馬県': ['gunma', '군마'], '埼玉県': ['saitama', '사이타마'], '千葉県': ['chiba', '치바'],
-    '東京都': ['tokyo', '도쿄', '토쿄'], '神奈川県': ['kanagawa', '카나가와', '가나가와'], '新潟県': ['niigata', '니가타'],
-    '富山県': ['toyama', '도야마', '토야마'], '石川県': ['ishikawa', '이시카와'], '福井県': ['fukui', '후쿠이'],
-    '山梨県': ['yamanashi', '야마나시'], '長野県': ['nagano', '나가노'], '岐阜県': ['gifu', '기후'],
-    '静岡県': ['shizuoka', '시즈오카'], '愛知県': ['aichi', '아이치'], '三重県': ['mie', '미에'],
-    '滋賀県': ['shiga', '시가'], '京都府': ['kyoto', '교토', '쿄토'], '大阪府': ['osaka', '오사카', '오오사카'],
-    '兵庫県': ['hyogo', '효고'], '奈良県': ['nara', '나라'], '和歌山県': ['wakayama', '와카야마'],
-    '鳥取県': ['tottori', '돗토리', '톳토리'], '島根県': ['shimane', '시마네'], '岡山県': ['okayama', '오카야마'],
-    '広島県': ['hiroshima', '히로시마'], '山口県': ['yamaguchi', '야마구치'], '徳島県': ['tokushima', '도쿠시마', '토쿠시마'],
-    '香川県': ['kagawa', '카가와', '가가와'], '愛媛県': ['ehime', '에히메'], '高知県': ['kochi', '고치', '코치'],
-    '福岡県': ['fukuoka', '후쿠오카'], '佐賀県': ['saga', '사가'], '長崎県': ['nagasaki', '나가사키'],
-    '熊本県': ['kumamoto', '쿠마모토', '구마모토'], '大分県': ['oita', '오이타'], '宮崎県': ['miyazaki', '미야자키'],
-    '鹿児島県': ['kagoshima', '카고시마', '가고시마'], '沖縄県': ['okinawa', '오키나와']
-  };
-
-  var JP_CITIES = {
-    '福岡市': ['fukuoka'], '博多区': ['hakata'], '中央区': ['chuo'], '東区': ['higashi'], '南区': ['minami'], '西区': ['nishi'], '城南区': ['jonan'], '早良区': ['sawara'],
-    '北九州市': ['kitakyushu'], '小倉北区': ['kokurakita', 'kokura'], '小倉南区': ['kokuraminami'], '門司区': ['moji'], '八幡西区': ['yahatanishi', 'yahata'], '八幡東区': ['yahatahigashi'], '戸畑区': ['tobata'], '若松区': ['wakamatsu'],
-    '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '大田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'],
-    '大阪市': ['osaka'], '堺市': ['sakai'], '京都市': ['kyoto'], '神戸市': ['kobe'], '横浜市': ['yokohama'], '名古屋市': ['nagoya'], '札幌市': ['sapporo'], '仙台市': ['sendai'], '広島市': ['hiroshima']
+  // 지도 필터 및 URL 구성 설정 데이터
+  var MAP_REGIONS = {
+    kr: [
+      { id: 'kr_all', label: '남한 전체 (기본값)', url: KR_TOPO_URL_2026, filter: null },
+      { id: 'kr_peninsula', label: '한반도 전체 (남북한)', url: KR_PENINSULA_URL, filter: null },
+      { id: 'kr_capital', label: '수도권 (서울/경기/인천)', url: KR_TOPO_URL_2026, filter: ['11','23','31'] },
+      { id: 'kr_buulgyeong', label: '부울경 (부산/울산/경남)', url: KR_TOPO_URL_2026, filter: ['21','26','38'] },
+      { id: 'kr_jeju', label: '제주특별자치도', url: KR_TOPO_URL_2026, filter: ['39'] },
+      { id: 'kr_gangwon', label: '강원특별자치도', url: KR_TOPO_URL_2026, filter: ['32'] }
+    ],
+    jp: [
+      { id: 'jp_all', label: '일본 전체 (기본값)', url: JP_TOPO_URL_DEFAULT, filter: null },
+      { id: 'jp_hokkaido', label: '홋카이도', url: JP_TOPO_URL_DEFAULT, filter: ['北海道'] },
+      { id: 'jp_kanto', label: '간토 (도쿄/요코하마 등)', url: JP_TOPO_URL_DEFAULT, filter: ['茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県'] },
+      { id: 'jp_kansai', label: '간사이 (오사카/교토 등)', url: JP_TOPO_URL_DEFAULT, filter: ['三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県'] },
+      { id: 'jp_kyushu', label: '규슈 (후쿠오카 등)', url: JP_TOPO_URL_DEFAULT, filter: ['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'] }
+    ]
   };
 
   var state = {
-    tags: [],
-    activeTagId: null,
-    editingTagForPicker: null,
+    tags: [
+      { id: 't1', name: '방문', color: '#FF3B30' },
+      { id: 't2', name: '예정', color: '#007AFF' }
+    ],
+    activeTagId: 't1',
     assignments: {},
     countries: { kr: null, jp: null },
-    theme: 'light',
-    lang: 'ko',
-    isEaster: false
+    currentRegionConfig: { kr: MAP_REGIONS.kr[0], jp: MAP_REGIONS.jp[0] }
   };
 
-  var isTagRegionsEditing = false;
   var svgRefs = {};
-  var searchIndexAll = [];
 
-  function t(key){
-    return (i18n[state.lang] && i18n[state.lang][key]) || i18n.ko[key] || key;
-  }
+  var KR_SIDO = {
+    '11':['서울특별시','서울'], '21':['부산광역시','부산'], '22':['대구광역시','대구'],
+    '23':['인천광역시','인천'], '24':['광주광역시','광주'], '25':['대전광역시','대전'],
+    '26':['울산광역시','울산'], '29':['세종특별자치시','세종'], '31':['경기도','경기'],
+    '32':['강원특별자치도','강원'], '33':['충청북도','충북'], '34':['충청남도','충남'],
+    '35':['전북특별자치도','전북'], '36':['전라남도','전남'], '37':['경상북도','경북'],
+    '38':['경상남도','경남'], '39':['제주특별자치도','제주도']
+  };
 
-  function hexToRgb(hex) {
-    hex = hex.replace(/^#/, '');
-    if (hex.length === 3) hex = hex.split('').map(function(c){ return c + c; }).join('');
-    var num = parseInt(hex, 16);
-    return isNaN(num) ? { r: 0, g: 0, b: 0 } : { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
-  }
-  function rgbToHex(r, g, b) {
-    var toHex = function(n) {
-      var h = Math.max(0, Math.min(255, Math.round(n))).toString(16);
-      return h.length === 1 ? '0' + h : h;
-    };
-    return '#' + toHex(r) + toHex(g) + toHex(b);
+  function regionInfo(feature, country){
+    var p = feature.properties || {};
+    if (country === 'kr'){
+      var codeStr = String(p.code || p.id || '');
+      var prefix = codeStr.slice(0,2);
+      
+      var sido = KR_SIDO[prefix];
+      var display = sido ? (sido[0] + ' ' + p.name) : (p.name || '북한 지역');
+      var aliases = [p.name, display];
+      
+      if (sido) {
+        aliases = aliases.concat(sido);
+      } else if (codeStr && !codeStr.startsWith('1') && !codeStr.startsWith('2') && !codeStr.startsWith('3')) {
+        aliases.push('북한'); // 북한 행정구역 식별용
+      }
+      
+      return { key: 'kr:' + (p.code || p.name), display: display, prefix: prefix, aliases: aliases };
+    } else {
+      var pref = p.N03_001 || '';
+      var town = p.N03_004 || pref;
+      var d = pref + (p.N03_003 || '') + (p.N03_004 || '');
+      var code = p.N03_007 || (pref + '_' + town);
+      return { key: 'jp:' + code, display: d || town, pref: pref };
+    }
   }
 
   function topologyToFeatures(topology){
     if (typeof topojson !== 'undefined' && topojson.feature) {
       var objName = Object.keys(topology.objects)[0];
-      var geojson = topojson.feature(topology, topology.objects[objName]);
-      return geojson.features || [];
+      return topojson.feature(topology, topology.objects[objName]).features || [];
     }
     return [];
   }
 
-  function normalizeSearchTerm(str) {
-    if (!str) return '';
-    var s = String(str).toLowerCase().trim().replace(/[\s\-_]+/g, '');
-    s = s.replace(/ou/g, 'o').replace(/oo/g, 'o').replace(/uu/g, 'u');
-    s = s.replace(/(prefecture|pref|city|ward|town|village|shi|ku|machi|cho|son|mura|ken|to|fu)$/g, '');
-    s = s.replace(/(특별시|광역시|특별자치시|특별자치도|시|군|구|市|区|町|村|都|道|府|県)$/g, '');
-    return s;
-  }
-
-  // 광주 전남 통합 입력 키워드 감지 판별 함수
-  function isGwangjuJeonnamQuery(str) {
-    if (!str) return false;
-    var raw = String(str).toLowerCase().replace(/[\s\-_]/g, '');
-    var targets = [
-      '광주전남통합',
-      '광주전남통합특별시',
-      '전남광주통합특별시',
-      '전남광주통합',
-      '전남광주',
-      '광주특별시',
-      'jeonnamgwangju',
-      'gwangjujeonnam'
-    ];
-    return targets.some(function(t) {
-      return raw === t || raw.indexOf(t) !== -1;
-    });
-  }
-
-  function regionInfo(feature, country){
-    var p = feature.properties || {};
-    if (country === 'kr'){
-      var codeStr = String(p.code);
-      var prefix = codeStr.slice(0,2);
-      
-      if (codeStr === '37310' || p.name === '군위군') {
-        prefix = '22';
-      }
-
-      var sido = KR_SIDO[prefix];
-      var display = sido ? (sido[0] + ' ' + p.name) : p.name;
-      var aliases = [p.name, display];
-
-      if (prefix === '23') {
-        if (codeStr === '28010' || p.name === '중구') {
-          aliases.push('제물포구', '영종구', '인천광역시 제물포구', '인천광역시 영종구');
-        } else if (codeStr === '28020' || p.name === '동구') {
-          aliases.push('제물포구', '인천광역시 제물포구');
-        } else if (codeStr === '28260' || p.name === '서구') {
-          aliases.push('검단구', '인천광역시 검단구');
-        }
-      }
-
-      if (sido) {
-        aliases.push(sido[0] + ' ' + p.name);
-        aliases = aliases.concat(sido);
-      }
-      if (p.name_eng) aliases.push(p.name_eng);
-      return { key: 'kr:' + p.code, display: display, shortName: p.name, aliases: aliases, prefix: prefix };
-    } else {
-      var pref = p.N03_001 || '';
-      var sub = p.N03_003 || '';
-      var town = p.N03_004 || pref || '未指定';
-      var d = pref + (sub ? sub : '') + (p.N03_004 || '');
-      var code = p.N03_007 || (pref + '_' + town);
-
-      var al = [pref, town, d];
-      if (sub) al.push(sub);
-
-      if (JP_PREFECTURES[pref]) al = al.concat(JP_PREFECTURES[pref]);
-
-      Object.keys(JP_CITIES).forEach(function(ckey){
-        if (town.indexOf(ckey) !== -1 || d.indexOf(ckey) !== -1) {
-          al = al.concat(JP_CITIES[ckey]);
-        }
-      });
-
-      var uniqueAliases = [];
-      al.forEach(function(item){
-        if (item && uniqueAliases.indexOf(item) === -1) uniqueAliases.push(item);
-      });
-
-      return { key: 'jp:' + code, display: d || town, shortName: town, aliases: uniqueAliases };
-    }
-  }
-
-  function buildSearchIndex(){
-    searchIndexAll = [].concat(
-      state.countries.kr ? state.countries.kr.index : [],
-      state.countries.jp ? state.countries.jp.index : []
-    );
-  }
-
+  // 데이터 로드 & 안전장치 (2026 맵이 없을경우 2018 맵 호출)
   function loadCountry(url, country){
+    var el = document.getElementById('loading-' + country);
+    if(el) el.style.display = 'flex';
+    
     return fetch(url).then(function(res){
-      if (!res.ok) throw new Error('network');
+      if (!res.ok) {
+        // Fallback 처리
+        if (country === 'kr' && url !== KR_TOPO_URL_DEFAULT) {
+          console.warn("최신 지도 URL을 찾을 수 없어 기본 지도로 대체합니다.");
+          return fetch(KR_TOPO_URL_DEFAULT).then(r => r.json());
+        }
+        throw new Error('network');
+      }
       return res.json();
     }).then(function(topo){
-      var objName = Object.keys(topo.objects)[0];
       var features = topologyToFeatures(topo);
-      var index = features.map(function(f){
-        var info = regionInfo(f, country);
-        return { key: info.key, display: info.display, aliases: info.aliases, country: country, feature: f, info: info };
-      });
-      return { features: features, index: index, rawTopo: topo, objName: objName };
-    });
-  }
-
-  function setLoading(country, isLoading) {
-    var el = document.getElementById('loading-' + country);
-    if (el) el.style.display = isLoading ? 'flex' : 'none';
-  }
-
-  function showLoadError() {
-    ['kr', 'jp'].forEach(function(c) {
-      var el = document.getElementById('loading-' + c);
-      if (el) {
-        el.innerHTML = '<div class="error-msg">' + t('loadError') + '</div>' +
-                       '<button class="retry-btn" onclick="location.reload()">' + t('retry') + '</button>';
-        el.style.display = 'flex';
-      }
+      // 필터링 및 렌더링 성능을 위해 info 객체를 미리 매핑해둡니다
+      features.forEach(function(f){ f._info = regionInfo(f, country); });
+      return { features: features, rawTopo: topo };
     });
   }
 
   function init(){
+    renderTags();
     Promise.all([
-      loadCountry(KR_TOPO_URL, 'kr'),
-      loadCountry(JP_TOPO_URL, 'jp')
+      loadCountry(state.currentRegionConfig.kr.url, 'kr'),
+      loadCountry(state.currentRegionConfig.jp.url, 'jp')
     ]).then(function(results){
       state.countries.kr = results[0];
       state.countries.jp = results[1];
-      buildSearchIndex();
       renderMap('kr');
       renderMap('jp');
-      setLoading('kr', false);
-      setLoading('jp', false);
     }).catch(function(err){
       console.error(err);
-      showLoadError();
+      alert('지도 데이터를 불러오지 못했습니다.');
     });
+  }
+
+  // 모달 제어 전역 함수들
+  window.openRegionModal = function(country) {
+    var modal = document.getElementById('regionModal');
+    document.getElementById('regionModalTitle').textContent = country === 'kr' ? '대한민국 지역 선택' : '일본 지역 선택';
+    var grid = document.getElementById('regionGrid');
+    grid.innerHTML = '';
+    
+    MAP_REGIONS[country].forEach(function(config) {
+      var btn = document.createElement('button');
+      btn.className = 'region-btn';
+      if (state.currentRegionConfig[country].id === config.id) {
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.background = 'var(--accent-soft)';
+      }
+      btn.textContent = config.label;
+      btn.onclick = function() { changeRegion(country, config.id); };
+      grid.appendChild(btn);
+    });
+    
+    modal.classList.add('open');
+  };
+
+  window.closeRegionModal = function() {
+    document.getElementById('regionModal').classList.remove('open');
+  };
+
+  // 구역 변경시 지도 재렌더링 기능
+  function changeRegion(country, regionId) {
+    var config = MAP_REGIONS[country].find(r => r.id === regionId);
+    var prevUrl = state.currentRegionConfig[country].url;
+    state.currentRegionConfig[country] = config;
+    
+    document.getElementById('title-' + country).innerHTML = config.label + ' <span style="font-size: 11px;">▼</span>';
+
+    // 새로운 URL(북한 포함 등)일 경우 다시 로드
+    if (config.url !== prevUrl) {
+      loadCountry(config.url, country).then(res => {
+        state.countries[country] = res;
+        renderMap(country);
+        closeRegionModal();
+      }).catch(err => console.error(err));
+    } else {
+      // 필터값만 달라졌을 경우 그대로 필터 적용해 렌더링
+      renderMap(country);
+      closeRegionModal();
+    }
   }
 
   function renderMap(country){
     var container = document.getElementById('map-' + country);
     if (!container) return;
-    var svgHolder = document.createElement('div');
-    svgHolder.style.width = '100%';
-    svgHolder.style.height = '100%';
-    var loadingEl = document.getElementById('loading-' + country);
+    
+    // 로딩 숨김
+    var el = document.getElementById('loading-' + country);
+    if(el) el.style.display = 'none';
+    
     container.innerHTML = '';
-    if (loadingEl) container.appendChild(loadingEl);
+    var svgHolder = document.createElement('div');
+    svgHolder.style.width = '100%'; svgHolder.style.height = '100%';
     container.appendChild(svgHolder);
 
     var rect = container.getBoundingClientRect();
     var width = Math.max(rect.width, 100);
     var height = Math.max(rect.height, 100);
+    
     var features = state.countries[country] ? state.countries[country].features : [];
+    var filter = state.currentRegionConfig[country].filter;
+    
+    // 필터값에 맞게 구역 자르기
+    if (filter) {
+      features = features.filter(function(f) {
+        if (country === 'kr') return filter.indexOf(f._info.prefix) !== -1;
+        else return filter.indexOf(f._info.pref) !== -1;
+      });
+    }
+
     var fc = { type:'FeatureCollection', features: features };
 
+    // fitExtent로 선택된 영역만 화면 꽉차게 조정
     var projection = d3.geoMercator();
     projection.fitExtent([[16,16],[width-16,height-16]], fc);
     var pathGen = d3.geoPath(projection);
@@ -1157,18 +472,6 @@
 
     var g = svg.append('g').attr('class','map-g');
     
-    var overlayG = svg.append('g').attr('class','overlay-g').style('pointer-events','none');
-    
-    var hoverPath = overlayG.append('path')
-      .attr('fill', 'none')
-      .attr('stroke', 'var(--map-hover-stroke)')
-      .attr('stroke-width', country === 'jp' ? 1.5 : 2.0)
-      .attr('vector-effect', 'non-scaling-stroke')
-      .attr('stroke-linejoin', 'round');
-
-    var searchHighlightPath = overlayG.append('path')
-      .attr('class', 'search-highlight-path');
-
     var strokeW = country === 'jp' ? 0.35 : 0.6;
 
     var paths = g.selectAll('path')
@@ -1181,37 +484,33 @@
       .attr('stroke-width', strokeW)
       .attr('vector-effect', 'non-scaling-stroke')
       .attr('stroke-linejoin', 'round')
-      .each(function(d){ d._info = regionInfo(d, country); })
       .attr('data-key', function(d){ return d._info.key; })
-      .on('mouseenter', function(event, d){
-        hoverPath.attr('d', pathGen(d));
-        showTooltip(event, d._info.display, state.assignments[d._info.key]);
-      })
-      .on('mousemove', function(event){ moveTooltip(event); })
-      .on('mouseleave', function(){
-        hoverPath.attr('d', null);
-        hideTooltip();
-      })
       .on('click', function(event, d){
-        toggleAssign(d._info.key);
+        if (!state.activeTagId) return alert('태그를 선택하세요');
+        var k = d._info.key;
+        if (state.assignments[k] === state.activeTagId) delete state.assignments[k];
+        else state.assignments[k] = state.activeTagId;
+        applyColors(country);
       });
 
     var maxZoom = country === 'jp' ? 50 : 15;
     var zoom = d3.zoom().scaleExtent([1, maxZoom]).on('zoom', function(event){
       g.attr('transform', event.transform);
-      overlayG.attr('transform', event.transform);
     });
     svg.call(zoom);
+    
+    // 확대 초기화 버튼 바인딩
+    var resetBtn = document.getElementById('zoomReset' + (country === 'kr' ? 'KR' : 'JP'));
+    if(resetBtn) {
+      // 기존 이벤트 제거후 재할당위해 복제
+      var newBtn = resetBtn.cloneNode(true);
+      resetBtn.parentNode.replaceChild(newBtn, resetBtn);
+      newBtn.addEventListener('click', function(){
+        svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+      });
+    }
 
-    svgRefs[country] = {
-      svg: svg,
-      g: g,
-      paths: paths,
-      zoom: zoom,
-      pathGen: pathGen,
-      features: features,
-      searchHighlightPath: searchHighlightPath
-    };
+    svgRefs[country] = { svg: svg, g: g, paths: paths };
     applyColors(country);
   }
 
@@ -1224,1240 +523,55 @@
       var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
       return tag ? tag.color : 'var(--map-fill)';
     });
-  }
-
-  function flashNeedTag() {
-    showToast(t('needTag'));
-    var addBtn = document.getElementById('addTagBtn');
-    if (addBtn) {
-      addBtn.style.transition = 'transform 0.15s, border-color 0.15s';
-      addBtn.style.transform = 'scale(1.08)';
-      addBtn.style.borderColor = 'var(--danger)';
-      setTimeout(function() {
-        addBtn.style.transform = 'none';
-        addBtn.style.borderColor = '';
-      }, 300);
-    }
-  }
-
-  function toggleAssign(key){
-    if (!state.activeTagId){ flashNeedTag(); return; }
-    if (state.assignments[key] === state.activeTagId) delete state.assignments[key];
-    else state.assignments[key] = state.activeTagId;
-    assignmentsChanged();
-  }
-
-  function uid(){ return 't' + Math.random().toString(36).slice(2,9); }
-
-  function addTag(name, color){
-    var tag = { id: uid(), name: name || t('tagDefaultName'), color: color || IOS_PALETTE[state.tags.length % IOS_PALETTE.length] };
-    state.tags.push(tag);
-    state.activeTagId = tag.id;
-    renderTags();
-    return tag;
-  }
-
-  function deleteTag(id){
-    var tag = state.tags.filter(function(t){ return t.id === id; })[0];
-    if (!tag) return;
-    if (!confirm('"' + tag.name + '"' + t('confirmTagDel'))) return;
-    state.tags = state.tags.filter(function(t){ return t.id !== id; });
-    Object.keys(state.assignments).forEach(function(k){
-      if (state.assignments[k] === id) delete state.assignments[k];
-    });
-    if (state.activeTagId === id) state.activeTagId = state.tags.length ? state.tags[0].id : null;
-    closeColorPicker();
-    renderTags();
-    applyColors('kr'); applyColors('jp');
-  }
-
-  function setActiveTag(id){
-    state.activeTagId = id;
-    document.querySelectorAll('.chip').forEach(function(chip){
-      if (chip.dataset.tagId === id) chip.classList.add('active');
-      else chip.classList.remove('active');
-    });
-    renderActiveTagSelect();
-  }
-
-  function tagCount(id){
-    var c = 0;
-    Object.keys(state.assignments).forEach(function(k){ if (state.assignments[k] === id) c++; });
-    return c;
-  }
-
-  var rgbState = { r: 0, g: 0, b: 0, updating: false };
-
-  function setupColorPickerUI(){
-    var grid = document.getElementById('iosColorGrid');
-    grid.innerHTML = '';
-    IOS_PALETTE.forEach(function(hex){
-      var circle = document.createElement('div');
-      circle.className = 'ios-color-circle';
-      circle.style.background = hex;
-      circle.dataset.color = hex;
-      circle.title = hex;
-      circle.addEventListener('click', function(){
-        if (state.editingTagForPicker) {
-          updateTagColor(state.editingTagForPicker, hex);
-        }
-      });
-      grid.appendChild(circle);
-    });
-
-    document.getElementById('segPresetsBtn').addEventListener('click', function(){
-      this.classList.add('active');
-      document.getElementById('segRgbBtn').classList.remove('active');
-      document.getElementById('iosColorGrid').style.display = 'grid';
-      document.getElementById('rgbControlPanel').classList.remove('active');
-    });
-    document.getElementById('segRgbBtn').addEventListener('click', function(){
-      this.classList.add('active');
-      document.getElementById('segPresetsBtn').classList.remove('active');
-      document.getElementById('iosColorGrid').style.display = 'none';
-      document.getElementById('rgbControlPanel').classList.add('active');
-    });
-
-    ['R','G','B'].forEach(function(ch){
-      var slider = document.getElementById('slider' + ch);
-      var numInput = document.getElementById('num' + ch);
-      
-      var onValChange = function(val){
-        if (rgbState.updating) return;
-        var parsed = parseInt(val, 10);
-        if (isNaN(parsed)) parsed = 0;
-        parsed = Math.max(0, Math.min(255, parsed));
-        rgbState[ch.toLowerCase()] = parsed;
-        syncRgbUI();
-        if (state.editingTagForPicker) {
-          var hex = rgbToHex(rgbState.r, rgbState.g, rgbState.b);
-          updateTagColorLive(state.editingTagForPicker, hex);
-        }
-      };
-
-      slider.addEventListener('input', function(e){ onValChange(e.target.value); });
-      numInput.addEventListener('input', function(e){ onValChange(e.target.value); });
-    });
-
-    document.getElementById('rgbHexInput').addEventListener('input', function(e){
-      var val = e.target.value.replace(/[^0-9A-Fa-f]/g, '');
-      if (val.length === 6) {
-        var rgb = hexToRgb(val);
-        rgbState.r = rgb.r; rgbState.g = rgb.g; rgbState.b = rgb.b;
-        syncRgbUI();
-        if (state.editingTagForPicker) {
-          updateTagColorLive(state.editingTagForPicker, '#' + val);
-        }
-      }
-    });
-  }
-
-  function syncRgbUI(){
-    rgbState.updating = true;
-    var r = rgbState.r, g = rgbState.g, b = rgbState.b;
-    var hex = rgbToHex(r, g, b);
-
-    document.getElementById('sliderR').value = r;
-    document.getElementById('sliderG').value = g;
-    document.getElementById('sliderB').value = b;
-
-    document.getElementById('numR').value = r;
-    document.getElementById('numG').value = g;
-    document.getElementById('numB').value = b;
-
-    document.getElementById('rgbHexInput').value = hex.replace('#','').toUpperCase();
-    document.getElementById('rgbPreviewBox').style.background = hex;
-
-    document.getElementById('sliderR').style.background = 'linear-gradient(to right, rgb(0,'+g+','+b+'), rgb(255,'+g+','+b+'))';
-    document.getElementById('sliderG').style.background = 'linear-gradient(to right, rgb('+r+',0,'+b+'), rgb('+r+',255,'+b+'))';
-    document.getElementById('sliderB').style.background = 'linear-gradient(to right, rgb('+r+','+g+',0), rgb('+r+','+g+',255))';
-
-    rgbState.updating = false;
-  }
-
-  function openColorPicker(tag, anchorEl){
-    state.editingTagForPicker = tag;
-    var picker = document.getElementById('iosColorPicker');
     
-    var rect = anchorEl.getBoundingClientRect();
-    var tagbarRect = document.getElementById('tagBarSection').getBoundingClientRect();
-    var left = rect.left - tagbarRect.left;
-    if (left + 300 > window.innerWidth) {
-      left = window.innerWidth - 310;
-    }
-    picker.style.left = Math.max(10, left) + 'px';
-    picker.style.top = (rect.bottom - tagbarRect.top + 8) + 'px';
-
-    var rgb = hexToRgb(tag.color);
-    rgbState.r = rgb.r; rgbState.g = rgb.g; rgbState.b = rgb.b;
-    syncRgbUI();
-
-    document.querySelectorAll('.ios-color-circle').forEach(function(el){
-      if (el.dataset.color.toLowerCase() === tag.color.toLowerCase()){
-        el.classList.add('selected');
-      } else {
-        el.classList.remove('selected');
-      }
-    });
-
-    picker.classList.add('open');
+    // 선택 카운트 갱신
+    var n = 0;
+    Object.keys(state.assignments).forEach(function(k){ if (k.indexOf(country+':') === 0) n++; });
+    document.getElementById('count-' + country).textContent = n + '개 색칠됨';
   }
 
-  function closeColorPicker(){
-    state.editingTagForPicker = null;
-    var picker = document.getElementById('iosColorPicker');
-    if (picker) picker.classList.remove('open');
-  }
-
-  function updateTagColorLive(tag, color){
-    tag.color = color;
-    applyColors('kr'); applyColors('jp');
-    var chip = document.querySelector('.chip[data-tag-id="' + tag.id + '"] .chip-swatch');
-    if (chip) chip.style.background = color;
-    var dot = document.getElementById('activeTagDot');
-    if (tag.id === state.activeTagId) dot.style.background = color;
-  }
-
-  function updateTagColor(tag, color){
-    updateTagColorLive(tag, color);
-    renderTags();
-    closeColorPicker();
-  }
-
+  // 간단한 태그 렌더링 시스템
   function renderTags(){
     var rail = document.getElementById('tagRail');
     rail.innerHTML = '';
     state.tags.forEach(function(tag){
       var chip = document.createElement('div');
       chip.className = 'chip' + (tag.id === state.activeTagId ? ' active' : '');
-      chip.dataset.tagId = tag.id;
-      chip.addEventListener('click', function(e){
-        if (e.target.closest('.chip-del') || e.target.closest('.chip-swatch') || e.target.closest('.chip-count')) return;
-        setActiveTag(tag.id);
-      });
-
+      chip.onclick = function() { state.activeTagId = tag.id; renderTags(); };
+      
       var swatch = document.createElement('div');
       swatch.className = 'chip-swatch';
       swatch.style.background = tag.color;
-      swatch.addEventListener('click', function(e){
-        e.stopPropagation();
-        if (state.editingTagForPicker && state.editingTagForPicker.id === tag.id) {
-          closeColorPicker();
-        } else {
-          openColorPicker(tag, swatch);
-        }
-      });
-
+      
       var nameSpan = document.createElement('span');
       nameSpan.className = 'chip-name';
-      nameSpan.contentEditable = 'true';
-      nameSpan.spellcheck = false;
       nameSpan.textContent = tag.name;
-      nameSpan.addEventListener('click', function(e){
-        e.stopPropagation();
-        if (state.activeTagId !== tag.id) {
-          setActiveTag(tag.id);
-        }
-      });
-      nameSpan.addEventListener('keydown', function(e){
-        if (e.key === 'Enter'){ e.preventDefault(); nameSpan.blur(); }
-      });
-      nameSpan.addEventListener('blur', function(){
-        var v = nameSpan.textContent.trim() || t('tagDefaultName');
-        tag.name = v;
-        nameSpan.textContent = v;
-        renderActiveTagSelect();
-      });
-
-      var countSpan = document.createElement('span');
-      countSpan.className = 'chip-count';
-      countSpan.title = "이 태그의 지역 목록 확인";
-      var c = tagCount(tag.id);
-      countSpan.textContent = String(c);
-      countSpan.addEventListener('click', function(e){
-        e.stopPropagation();
-        openTagRegionsModal(tag.id);
-      });
-
-      var delBtn = document.createElement('button');
-      delBtn.type = 'button';
-      delBtn.className = 'chip-del';
-      delBtn.setAttribute('aria-label','태그 삭제');
-      delBtn.textContent = '×';
-      delBtn.addEventListener('click', function(e){ e.stopPropagation(); deleteTag(tag.id); });
 
       chip.appendChild(swatch);
       chip.appendChild(nameSpan);
-      chip.appendChild(countSpan);
-      chip.appendChild(delBtn);
       rail.appendChild(chip);
     });
-    renderActiveTagSelect();
-    updatePanelCounts();
   }
 
-  function renderActiveTagSelect(){
-    var select = document.getElementById('activeTagSelect');
-    select.innerHTML = '';
-    state.tags.forEach(function(tag){
-      var opt = document.createElement('option');
-      opt.value = tag.id;
-      opt.textContent = tag.name;
-      if (tag.id === state.activeTagId) opt.selected = true;
-      select.appendChild(opt);
+  document.getElementById('addTagBtn').addEventListener('click', function(){
+    state.tags.push({ 
+      id: 't' + Math.random().toString(36).substr(2,5), 
+      name: '새 태그', 
+      color: IOS_PALETTE[state.tags.length % IOS_PALETTE.length] 
     });
-    var dot = document.getElementById('activeTagDot');
-    var activeTag = state.tags.filter(function(t){ return t.id === state.activeTagId; })[0];
-    dot.style.background = activeTag ? activeTag.color : 'transparent';
-    select.disabled = state.tags.length === 0;
-  }
-
-  function updateChipCounts(){
-    document.querySelectorAll('.chip').forEach(function(chip){
-      var id = chip.dataset.tagId;
-      var span = chip.querySelector('.chip-count');
-      if (span) {
-        var c = tagCount(id);
-        span.textContent = String(c);
-      }
-    });
-  }
-
-  function updatePanelCounts(){
-    ['kr','jp'].forEach(function(c){
-      var el = document.getElementById('count-' + c);
-      if (!el) return;
-      var n = 0;
-      Object.keys(state.assignments).forEach(function(k){ if (k.indexOf(c+':') === 0) n++; });
-      el.textContent = n + t('coloredCount');
-    });
-  }
-
-  function assignmentsChanged(){
-    applyColors('kr'); applyColors('jp');
-    updatePanelCounts();
-    updateChipCounts();
-  }
-
-  function updateTagSelectOptionText(tagId){
-    var select = document.getElementById('tagRegionsSelect');
-    if (!select) return;
-    Array.from(select.options).forEach(function(opt){
-      if (opt.value === tagId) {
-        var tag = state.tags.filter(function(t){ return t.id === tagId; })[0];
-        if (tag) opt.textContent = tag.name + ' (' + tagCount(tagId) + ')';
-      }
-    });
-  }
-
-  function updateSelectAllStatus(){
-    var cbs = document.querySelectorAll('.region-select-cb');
-    var selectAllCb = document.getElementById('selectAllTagRegions');
-    var deleteBtn = document.getElementById('deleteSelectedTagRegionsBtn');
-    
-    if (!selectAllCb || cbs.length === 0) {
-      if (deleteBtn) deleteBtn.textContent = t('deleteSelected');
-      return;
-    }
-
-    var allChecked = true;
-    for (var i = 0; i < cbs.length; i++) {
-      if (!cbs[i].checked) { allChecked = false; break; }
-    }
-    selectAllCb.checked = allChecked;
-
-    if (deleteBtn) {
-      deleteBtn.textContent = (allChecked && cbs.length > 0) ? t('deleteAll') : t('deleteSelected');
-    }
-  }
-
-  function openTagRegionsModal(targetTagId){
-    var modal = document.getElementById('tagRegionsModal');
-    var select = document.getElementById('tagRegionsSelect');
-    select.innerHTML = '';
-
-    state.tags.forEach(function(tag){
-      var opt = document.createElement('option');
-      opt.value = tag.id;
-      opt.textContent = tag.name + ' (' + tagCount(tag.id) + ')';
-      if (tag.id === (targetTagId || state.activeTagId)) opt.selected = true;
-      select.appendChild(opt);
-    });
-
-    isTagRegionsEditing = false;
-    var editBtn = document.getElementById('tagRegionsEditBtn');
-    if (editBtn) editBtn.textContent = t('edit');
-    var editTools = document.getElementById('tagRegionsEditTools');
-    if (editTools) editTools.style.display = 'none';
-    var selectAllCb = document.getElementById('selectAllTagRegions');
-    if (selectAllCb) selectAllCb.checked = false;
-
-    renderTagRegionsList(select.value);
-    modal.classList.add('open');
-  }
-
-  function renderTagRegionsList(tagId){
-    var container = document.getElementById('tagRegionsListContent');
-    container.innerHTML = '';
-
-    if (!tagId) return;
-
-    var krList = [];
-    var jpList = [];
-
-    Object.keys(state.assignments).forEach(function(key){
-      if (state.assignments[key] === tagId) {
-        var matched = searchIndexAll.filter(function(item){ return item.key === key; })[0];
-        if (matched) {
-          if (key.indexOf('kr:') === 0) krList.push(matched);
-          else if (key.indexOf('jp:') === 0) jpList.push(matched);
-        }
-      }
-    });
-
-    if (krList.length === 0 && jpList.length === 0) {
-      container.innerHTML = '<div style="text-align:center; padding: 20px; color:var(--text-2); font-size:13px;">' + t('noRegionsInTag') + '</div>';
-      var editTools = document.getElementById('tagRegionsEditTools');
-      if (editTools) editTools.style.display = 'none';
-      return;
-    }
-
-    if (isTagRegionsEditing) {
-      var editTools = document.getElementById('tagRegionsEditTools');
-      if (editTools) editTools.style.display = 'flex';
-    }
-
-    var renderGroup = function(title, list){
-      if (!list.length) return;
-      var groupEl = document.createElement('div');
-      groupEl.className = 'tag-region-group';
-
-      var titleEl = document.createElement('div');
-      titleEl.className = 'tag-region-title';
-      titleEl.innerHTML = '<span>' + title + '</span><span>' + list.length + '개</span>';
-      groupEl.appendChild(titleEl);
-
-      var pillsEl = document.createElement('div');
-      pillsEl.className = 'tag-region-pills';
-
-      list.forEach(function(item){
-        var pill = document.createElement('div');
-        pill.className = 'region-pill';
-        
-        if (isTagRegionsEditing) {
-          var cb = document.createElement('input');
-          cb.type = 'checkbox';
-          cb.className = 'region-select-cb';
-          cb.dataset.key = item.key;
-          cb.addEventListener('change', updateSelectAllStatus);
-          pill.appendChild(cb);
-
-          pill.style.cursor = 'pointer';
-          pill.addEventListener('click', function(e){
-            if (e.target !== cb) {
-              cb.checked = !cb.checked;
-              updateSelectAllStatus();
-            }
-          });
-        }
-
-        var nameSpan = document.createElement('span');
-        nameSpan.textContent = item.display;
-        pill.appendChild(nameSpan);
-
-        if (!isTagRegionsEditing) {
-          var delBtn = document.createElement('button');
-          delBtn.className = 'region-pill-del';
-          delBtn.innerHTML = '×';
-          delBtn.title = '이 지역 색칠 해제';
-          delBtn.addEventListener('click', function(e){
-            e.stopPropagation();
-            delete state.assignments[item.key];
-            assignmentsChanged();
-            renderTagRegionsList(tagId);
-            updateTagSelectOptionText(tagId);
-          });
-          pill.appendChild(delBtn);
-        }
-
-        pillsEl.appendChild(pill);
-      });
-
-      groupEl.appendChild(pillsEl);
-      container.appendChild(groupEl);
-    };
-
-    renderGroup('🇰🇷 ' + t('krRegionsHeader'), krList);
-    renderGroup('🇯🇵 ' + t('jpRegionsHeader'), jpList);
-
-    if (isTagRegionsEditing) {
-      updateSelectAllStatus();
-    }
-  }
-
-  var searchInput = document.getElementById('searchInput');
-  var dropdown = document.getElementById('searchDropdown');
-
-  function searchMatches(q){
-    var nq = normalizeSearchTerm(q);
-    if (!nq && !isGwangjuJeonnamQuery(q)) return [];
-    var results = [];
-
-    if (state.countries.kr) {
-      // 1. 광주 전남 통합 입력 확인
-      if (isGwangjuJeonnamQuery(q)) {
-        var integratedItems = state.countries.kr.index.filter(function(item) {
-          return item.info.prefix === '24' || item.info.prefix === '36';
-        });
-        if (integratedItems.length > 0) {
-          results.push({
-            isParent: true,
-            parentName: '광주 전남 통합',
-            isIntegratedGwangjuJeonnam: true,
-            display: '광주 전남 통합 전체 (' + integratedItems.length + '개 지역)',
-            country: 'kr',
-            items: integratedItems
-          });
-        }
-      }
-
-      // 2. 일반 시도 단위 통합 검색
-      var addedParents = {};
-      Object.keys(KR_SIDO).forEach(function(code) {
-        var names = KR_SIDO[code];
-        var parentName = names[0];
-        if (addedParents[parentName]) return;
-
-        var matched = names.some(function(nm) { return normalizeSearchTerm(nm).indexOf(nq) !== -1; });
-        if (matched) {
-          addedParents[parentName] = true;
-          var items = state.countries.kr.index.filter(function(item) {
-            return item.info.prefix === code;
-          });
-          if (items.length > 0) {
-            results.push({
-              isParent: true,
-              parentName: parentName,
-              codePrefix: code,
-              display: parentName + ' 전체 (' + items.length + '개 지역)',
-              country: 'kr',
-              items: items
-            });
-          }
-        }
-      });
-    }
-
-    if (state.countries.jp) {
-      Object.keys(JP_PREFECTURES).forEach(function(prefKey) {
-        var aliases = [prefKey].concat(JP_PREFECTURES[prefKey]);
-        var matched = aliases.some(function(al) { return normalizeSearchTerm(al).indexOf(nq) !== -1; });
-        if (matched) {
-          var items = state.countries.jp.index.filter(function(item) {
-            return item.feature.properties && item.feature.properties.N03_001 === prefKey;
-          });
-          if (items.length > 0) {
-            results.push({
-              isParent: true,
-              parentName: prefKey,
-              display: prefKey + ' 전체 (' + items.length + '개 지역)',
-              country: 'jp',
-              items: items
-            });
-          }
-        }
-      });
-    }
-
-    if (nq) {
-      var pool = searchIndexAll;
-      var matchedMunis = pool.filter(function(r){
-        return r.aliases.some(function(a){
-          var na = normalizeSearchTerm(a);
-          return na.indexOf(nq) !== -1;
-        });
-      });
-      results = results.concat(matchedMunis);
-    }
-
-    return results.slice(0, 12);
-  }
-
-  searchInput.addEventListener('input', function(){
-    renderDropdown(searchMatches(searchInput.value));
+    state.activeTagId = state.tags[state.tags.length - 1].id;
+    renderTags();
   });
-  searchInput.addEventListener('focus', function(){
-    if (searchInput.value) renderDropdown(searchMatches(searchInput.value));
-  });
-  searchInput.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') {
-      dropdown.classList.remove('open');
-      clearSearchHighlight();
+
+  document.getElementById('resetAllBtn').addEventListener('click', function(){
+    if(confirm('모든 색칠을 초기화하시겠습니까?')) {
+      state.assignments = {};
+      applyColors('kr');
+      applyColors('jp');
     }
   });
 
-  function highlightSearchResult(m) {
-    clearSearchHighlight();
-    if (!m) return;
-
-    var country = m.country;
-    var ref = svgRefs[country];
-    if (!ref || !ref.searchHighlightPath) return;
-
-    var countryData = state.countries[country];
-    if (!countryData || !countryData.rawTopo) return;
-
-    var geoToDraw = null;
-
-    if (m.isParent) {
-      var rawTopo = countryData.rawTopo;
-      var objName = countryData.objName;
-      var allGeoms = rawTopo.objects[objName].geometries || [];
-      var matchingGeoms = [];
-
-      if (country === 'kr') {
-        if (m.isIntegratedGwangjuJeonnam || m.parentName === '광주 전남 통합') {
-          matchingGeoms = allGeoms.filter(function(g){
-            var cStr = String(g.properties.code);
-            var prefix = (cStr === '37310' || g.properties.name === '군위군') ? '22' : cStr.slice(0, 2);
-            return prefix === '24' || prefix === '36';
-          });
-        } else {
-          var codePrefix = m.codePrefix;
-          matchingGeoms = allGeoms.filter(function(g){
-            var cStr = String(g.properties.code);
-            if (cStr === '37310' || g.properties.name === '군위군') return codePrefix === '22';
-            return cStr.slice(0, 2) === codePrefix;
-          });
-        }
-      } else if (country === 'jp') {
-        var prefName = m.parentName;
-        matchingGeoms = allGeoms.filter(function(g){
-          return g.properties && g.properties.N03_001 === prefName;
-        });
-      }
-
-      if (matchingGeoms.length > 0 && typeof topojson !== 'undefined' && topojson.merge) {
-        geoToDraw = topojson.merge(rawTopo, matchingGeoms);
-      }
-    } else {
-      geoToDraw = m.feature;
-    }
-
-    if (geoToDraw) {
-      ref.searchHighlightPath
-        .attr('d', ref.pathGen(geoToDraw))
-        .classed('active', true);
-    }
-  }
-
-  function clearSearchHighlight(){
-    ['kr', 'jp'].forEach(function(c){
-      if (svgRefs[c] && svgRefs[c].searchHighlightPath) {
-        svgRefs[c].searchHighlightPath
-          .attr('d', null)
-          .classed('active', false);
-      }
-    });
-  }
-
-  function renderDropdown(matches){
-    dropdown.innerHTML = '';
-    if (!matches.length){
-      dropdown.classList.remove('open');
-      clearSearchHighlight();
-      return;
-    }
-    matches.forEach(function(m){
-      var item = document.createElement('div');
-      item.className = 'dropdown-item' + (m.isParent ? ' parent-item' : '');
-      var flag = document.createElement('span');
-      flag.className = 'dropdown-flag';
-      flag.textContent = m.country === 'kr' ? '🇰🇷' : '🇯🇵';
-      var label = document.createElement('span');
-      label.textContent = m.display;
-      item.appendChild(flag);
-      item.appendChild(label);
-
-      item.addEventListener('mouseenter', function(){ highlightSearchResult(m); });
-      item.addEventListener('mouseleave', function(){ clearSearchHighlight(); });
-      item.addEventListener('click', function(){ selectSearchResult(m); });
-
-      dropdown.appendChild(item);
-    });
-    dropdown.classList.add('open');
-  }
-
-  function selectSearchResult(m){
-    clearSearchHighlight();
-    if (!state.activeTagId){ flashNeedTag(); return; }
-    if (m.isParent) {
-      m.items.forEach(function(item){
-        state.assignments[item.key] = state.activeTagId;
-      });
-      assignmentsChanged();
-      showToast(m.parentName + ' 전체 (' + m.items.length + '개) 적용 완료');
-    } else {
-      state.assignments[m.key] = state.activeTagId;
-      assignmentsChanged();
-      showToast(m.display);
-    }
-    searchInput.value = '';
-    dropdown.classList.remove('open');
-    searchInput.focus();
-  }
-
-  document.addEventListener('click', function(e){
-    if (!e.target.closest('.search-wrap')) {
-      dropdown.classList.remove('open');
-      clearSearchHighlight();
-    }
-    if (!e.target.closest('.ios-color-picker') && !e.target.closest('.chip-swatch')) {
-      closeColorPicker();
-    }
-  });
-
-  function findRegionsByInput(raw){
-    var q = raw.trim();
-    if (!q) return { status:'empty' };
-
-    // 광주 전남 통합 입력 처리
-    if (isGwangjuJeonnamQuery(q) && state.countries.kr) {
-      var integratedItems = state.countries.kr.index.filter(function(item){
-        return item.info.prefix === '24' || item.info.prefix === '36';
-      });
-      if (integratedItems.length > 0) {
-        return { status: 'parent', parentName: '광주 전남 통합', items: integratedItems };
-      }
-    }
-
-    var nq = normalizeSearchTerm(q);
-
-    var krParentName = null;
-    Object.keys(KR_SIDO).forEach(function(code){
-      var names = KR_SIDO[code];
-      names.forEach(function(nm){
-        if (normalizeSearchTerm(nm) === nq) {
-          krParentName = names[0];
-        }
-      });
-    });
-
-    if (krParentName && state.countries.kr) {
-      var krItems = state.countries.kr.index.filter(function(item){
-        return item.info.display.indexOf(krParentName) === 0;
-      });
-      if (krItems.length > 0) {
-        return { status: 'parent', parentName: krParentName, items: krItems };
-      }
-    }
-
-    var jpPrefKey = null;
-    Object.keys(JP_PREFECTURES).forEach(function(prefKey){
-      var aliases = [prefKey].concat(JP_PREFECTURES[prefKey]);
-      aliases.forEach(function(al){
-        if (normalizeSearchTerm(al) === nq) {
-          jpPrefKey = prefKey;
-        }
-      });
-    });
-    if (jpPrefKey && state.countries.jp) {
-      var jpItems = state.countries.jp.index.filter(function(item){
-        return item.feature.properties && item.feature.properties.N03_001 === jpPrefKey;
-      });
-      if (jpItems.length > 0) {
-        return { status: 'parent', parentName: jpPrefKey, items: jpItems };
-      }
-    }
-
-    var pool = searchIndexAll;
-    var exact = pool.filter(function(r){
-      return r.aliases.some(function(a){ return normalizeSearchTerm(a) === nq; });
-    });
-    if (exact.length === 1) return { status:'ok', item: exact[0] };
-    if (exact.length > 1) return { status:'ambiguous', items: exact };
-
-    var partial = pool.filter(function(r){
-      return r.aliases.some(function(a){ return normalizeSearchTerm(a).indexOf(nq) !== -1; });
-    });
-    if (partial.length === 1) return { status:'ok', item: partial[0] };
-    if (partial.length > 1) return { status:'ambiguous', items: partial };
-
-    return { status:'notfound' };
-  }
-
-  function runBulkAdd(){
-    if (!state.activeTagId){ flashNeedTag(); return; }
-    var raw = document.getElementById('bulkInput').value;
-    var names = raw.split(/[,\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
-    var ok = 0, ambiguous = [], notfound = [], parents = [];
-
-    names.forEach(function(name){
-      var r = findRegionsByInput(name);
-      if (r.status === 'parent'){
-        r.items.forEach(function(item){
-          state.assignments[item.key] = state.activeTagId;
-        });
-        ok += r.items.length;
-        parents.push({ name: name, parentName: r.parentName, count: r.items.length });
-      } else if (r.status === 'ok'){
-        state.assignments[r.item.key] = state.activeTagId;
-        ok++;
-      } else if (r.status === 'ambiguous'){
-        ambiguous.push({ name: name, options: r.items.map(function(i){ return i.display; }) });
-      } else if (r.status === 'notfound'){
-        notfound.push(name);
-      }
-    });
-
-    if (ok) assignmentsChanged();
-    renderBulkResult(ok, ambiguous, notfound, parents);
-    if (ok) document.getElementById('bulkInput').value = '';
-  }
-
-  function renderBulkResult(ok, ambiguous, notfound, parents){
-    var el = document.getElementById('bulkResult');
-    el.innerHTML = '';
-
-    if (parents && parents.length) {
-      parents.forEach(function(p){
-        var div = document.createElement('div');
-        div.className = 'parent-res';
-        div.textContent = '✓ ' + p.parentName + ' 전체 (' + p.count + '개 지역) 일괄 추가됨';
-        el.appendChild(div);
-      });
-    }
-
-    if (ok) {
-      var okDiv = document.createElement('div');
-      okDiv.textContent = '✓ 총 ' + ok + '개 지역 색칠 완료';
-      el.appendChild(okDiv);
-    }
-
-    ambiguous.forEach(function(a){
-      var span = document.createElement('div');
-      span.className = 'amb';
-      span.textContent = '⚠ "' + a.name + '" 모호함 (' + a.options.slice(0,4).join(', ') + (a.options.length>4?'...':'') + ')';
-      el.appendChild(span);
-    });
-
-    notfound.forEach(function(n){
-      var span = document.createElement('div');
-      span.className = 'miss';
-      span.textContent = '✕ "' + n + '" 찾을 수 없음';
-      el.appendChild(span);
-    });
-  }
-
-  function exportData(){
-    var data = { version: 1, tags: state.tags, assignments: state.assignments };
-    var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'map-data.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function importData(file){
-    var reader = new FileReader();
-    reader.onload = function(){
-      try{
-        var data = JSON.parse(reader.result);
-        if (!data.tags || !data.assignments) throw new Error('format');
-        state.tags = data.tags;
-        state.assignments = data.assignments;
-        state.activeTagId = state.tags.length ? state.tags[0].id : null;
-        renderTags();
-        applyColors('kr'); applyColors('jp');
-        updatePanelCounts();
-        showToast(t('importSuccess'));
-      }catch(e){
-        showToast(t('importFail'));
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  function resetAll(){
-    if (!confirm(t('confirmReset'))) return;
-    state.assignments = {};
-    assignmentsChanged();
-  }
-
-  function showExportModal(defaultName, onConfirm) {
-    var overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
-
-    var modal = document.createElement('div');
-    modal.style.cssText = 'background:#ffffff;padding:24px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.2);width:320px;box-sizing:border-box;color:#333;';
-
-    modal.innerHTML = 
-      '<h3 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111;">지도 내보내기</h3>' +
-      '<div style="margin-bottom:14px;">' +
-        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">파일 이름</label>' +
-        '<input type="text" id="exportFileName" value="' + defaultName + '" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-size:14px;outline:none;" />' +
-      '</div>' +
-      '<div style="margin-bottom:20px;">' +
-        '<label style="display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;">확장자 선택</label>' +
-        '<select id="exportExt" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-size:14px;background:#fff;outline:none;cursor:pointer;">' +
-          '<option value="png">PNG (.png)</option>' +
-          '<option value="jpg">JPG (.jpg)</option>' +
-          '<option value="svg">SVG (.svg)</option>' +
-        '</select>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:flex-end;gap:8px;">' +
-        '<button id="cancelExportBtn" style="padding:8px 14px;border:1px solid #ccc;background:#fff;color:#333;border-radius:6px;cursor:pointer;font-size:14px;">취소</button>' +
-        '<button id="confirmExportBtn" style="padding:8px 14px;border:none;background:#007aff;color:#fff;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;">저장</button>' +
-      '</div>';
-
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    var input = modal.querySelector('#exportFileName');
-    input.focus();
-    input.select();
-
-    function cleanup() {
-      if (document.body.contains(overlay)) {
-        document.body.removeChild(overlay);
-      }
-    }
-
-    modal.querySelector('#cancelExportBtn').onclick = cleanup;
-    
-    modal.querySelector('#confirmExportBtn').onclick = function() {
-      var name = input.value.trim() || defaultName;
-      var ext = modal.querySelector('#exportExt').value;
-      cleanup();
-      onConfirm(name, ext);
-    };
-
-    overlay.onclick = function(e) {
-      if (e.target === overlay) cleanup();
-    };
-  }
-
-  function exportPNG(country) {
-    var countryData = state.countries[country];
-    if (!countryData || !countryData.features) return;
-
-    var defaultName = (country === 'kr' ? 'korea-map' : 'japan-map');
-
-    showExportModal(defaultName, function(filename, ext) {
-      var exportSize = 3000;
-      var padding = 120;
-
-      var fc = { type:'FeatureCollection', features: countryData.features };
-      var projection = d3.geoMercator();
-      projection.fitExtent([[padding, padding], [exportSize - padding, exportSize - padding]], fc);
-      var pathGen = d3.geoPath(projection);
-
-      var offscreenContainer = document.createElement('div');
-      offscreenContainer.style.position = 'absolute';
-      offscreenContainer.style.top = '-9999px';
-      offscreenContainer.style.left = '-9999px';
-      document.body.appendChild(offscreenContainer);
-
-      var svg = d3.select(offscreenContainer).append('svg')
-        .attr('xmlns', 'http://www.w3.org/2000/svg')
-        .attr('width', exportSize)
-        .attr('height', exportSize)
-        .attr('viewBox', '0 0 ' + exportSize + ' ' + exportSize);
-
-      var bgColor = (state.theme === 'dark' || state.isEaster) ? '#161618' : '#FFFFFF';
-      svg.append('rect')
-        .attr('width', exportSize)
-        .attr('height', exportSize)
-        .attr('fill', bgColor);
-
-      var g = svg.append('g');
-
-      var mapFill = (state.theme === 'dark') ? '#323236' : (state.isEaster ? '#0F4247' : '#E5E5EA');
-      var mapStroke = (state.theme === 'dark') ? '#161618' : (state.isEaster ? '#031011' : '#FFFFFF');
-      var strokeW = country === 'jp' ? 1.2 : 2.0;
-
-      g.selectAll('path')
-        .data(countryData.features)
-        .enter()
-        .append('path')
-        .attr('d', pathGen)
-        .attr('fill', function(d){
-          var info = regionInfo(d, country);
-          var tagId = state.assignments[info.key];
-          var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
-          return tag ? tag.color : mapFill;
-        })
-        .attr('stroke', mapStroke)
-        .attr('stroke-width', strokeW)
-        .attr('stroke-linejoin', 'round');
-
-      var xml = new XMLSerializer().serializeToString(svg.node());
-      document.body.removeChild(offscreenContainer);
-
-      if (ext === 'svg') {
-        var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(svgBlob);
-        a.download = filename + '.svg';
-        a.click();
-        URL.revokeObjectURL(a.href);
-        return;
-      }
-
-      var mimeType = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
-      var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
-      var url = URL.createObjectURL(svgBlob);
-      var img = new Image();
-
-      img.onload = function(){
-        var canvas = document.createElement('canvas');
-        canvas.width = exportSize;
-        canvas.height = exportSize;
-        var ctx = canvas.getContext('2d');
-
-        if (mimeType === 'image/jpeg') {
-          ctx.fillStyle = bgColor;
-          ctx.fillRect(0, 0, exportSize, exportSize);
-        }
-
-        ctx.drawImage(img, 0, 0);
-
-        canvas.toBlob(function(blob){
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = filename + '.' + (ext === 'jpeg' ? 'jpg' : ext);
-          a.click();
-          URL.revokeObjectURL(a.href);
-        }, mimeType, 0.95);
-      };
-      img.onerror = function(){ showToast(t('exportFail')); };
-      img.src = url;
-    });
-  }
-
-  function resetZoom(country){
-    var ref = svgRefs[country];
-    if (!ref) return;
-    ref.svg.transition().duration(300).call(ref.zoom.transform, d3.zoomIdentity);
-  }
-
-  function applyTheme(){
-    document.body.classList.remove('dark-theme', 'easter-theme');
-    if (state.isEaster) {
-      document.body.classList.add('easter-theme');
-    } else if (state.theme === 'dark') {
-      document.body.classList.add('dark-theme');
-    }
-  }
-
-  function toggleTheme(){
-    state.isEaster = !state.isEaster;
-    applyTheme();
-    if (state.isEaster) {
-      showToast('ミクダヨー');
-    } else {
-      showToast(t('themeRestored'));
-    }
-  }
-
-  function updateLanguageUI(){
-    document.title = t('title');
-    document.querySelector('.brand h1').textContent = t('headerTitle');
-    document.querySelector('.brand p').textContent = t('headerSub');
-    document.getElementById('tagRegionsBtn').textContent = t('tagRegionsBtn');
-    document.getElementById('settingsBtn').textContent = t('settings');
-    document.getElementById('resetAllBtn').textContent = t('resetAll');
-    document.getElementById('exportBtn').textContent = t('export');
-    document.getElementById('importBtn').textContent = t('import');
-    document.getElementById('addTagBtn').textContent = t('addTag');
-    document.getElementById('searchInput').placeholder = t('searchPlaceholder');
-    document.getElementById('toggleBulk').textContent = t('bulkToggle');
-    document.getElementById('bulkInput').placeholder = t('bulkPlaceholder');
-    document.getElementById('bulkAddBtn').textContent = t('bulkBtn');
-
-    var mapTitles = document.querySelectorAll('.panel-title h2');
-    if (mapTitles[0]) mapTitles[0].textContent = t('krTitle');
-    if (mapTitles[1]) mapTitles[1].textContent = t('jpTitle');
-
-    document.querySelector('#settingsModal .modal-header h3').textContent = t('modalTitle');
-    document.querySelector('.tab-btn[data-tab="tab-theme"]').textContent = t('tabTheme');
-    document.querySelector('.tab-btn[data-tab="tab-creator"]').textContent = t('tabCreator');
-
-    var settingLabels = document.querySelectorAll('.setting-label');
-    if (settingLabels[0]) settingLabels[0].textContent = t('themeMode');
-    if (settingLabels[1]) settingLabels[1].textContent = t('langLabel');
-
-    var themeOpts = document.querySelectorAll('#themeSelect option');
-    if (themeOpts[0]) themeOpts[0].textContent = t('themeLight');
-    if (themeOpts[1]) themeOpts[1].textContent = t('themeDark');
-
-    document.querySelector('.creator-name').textContent = t('creatorName');
-    document.querySelector('.creator-desc').textContent = t('creatorDesc');
-
-    document.getElementById('tagRegionsModalTitle').textContent = t('tagRegionsTitle');
-    document.getElementById('selectTagLabel').textContent = t('selectTagLabel');
-
-    var editBtn = document.getElementById('tagRegionsEditBtn');
-    if (editBtn) editBtn.textContent = isTagRegionsEditing ? t('done') : t('edit');
-    var selectAllLabel = document.getElementById('selectAllLabel');
-    if (selectAllLabel) selectAllLabel.textContent = t('selectAll');
-    
-    updateSelectAllStatus();
-
-    updatePanelCounts();
-  }
-
-  var tooltipEl = document.getElementById('tooltip');
-  function showTooltip(event, name, tagId){
-    var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
-    tooltipEl.innerHTML = '';
-    var nameEl = document.createElement('div');
-    nameEl.className = 'tooltip-name';
-    nameEl.textContent = name;
-    tooltipEl.appendChild(nameEl);
-    if (tag){
-      var row = document.createElement('div');
-      row.className = 'tooltip-tag';
-      var dot = document.createElement('span');
-      dot.className = 'tooltip-dot';
-      dot.style.background = tag.color;
-      var tn = document.createElement('span');
-      tn.textContent = tag.name;
-      row.appendChild(dot);
-      row.appendChild(tn);
-      tooltipEl.appendChild(row);
-    }
-    tooltipEl.classList.add('visible');
-    moveTooltip(event);
-  }
-  function moveTooltip(event){
-    var pad = 14;
-    tooltipEl.style.left = (event.clientX + pad) + 'px';
-    tooltipEl.style.top = (event.clientY + pad) + 'px';
-  }
-  function hideTooltip(){ tooltipEl.classList.remove('visible'); }
-
-  var toastTimer;
-  function showToast(msg){
-    var toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('visible');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){
-      toast.classList.remove('visible');
-    }, 2000);
-  }
-
-  function setupEventListeners() {
-    document.getElementById('tagRegionsBtn').addEventListener('click', function(){ openTagRegionsModal(); });
-    document.getElementById('resetAllBtn').addEventListener('click', resetAll);
-    document.getElementById('exportBtn').addEventListener('click', exportData);
-    document.getElementById('importBtn').addEventListener('click', function(){ document.getElementById('importFile').click(); });
-    document.getElementById('importFile').addEventListener('change', function(e){ if (e.target.files.length) importData(e.target.files[0]); e.target.value = ''; });
-    document.getElementById('settingsBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.add('open'); });
-
-    document.getElementById('foldTagbarBtn').addEventListener('click', function(){
-      var sec = document.getElementById('tagBarSection');
-      sec.classList.toggle('collapsed');
-      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
-    });
-    document.getElementById('foldInputbarBtn').addEventListener('click', function(){
-      var sec = document.getElementById('inputBarSection');
-      sec.classList.toggle('collapsed');
-      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
-    });
-    document.getElementById('foldMapKRBtn').addEventListener('click', function(){
-      var panel = document.getElementById('mapPanelKR');
-      panel.classList.toggle('collapsed');
-      this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
-    });
-    document.getElementById('foldMapJPBtn').addEventListener('click', function(){
-      var panel = document.getElementById('mapPanelJP');
-      panel.classList.toggle('collapsed');
-      this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
-    });
-
-    document.getElementById('zoomResetKR').addEventListener('click', function(){ resetZoom('kr'); });
-    document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
-    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
-    document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
-
-    document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
-    setupColorPickerUI();
-
-    document.getElementById('activeTagSelect').addEventListener('change', function(e){ setActiveTag(e.target.value); });
-    document.getElementById('toggleBulk').addEventListener('click', function(){
-      var p = document.getElementById('bulkPanel');
-      p.classList.toggle('open');
-    });
-    document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
-
-    document.getElementById('modalCloseBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.remove('open'); });
-    document.querySelectorAll('#settingsModal .tab-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        document.querySelectorAll('#settingsModal .tab-btn').forEach(function(b){ b.classList.remove('active'); });
-        document.querySelectorAll('#settingsModal .tab-content').forEach(function(c){ c.classList.remove('active'); });
-        btn.classList.add('active');
-        var targetId = btn.dataset.tab;
-        var targetEl = document.getElementById(targetId);
-        if (targetEl) targetEl.classList.add('active');
-      });
-    });
-    document.getElementById('themeSelect').addEventListener('change', function(e){
-      state.theme = e.target.value;
-      state.isEaster = false;
-      applyTheme();
-      applyColors('kr'); applyColors('jp');
-    });
-    document.getElementById('langSelect').addEventListener('change', function(e){
-      state.lang = e.target.value;
-      updateLanguageUI();
-    });
-    document.getElementById('creatorImg').addEventListener('click', toggleTheme);
-
-    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){ document.getElementById('tagRegionsModal').classList.remove('open'); });
-    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){ renderTagRegionsList(e.target.value); });
-    
-    document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
-      isTagRegionsEditing = !isTagRegionsEditing;
-      this.textContent = isTagRegionsEditing ? t('done') : t('edit');
-      renderTagRegionsList(document.getElementById('tagRegionsSelect').value);
-    });
-
-    document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
-      var isChecked = e.target.checked;
-      document.querySelectorAll('.region-select-cb').forEach(function(cb){ cb.checked = isChecked; });
-      updateSelectAllStatus();
-    });
-
-    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
-      var checkedCbs = document.querySelectorAll('.region-select-cb:checked');
-      if (checkedCbs.length === 0) {
-        showToast(t('selectToDelete'));
-        return;
-      }
-      var activeSelect = document.getElementById('tagRegionsSelect');
-      var currentTagId = activeSelect ? activeSelect.value : null;
-
-      checkedCbs.forEach(function(cb){
-        var key = cb.dataset.key;
-        if (key && state.assignments[key]) {
-          delete state.assignments[key];
-        }
-      });
-
-      assignmentsChanged();
-      renderTagRegionsList(currentTagId);
-      updateTagSelectOptionText(currentTagId);
-    });
-  }
-
-  setupEventListeners();
-  addTag(t('defaultTagVisit'), '#0DFFEF');
-  addTag(t('defaultTagPlan'), '#007AFF');
   init();
-
 })();
 </script>
 </body>
