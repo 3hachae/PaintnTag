@@ -358,7 +358,7 @@
   </div>
 </div>
 
-<!-- 대한민국/일본 권역 일괄 선택/해제 모달 -->
+<!-- 대한민국 8개 권역 일괄 선택/해제 모달 -->
 <div class="modal-overlay" id="mapSelectModal">
   <div class="modal">
     <div class="modal-header">
@@ -412,7 +412,7 @@
       searchPlaceholder: "서울특별시, 부산광역시, 東京都, 大阪府 등 입력",
       krTitle: "대한민국",
       jpTitle: "일본",
-      countUnit: "개 색칠됨",
+      countUnit: "개 시군구/시정촌 색칠됨",
       optKrDetailed: "시군구 (상세)",
       optKrSido: "17개 시·도 (광역)",
       optKrRegion: "8대 권역",
@@ -432,7 +432,7 @@
       paintAll: "전체 색칠",
       clearAll: "지우기",
       noResult: "검색 결과가 없습니다.",
-      selectedCount: "선택된 지역: ",
+      selectedCount: "선택된 시군구: ",
       tagPrompt: "새 태그 이름을 입력하세요:",
       tagDefault: "태그 ",
       colorPrompt: "태그 색상 Hex 코드를 입력하세요:",
@@ -454,7 +454,7 @@
       searchPlaceholder: "Search Seoul, Tokyo, Osaka, Busan...",
       krTitle: "South Korea",
       jpTitle: "Japan",
-      countUnit: " areas colored",
+      countUnit: " districts colored",
       optKrDetailed: "Municipalities (Detailed)",
       optKrSido: "17 Provinces (Provinces)",
       optKrRegion: "8 Macro Regions",
@@ -474,7 +474,7 @@
       paintAll: "Fill All",
       clearAll: "Clear",
       noResult: "No regions found.",
-      selectedCount: "Selected regions: ",
+      selectedCount: "Selected districts: ",
       tagPrompt: "Enter new tag name:",
       tagDefault: "Tag ",
       colorPrompt: "Enter hex color code:",
@@ -484,7 +484,7 @@
       downloadSaved: " map downloaded successfully."
     },
     ja: {
-      subhead: "韓国의 市郡区・広域, 日本의 市町村・都道府県を自由に色付け",
+      subhead: "韓国の市郡区・広域、日本の市町村・都道府県を自由に色付け",
       darkMode: "🌙 ダークモード",
       lightMode: "☀️ ライトモード",
       resetAll: "🔄️ リセット",
@@ -496,7 +496,7 @@
       searchPlaceholder: "ソウル、東京都、大阪府、釜山などを入力",
       krTitle: "大韓民国",
       jpTitle: "日本",
-      countUnit: "箇所を塗りつぶし",
+      countUnit: "箇所の地域を塗りつぶし",
       optKrDetailed: "市郡区 (詳細)",
       optKrSido: "17広域自治体",
       optKrRegion: "8 major 地方",
@@ -516,7 +516,7 @@
       paintAll: "全塗り",
       clearAll: "クリア",
       noResult: "該当する地域がありません。",
-      selectedCount: "選択された地域: ",
+      selectedCount: "選択された市区町村: ",
       tagPrompt: "新しいタグ名を入力してください:",
       tagDefault: "タグ ",
       colorPrompt: "TagカラーのHexコードを入力してください:",
@@ -529,7 +529,7 @@
 
   var KR_REGION_GROUPS = [
     { id: 'capital', name: { ko: '수도권', en: 'Capital Region', ja: '首都圏' }, codes: ['11', '23', '31'] },
-    { id: 'buulgyeong', name: { ko: '부울경 (영남)', en: 'Southeast (Bu-Ul-Gyeong)', ja: '嶺南(釜山・蔚山・慶南)' }, codes: ['21', '26', '38'] },
+    { id: 'buulgyeong', name: { ko: '부울경', en: 'Southeast (Bu-Ul-Gyeong)', ja: '嶺南(釜山・蔚山・慶南)' }, codes: ['21', '26', '38'] },
     { id: 'daegyeong', name: { ko: '대경권', en: 'Daegu-Gyeongbuk', ja: '大邱・慶北圏' }, codes: ['22', '37'] },
     { id: 'gwangju_jeonnam', name: { ko: '광주전남권', en: 'Gwangju-Jeonnam', ja: '光州・全南圏' }, codes: ['24', '36'] },
     { id: 'chungcheong', name: { ko: '충청권', en: 'Chungcheong Region', ja: '忠清圏' }, codes: ['25', '29', '33', '34'] },
@@ -542,59 +542,9 @@
     '11':['서울특별시','Seoul','ソウル特別市'], '21':['부산광역시','Busan','釜山広域市'], '22':['대구광역시','Daegu','大邱広域市'],
     '23':['인천광역시','Incheon','仁川広域市'], '24':['광주광역시','Gwangju','光州広域市'], '25':['대전광역시','Daejeon','大田広域市'],
     '26':['울산광역시','Ulsan','蔚山広域市'], '29':['세종특별자치시','Sejong','世宗特別自治市'], '31':['경기도','Gyeonggi-do','京畿道'],
-    '32':['강원특별자치도','Gangwon-do','江原特別自治道'], '33':['충청북도','Chungcheongbuk-do','忠清北道'], '34':['충청남도','Chungcheongnam-do','忠清남道'],
-    '35':['전북특별자치도','Jeonbuk','全北特別自治道'], '36':['전라남도','Jeollanam-do','全羅南道'], '37':['경상북도','Gyeongsangbuk-do','慶尚北道'],
+    '32':['강원특별자치도','Gangwon-do','江原特別自治道'], '33':['충청북도','Chungcheongbuk-do','忠清北道'], '34':['충청남도','Chungcheongnam-do','忠清南道'],
+    '35':['전북특별자치도','Jeonbuk','全북特別自治道'], '36':['전라남도','Jeollanam-do','全羅南道'], '37':['경상북도','Gyeongsangbuk-do','慶尚北道'],
     '38':['경상남도','Gyeongsangnam-do','慶尚南道'], '39':['제주특별자치도','Jeju-do','済州特別自治道']
-  };
-
-  var JP_PREF = {
-    '北海道': ['홋카이도', 'Hokkaido', '北海道'],
-    '青森県': ['아오모리현', 'Aomori', '青森県'],
-    '岩手県': ['이와테현', 'Iwate', '岩手県'],
-    '宮城県': ['미야기현', 'Miyagi', '宮城県'],
-    '秋田県': ['아키타현', 'Akita', '秋田県'],
-    '山形県': ['야마가타현', 'Yamagata', '山形県'],
-    '福島県': ['후쿠시마현', 'Fukushima', '福島県'],
-    '茨城県': ['이바라키현', 'Ibaraki', '茨城県'],
-    '栃木県': ['토치기현', 'Tochigi', '栃木県'],
-    '群馬県': ['군마현', 'Gunma', '群馬県'],
-    '埼玉県': ['사이타마현', 'Saitama', '埼玉県'],
-    '千葉県': ['치바현', 'Chiba', '千葉県'],
-    '東京都': ['도쿄도', 'Tokyo', '東京都'],
-    '神奈川県': ['가나가와현', 'Kanagawa', '神奈川県'],
-    '新潟県': ['니가타현', 'Niigata', '新潟県'],
-    '富山県': ['도야마현', 'Toyama', '富山県'],
-    '石川県': ['이시카와현', 'Ishikawa', '石川県'],
-    '福井県': ['후쿠이현', 'Fukui', '福井県'],
-    '山梨県': ['야마나시현', 'Yamanashi', '山梨県'],
-    '長野県': ['나가노현', 'Nagano', '長野県'],
-    '岐阜県': ['기후현', 'Gifu', '岐阜県'],
-    '静岡県': ['시즈오카현', 'Shizuoka', '静岡県'],
-    '愛知県': ['아이치현', 'Aichi', '愛知県'],
-    '三重県': ['미에현', 'Mie', '三重県'],
-    '滋賀県': ['시가현', 'Shiga', '滋賀県'],
-    '京都府': ['교토부', 'Kyoto', '京都府'],
-    '大阪府': ['오사카부', 'Osaka', '大阪府'],
-    '兵庫県': ['효고현', 'Hyogo', '兵庫県'],
-    '奈良県': ['나라현', 'Nara', '奈良県'],
-    '和歌山県': ['와카야마현', 'Wakayama', '和歌山県'],
-    '鳥取県': ['돗토리현', 'Tottori', '鳥取県'],
-    '島根県': ['시마네현', 'Shimane', '島根県'],
-    '岡山県': ['오카야마현', 'Okayama', '岡山県'],
-    '広島県': ['히로시마현', 'Hiroshima', '広島県'],
-    '山口県': ['야마구치현', 'Yamaguchi', '山口県'],
-    '徳島県': ['도쿠시마현', 'Tokushima', '徳島県'],
-    '香川県': ['카가와현', 'Kagawa', '香川県'],
-    '愛媛県': ['에히메현', 'Ehime', '愛媛県'],
-    '高知県': ['고치현', 'Kochi', '高知県'],
-    '福岡県': ['후쿠오카현', 'Fukuoka', '福岡県'],
-    '佐賀県': ['사가현', 'Saga', '佐賀県'],
-    '長崎県': ['나가사키현', 'Nagasaki', '長崎県'],
-    '熊本県': ['구마모토현', 'Kumamoto', '熊本県'],
-    '大分県': ['오이타현', 'Oita', '大分県'],
-    '宮崎県': ['미야자키현', 'Miyazaki', '宮崎県'],
-    '鹿児島県': ['가고시마현', 'Kagoshima', '鹿児島県'],
-    '沖縄県': ['오키나와현', 'Okinawa', '沖縄県']
   };
 
   var state = {
@@ -632,39 +582,28 @@
       var sido = KR_SIDO[prefix];
       var sidoName = sido ? sido[langIdx] : '기타';
       var display = name;
-      
-      if (sido) {
-        if (name === sido[0] || codeStr.length <= 2) {
-          display = sidoName;
-        } else {
-          display = sidoName + ' ' + name;
-        }
-      }
+      if (sido && codeStr.length > 2 && name !== sido[0]) display = sidoName + ' ' + name;
 
       var regionGrp = KR_REGION_GROUPS.find(function(g){ return g.codes.indexOf(prefix) !== -1; });
 
       return {
         key: 'kr:' + (p.code || p.id || name),
         display: display,
-        shortName: (sido && (name === sido[0] || codeStr.length <= 2)) ? sidoName : name,
+        shortName: name,
         prefix: prefix,
         sidoName: sidoName,
         regionGroupId: regionGrp ? regionGrp.id : 'other',
         regionGroupName: regionGrp ? (regionGrp.name[state.lang] || regionGrp.name.ko) : '기타'
       };
     } else {
-      var pref = p.N03_001 || p.name || '';
+      var pref = p.N03_001 || p.name || '미정성';
       var town = p.N03_004 || pref;
       var code = p.N03_007 || (pref + '_' + town);
-      var prefInfo = JP_PREF[pref];
-      var translatedPref = prefInfo ? prefInfo[langIdx] : pref;
-      var display = (pref === town) ? translatedPref : (translatedPref + ' ' + town);
-
       return {
         key: 'jp:' + code,
-        display: display,
+        display: pref + ' ' + town,
         shortName: town,
-        prefName: translatedPref
+        prefName: pref
       };
     }
   }
@@ -755,12 +694,10 @@
       var mergedFeatures = [];
       Object.keys(prefMap).forEach(function(pref){
         var mergedGeom = topojson.merge(topo, prefMap[pref]);
-        var prefInfo = JP_PREF[pref];
-        var translatedPref = prefInfo ? prefInfo[langIdx] : pref;
         mergedGeom.properties = {
           isMerged: true,
           prefName: pref,
-          name: translatedPref,
+          name: pref,
           subKeys: prefMap[pref].map(function(g){
             var p = g.properties;
             var code = p.N03_007 || ((p.N03_001 || '') + '_' + (p.N03_004 || ''));
