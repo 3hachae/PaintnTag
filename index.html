@@ -975,7 +975,7 @@
       selectToDelete: "削除する地域を選択してください。"
     }
   };
-
+  
   var KR_SIDO = {
     '11':['서울특별시','서울','seoul'], 
     '21':['부산광역시','부산','busan'], 
@@ -1021,7 +1021,132 @@
     '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '대田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'],
     '大阪市': ['osaka'], '堺市': ['sakai'], '京都市': ['kyoto'], '神戸市': ['kobe'], '横浜市': ['yokohama'], '名古屋市': ['nagoya'], '札幌市': ['sapporo'], '仙台市': ['sendai'], '広島市': ['hiroshima']
   };
+// 1. 권역 다국어 사전 정의
+var REGION_NAMES = {
+  ko: {
+    kr: {
+      all: { name: '전체 (대한민국)', label: '대한민국' },
+      capital: { name: '수도권 (서울·인천·경기)', label: '수도권' },
+      buk: { name: '부울경 (부산·울산·경남)', label: '부울경' },
+      tk: { name: '대구·경북', label: '대구·경북' },
+      chungcheong: { name: '충청권 (대전·세종·충북·충남)', label: '충청권' },
+      honam: { name: '호남권 (광주·전북·전남)', label: '호남권' },
+      gangwon: { name: '강원권', label: '강원권' },
+      jeju: { name: '제주권', label: '제주권' }
+    },
+    jp: {
+      all: { name: '전체 (일본)', label: '일본' },
+      hokkaido: { name: '홋카이도', label: '홋카이도' },
+      tohoku: { name: '도호쿠', label: '도호쿠' },
+      kanto: { name: '간토', label: '간토' },
+      chubu: { name: '주부', label: '주부' },
+      kansai: { name: '간사이 (킨키)', label: '간사이' },
+      chugoku: { name: '주고쿠', label: '주고쿠' },
+      shikoku: { name: '시코쿠', label: '시코쿠' },
+      kyushu: { name: '큐슈·오키나와', label: '큐슈·오키나와' }
+    }
+  },
+  en: {
+    kr: {
+      all: { name: 'All (South Korea)', label: 'South Korea' },
+      capital: { name: 'Capital Region (Seoul/Incheon/Gyeonggi)', label: 'Capital Region' },
+      buk: { name: 'Southeast (Busan/Ulsan/Gyeongnam)', label: 'Southeast' },
+      tk: { name: 'Daegu & Gyeongbuk', label: 'Daegu/Gyeongbuk' },
+      chungcheong: { name: 'Chungcheong Region', label: 'Chungcheong' },
+      honam: { name: 'Honam Region (Gwangju/Jeonbuk/Jeonnam)', label: 'Honam' },
+      gangwon: { name: 'Gangwon Region', label: 'Gangwon' },
+      jeju: { name: 'Jeju Region', label: 'Jeju' }
+    },
+    jp: {
+      all: { name: 'All (Japan)', label: 'Japan' },
+      hokkaido: { name: 'Hokkaido', label: 'Hokkaido' },
+      tohoku: { name: 'Tohoku', label: 'Tohoku' },
+      kanto: { name: 'Kanto', label: 'Kanto' },
+      chubu: { name: 'Chubu', label: 'Chubu' },
+      kansai: { name: 'Kansai (Kinki)', label: 'Kansai' },
+      chugoku: { name: 'Chugoku', label: 'Chugoku' },
+      shikoku: { name: 'Shikoku', label: 'Shikoku' },
+      kyushu: { name: 'Kyushu & Okinawa', label: 'Kyushu/Okinawa' }
+    }
+  },
+  ja: {
+    kr: {
+      all: { name: '韓国 (全域)', label: '韓国' },
+      capital: { name: '首都圏 (ソウル・仁川・京畿)', label: '首都圏' },
+      buk: { name: '釜山・蔚山・慶南', label: '釜山・蔚山・慶南' },
+      tk: { name: '大邱・慶北', label: '大邱・慶北' },
+      chungcheong: { name: '忠清圏', label: '忠清圏' },
+      honam: { name: '湖南圏 (光州・全北・全南)', label: '湖南圏' },
+      gangwon: { name: '江原圏', label: '江原圏' },
+      jeju: { name: '済州圏', label: '済州圏' }
+    },
+    jp: {
+      all: { name: '日本 (全域)', label: '日本' },
+      hokkaido: { name: '北海道', label: '北海道' },
+      tohoku: { name: '東北', label: '東北' },
+      kanto: { name: '関東', label: '関東' },
+      chubu: { name: '中部', label: '中部' },
+      kansai: { name: '関西 (近畿)', label: '関西' },
+      chugoku: { name: '中国', label: '中国' },
+      shikoku: { name: '四国', label: '四国' },
+      kyushu: { name: '九州・沖縄', label: '九州・沖縄' }
+    }
+  }
+};
 
+// 2. 동적 언어 텍스트 조회 함수
+function getRegionText(country, regionKey, field) {
+  var lang = state.lang || 'ko';
+  var langDict = REGION_NAMES[lang] || REGION_NAMES.ko;
+  var countryDict = langDict[country] || REGION_NAMES.ko[country];
+  var item = countryDict[regionKey] || REGION_NAMES.ko[country][regionKey];
+  return item ? item[field] : '';
+}
+
+// 3. 지도 타이틀 및 권역 선택 모달 렌더링 수정
+function getRegionTitle(country, regionKey) {
+  return getRegionText(country, regionKey || 'all', 'label');
+}
+
+function openRegionSelectModal(country) {
+  var modal = document.getElementById('regionSelectModal');
+  var titleEl = document.getElementById('regionSelectModalTitle');
+  var listEl = document.getElementById('regionSelectList');
+
+  var isKr = country === 'kr';
+  var currentKey = state.regionFilter[country] || 'all';
+  var regionsDict = isKr ? KR_REGIONS : JP_REGIONS;
+
+  var modalTitleSuffix = state.lang === 'ja' ? ' 圏域選択' : (state.lang === 'en' ? ' Region Select' : ' 권역 선택');
+  titleEl.textContent = getRegionText(country, 'all', 'label') + modalTitleSuffix;
+  listEl.innerHTML = '';
+
+  Object.keys(regionsDict).forEach(function(key) {
+    var item = document.createElement('div');
+    item.className = 'region-select-item' + (key === currentKey ? ' active' : '');
+
+    var nameSpan = document.createElement('span');
+    nameSpan.textContent = getRegionText(country, key, 'name');
+    item.appendChild(nameSpan);
+
+    if (key === currentKey) {
+      var checkSpan = document.createElement('span');
+      checkSpan.textContent = '✓';
+      item.appendChild(checkSpan);
+    }
+
+    item.addEventListener('click', function() {
+      state.regionFilter[country] = key;
+      renderMap(country);
+      modal.classList.remove('open');
+    });
+
+    listEl.appendChild(item);
+  });
+
+  modal.classList.add('open');
+}
+  
   var state = {
     tags: [],
     activeTagId: null,
