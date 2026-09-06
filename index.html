@@ -1018,7 +1018,7 @@
   var JP_CITIES = {
     '福岡市': ['fukuoka'], '博多区': ['hakata'], '中央区': ['chuo'], '東区': ['higashi'], '南区': ['minami'], '西区': ['nishi'], '城南区': ['jonan'], '早良区': ['sawara'],
     '北九州市': ['kitakyushu'], '小倉北区': ['kokurakita', 'kokura'], '小倉南区': ['kokuraminami'], '門司区': ['moji'], '八幡西区': ['yahatanishi', 'yahata'], '八幡東区': ['yahatahigashi'], '戸畑区': ['tobata'], '若松区': ['wakamatsu'],
-    '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '大田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'],
+    '千代田区': ['chiyoda'], '港区': ['minato'], '新宿区': ['shinjuku'], '文京区': ['bunkyo'], '台東区': ['taito'], '墨田区': ['sumida'], '江東区': ['koto'], '品川区': ['shinagawa'], '目黒区': ['meguro'], '대田区': ['ota'], '世田谷区': ['setagaya'], '渋谷区': ['shibuya'], '中野区': ['nakano'], '杉並区': ['suginami'], '豊島区': ['toshima'], '北区': ['kita'], '荒川区': ['arakawa'], '板橋区': ['itabashi'], '練馬区': ['nerima'], '足立区': ['adachi'], '葛飾区': ['katsushika'], '江戸川区': ['edogawa'],
     '大阪市': ['osaka'], '堺市': ['sakai'], '京都市': ['kyoto'], '神戸市': ['kobe'], '横浜市': ['yokohama'], '名古屋市': ['nagoya'], '札幌市': ['sapporo'], '仙台市': ['sendai'], '広島市': ['hiroshima']
   };
 
@@ -2353,269 +2353,316 @@
         return;
       }
 
-      var mimeType = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : 'image/png';
+      var img = new Image();
       var svgBlob = new Blob([xml], { type:'image/svg+xml;charset=utf-8' });
       var url = URL.createObjectURL(svgBlob);
-      var img = new Image();
 
       img.onload = function(){
         var canvas = document.createElement('canvas');
         canvas.width = exportSize;
         canvas.height = exportSize;
         var ctx = canvas.getContext('2d');
-
-        if (mimeType === 'image/jpeg') {
+        if (ext === 'jpg') {
           ctx.fillStyle = bgColor;
           ctx.fillRect(0, 0, exportSize, exportSize);
         }
-
         ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
 
+        var mimeType = ext === 'jpg' ? 'image/jpeg' : 'image/png';
         canvas.toBlob(function(blob){
+          if (!blob) { showToast(t('exportFail')); return; }
           var a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
-          a.download = filename + '.' + (ext === 'jpeg' ? 'jpg' : ext);
+          a.download = filename + '.' + ext;
           a.click();
           URL.revokeObjectURL(a.href);
-        }, mimeType, 0.95);
+        }, mimeType, 0.92);
       };
-      img.onerror = function(){ showToast(t('exportFail')); };
+      img.onerror = function(){
+        URL.revokeObjectURL(url);
+        showToast(t('exportFail'));
+      };
       img.src = url;
     });
   }
 
-  function resetZoom(country){
-    var ref = svgRefs[country];
-    if (!ref) return;
-    ref.svg.transition().duration(300).call(ref.zoom.transform, d3.zoomIdentity);
-  }
-
-  function applyTheme(){
-    document.body.classList.remove('dark-theme', 'easter-theme');
-    if (state.isEaster) {
-      document.body.classList.add('easter-theme');
-    } else if (state.theme === 'dark') {
-      document.body.classList.add('dark-theme');
+  function showTooltip(event, name, tagId){
+    var tooltip = document.getElementById('tooltip');
+    if (!tooltip) return;
+    var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
+    var html = '<div class="tooltip-name">' + name + '</div>';
+    if (tag) {
+      html += '<div class="tooltip-tag"><span class="tooltip-dot" style="background:' + tag.color + '"></span>' + tag.name + '</div>';
     }
+    tooltip.innerHTML = html;
+    tooltip.classList.add('visible');
+    moveTooltip(event);
   }
 
-  function toggleTheme(){
-    state.isEaster = !state.isEaster;
-    applyTheme();
-    if (state.isEaster) {
-      showToast('ミクダヨー');
-    } else {
-      showToast(t('themeRestored'));
-    }
+  function moveTooltip(event){
+    var tooltip = document.getElementById('tooltip');
+    if (!tooltip) return;
+    var x = event.clientX + 12;
+    var y = event.clientY + 12;
+    if (x + 180 > window.innerWidth) x = event.clientX - 190;
+    if (y + 60 > window.innerHeight) y = event.clientY - 60;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
   }
 
-  function updateLanguageUI(){
+  function hideTooltip(){
+    var tooltip = document.getElementById('tooltip');
+    if (tooltip) tooltip.classList.remove('visible');
+  }
+
+  var toastTimer = null;
+  function showToast(msg){
+    var toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){
+      toast.classList.remove('visible');
+    }, 2500);
+  }
+
+  function applyI18n(){
     document.title = t('title');
-    document.querySelector('.brand h1').textContent = t('headerTitle');
-    document.querySelector('.brand p').textContent = t('headerSub');
+    var brandH1 = document.querySelector('.brand h1');
+    if (brandH1) brandH1.textContent = t('headerTitle');
+    var brandP = document.querySelector('.brand p');
+    if (brandP) brandP.textContent = t('headerSub');
+
     document.getElementById('tagRegionsBtn').textContent = t('tagRegionsBtn');
-    document.getElementById('settingsBtn').textContent = t('settings');
     document.getElementById('resetAllBtn').textContent = t('resetAll');
     document.getElementById('exportBtn').textContent = t('export');
     document.getElementById('importBtn').textContent = t('import');
+    document.getElementById('settingsBtn').textContent = t('settings');
     document.getElementById('addTagBtn').textContent = t('addTag');
+
     document.getElementById('searchInput').placeholder = t('searchPlaceholder');
     document.getElementById('toggleBulk').textContent = t('bulkToggle');
     document.getElementById('bulkInput').placeholder = t('bulkPlaceholder');
     document.getElementById('bulkAddBtn').textContent = t('bulkBtn');
 
-    var titleKr = document.getElementById('title-kr');
-    var titleJp = document.getElementById('title-jp');
-    if (titleKr) titleKr.textContent = getRegionTitle('kr', state.regionFilter.kr);
-    if (titleJp) titleJp.textContent = getRegionTitle('jp', state.regionFilter.jp);
+    document.getElementById('title-kr').textContent = getRegionTitle('kr', state.regionFilter.kr);
+    document.getElementById('title-jp').textContent = getRegionTitle('jp', state.regionFilter.jp);
 
-    document.querySelector('#settingsModal .modal-header h3').textContent = t('modalTitle');
-    document.querySelector('.tab-btn[data-tab="tab-theme"]').textContent = t('tabTheme');
-    document.querySelector('.tab-btn[data-tab="tab-creator"]').textContent = t('tabCreator');
+    var modalH3 = document.querySelector('#settingsModal .modal-header h3');
+    if (modalH3) modalH3.textContent = t('modalTitle');
 
-    var settingLabels = document.querySelectorAll('.setting-label');
-    if (settingLabels[0]) settingLabels[0].textContent = t('themeMode');
-    if (settingLabels[1]) settingLabels[1].textContent = t('langLabel');
+    var tabBtns = document.querySelectorAll('#settingsModal .tab-btn');
+    if (tabBtns.length >= 2) {
+      tabBtns[0].textContent = t('tabTheme');
+      tabBtns[1].textContent = t('tabCreator');
+    }
+
+    var labels = document.querySelectorAll('#tab-theme .setting-label');
+    if (labels.length >= 2) {
+      labels[0].textContent = t('themeMode');
+      labels[1].textContent = t('langLabel');
+    }
 
     var themeOpts = document.querySelectorAll('#themeSelect option');
-    if (themeOpts[0]) themeOpts[0].textContent = t('themeLight');
-    if (themeOpts[1]) themeOpts[1].textContent = t('themeDark');
+    if (themeOpts.length >= 2) {
+      themeOpts[0].textContent = t('themeLight');
+      themeOpts[1].textContent = t('themeDark');
+    }
 
-    document.querySelector('.creator-name').textContent = t('creatorName');
-    document.querySelector('.creator-desc').textContent = t('creatorDesc');
+    var creatorName = document.querySelector('.creator-name');
+    if (creatorName) creatorName.textContent = t('creatorName');
+    var creatorDesc = document.querySelector('.creator-desc');
+    if (creatorDesc) creatorDesc.textContent = t('creatorDesc');
 
     document.getElementById('tagRegionsModalTitle').textContent = t('tagRegionsTitle');
     document.getElementById('selectTagLabel').textContent = t('selectTagLabel');
-
-    var editBtn = document.getElementById('tagRegionsEditBtn');
-    if (editBtn) editBtn.textContent = isTagRegionsEditing ? t('done') : t('edit');
-    var selectAllLabel = document.getElementById('selectAllLabel');
-    if (selectAllLabel) selectAllLabel.textContent = t('selectAll');
-    
-    updateSelectAllStatus();
+    document.getElementById('selectAllLabel').textContent = t('selectAll');
 
     updatePanelCounts();
   }
 
-  var tooltipEl = document.getElementById('tooltip');
-  function showTooltip(event, name, tagId){
-    var tag = tagId && state.tags.filter(function(t){ return t.id === tagId; })[0];
-    tooltipEl.innerHTML = '';
-    var nameEl = document.createElement('div');
-    nameEl.className = 'tooltip-name';
-    nameEl.textContent = name;
-    tooltipEl.appendChild(nameEl);
-    if (tag){
-      var row = document.createElement('div');
-      row.className = 'tooltip-tag';
-      var dot = document.createElement('span');
-      dot.className = 'tooltip-dot';
-      dot.style.background = tag.color;
-      var tn = document.createElement('span');
-      tn.textContent = tag.name;
-      row.appendChild(dot);
-      row.appendChild(tn);
-      tooltipEl.appendChild(row);
+  // Event Listeners setup
+  document.getElementById('tagRegionsBtn').addEventListener('click', function(){
+    openTagRegionsModal();
+  });
+  document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('importBtn').addEventListener('click', function(){
+    document.getElementById('importFile').click();
+  });
+  document.getElementById('importFile').addEventListener('change', function(e){
+    if (e.target.files.length) {
+      importData(e.target.files[0]);
     }
-    tooltipEl.classList.add('visible');
-    moveTooltip(event);
-  }
-  function moveTooltip(event){
-    var pad = 14;
-    tooltipEl.style.left = (event.clientX + pad) + 'px';
-    tooltipEl.style.top = (event.clientY + pad) + 'px';
-  }
-  function hideTooltip(){ tooltipEl.classList.remove('visible'); }
+    e.target.value = '';
+  });
+  document.getElementById('settingsBtn').addEventListener('click', function(){
+    document.getElementById('settingsModal').classList.add('open');
+  });
 
-  var toastTimer;
-  function showToast(msg){
-    var toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('visible');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){
-      toast.classList.remove('visible');
-    }, 2000);
-  }
+  document.getElementById('modalCloseBtn').addEventListener('click', function(){
+    document.getElementById('settingsModal').classList.remove('open');
+  });
 
-  function setupEventListeners() {
-    document.getElementById('title-kr').addEventListener('click', function(){ openRegionSelectModal('kr'); });
-    document.getElementById('title-jp').addEventListener('click', function(){ openRegionSelectModal('jp'); });
-    document.getElementById('regionSelectCloseBtn').addEventListener('click', function(){ document.getElementById('regionSelectModal').classList.remove('open'); });
-
-    document.getElementById('tagRegionsBtn').addEventListener('click', function(){ openTagRegionsModal(); });
-    document.getElementById('resetAllBtn').addEventListener('click', resetAll);
-    document.getElementById('exportBtn').addEventListener('click', exportData);
-    document.getElementById('importBtn').addEventListener('click', function(){ document.getElementById('importFile').click(); });
-    document.getElementById('importFile').addEventListener('change', function(e){ if (e.target.files.length) importData(e.target.files[0]); e.target.value = ''; });
-    document.getElementById('settingsBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.add('open'); });
-
-    document.getElementById('foldTagbarBtn').addEventListener('click', function(){
-      var sec = document.getElementById('tagBarSection');
-      sec.classList.toggle('collapsed');
-      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
+  document.querySelectorAll('#settingsModal .tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('#settingsModal .tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('#settingsModal .tab-content').forEach(function(c){ c.classList.remove('active'); });
+      btn.classList.add('active');
+      var targetTab = btn.getAttribute('data-tab');
+      var targetEl = document.getElementById(targetTab);
+      if (targetEl) targetEl.classList.add('active');
     });
-    document.getElementById('foldInputbarBtn').addEventListener('click', function(){
-      var sec = document.getElementById('inputBarSection');
-      sec.classList.toggle('collapsed');
-      this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
-    });
-    document.getElementById('foldMapKRBtn').addEventListener('click', function(){
-      var panel = document.getElementById('mapPanelKR');
-      panel.classList.toggle('collapsed');
-      this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
-    });
-    document.getElementById('foldMapJPBtn').addEventListener('click', function(){
-      var panel = document.getElementById('mapPanelJP');
-      panel.classList.toggle('collapsed');
-      this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
-    });
+  });
 
-    document.getElementById('zoomResetKR').addEventListener('click', function(){ resetZoom('kr'); });
-    document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
-    document.getElementById('zoomResetJP').addEventListener('click', function(){ resetZoom('jp'); });
-    document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
+  document.getElementById('themeSelect').addEventListener('change', function(e){
+    state.theme = e.target.value;
+    document.body.classList.remove('dark-theme', 'easter-theme');
+    state.isEaster = false;
+    if (state.theme === 'dark') document.body.classList.add('dark-theme');
+    applyColors('kr'); applyColors('jp');
+  });
 
-    document.getElementById('addTagBtn').addEventListener('click', function(){ addTag(); });
-    setupColorPickerUI();
+  document.getElementById('langSelect').addEventListener('change', function(e){
+    state.lang = e.target.value;
+    applyI18n();
+  });
 
-    document.getElementById('activeTagSelect').addEventListener('change', function(e){ setActiveTag(e.target.value); });
-    document.getElementById('toggleBulk').addEventListener('click', function(){
-      var p = document.getElementById('bulkPanel');
-      p.classList.toggle('open');
-    });
-    document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
-
-    document.getElementById('modalCloseBtn').addEventListener('click', function(){ document.getElementById('settingsModal').classList.remove('open'); });
-    document.querySelectorAll('#settingsModal .tab-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        document.querySelectorAll('#settingsModal .tab-btn').forEach(function(b){ b.classList.remove('active'); });
-        document.querySelectorAll('#settingsModal .tab-content').forEach(function(c){ c.classList.remove('active'); });
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
-    });
-
-    document.getElementById('themeSelect').addEventListener('change', function(e){
-      state.theme = e.target.value;
-      state.isEaster = false;
-      applyTheme();
-    });
-
-    document.getElementById('langSelect').addEventListener('change', function(e){
-      state.lang = e.target.value;
-      updateLanguageUI();
-    });
-
-    document.getElementById('creatorImg').addEventListener('click', toggleTheme);
-
-    document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){ document.getElementById('tagRegionsModal').classList.remove('open'); });
-    document.getElementById('tagRegionsSelect').addEventListener('change', function(e){
-      renderTagRegionsList(e.target.value);
-    });
-
-    document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
-      isTagRegionsEditing = !isTagRegionsEditing;
-      this.textContent = isTagRegionsEditing ? t('done') : t('edit');
-      var tagId = document.getElementById('tagRegionsSelect').value;
-      renderTagRegionsList(tagId);
-    });
-
-    document.getElementById('selectAllTagRegions').addEventListener('change', function(e){
-      var checked = e.target.checked;
-      document.querySelectorAll('.region-select-cb').forEach(function(cb){
-        cb.checked = checked;
-      });
-      updateSelectAllStatus();
-    });
-
-    document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
-      var checkedCbs = document.querySelectorAll('.region-select-cb:checked');
-      if (checkedCbs.length === 0) {
-        showToast(t('selectToDelete'));
-        return;
+  var easterClicks = 0;
+  document.getElementById('creatorImg').addEventListener('click', function(){
+    easterClicks++;
+    if (easterClicks >= 5) {
+      easterClicks = 0;
+      state.isEaster = !state.isEaster;
+      document.body.classList.remove('dark-theme', 'easter-theme');
+      if (state.isEaster) {
+        document.body.classList.add('easter-theme');
+        showToast(' Easter Egg Mode Activated!');
+      } else {
+        if (state.theme === 'dark') document.body.classList.add('dark-theme');
+        showToast(t('themeRestored'));
       }
-      checkedCbs.forEach(function(cb){
-        delete state.assignments[cb.dataset.key];
-      });
-      assignmentsChanged();
-      var tagId = document.getElementById('tagRegionsSelect').value;
-      renderTagRegionsList(tagId);
-      updateTagSelectOptionText(tagId);
-    });
+      applyColors('kr'); applyColors('jp');
+    }
+  });
 
-    window.addEventListener('resize', function(){
-      if (state.countries.kr) renderMap('kr');
-      if (state.countries.jp) renderMap('jp');
-    });
-  }
+  document.getElementById('tagRegionsCloseBtn').addEventListener('click', function(){
+    document.getElementById('tagRegionsModal').classList.remove('open');
+  });
 
+  document.getElementById('tagRegionsSelect').addEventListener('change', function(){
+    renderTagRegionsList(this.value);
+  });
+
+  document.getElementById('tagRegionsEditBtn').addEventListener('click', function(){
+    isTagRegionsEditing = !isTagRegionsEditing;
+    this.textContent = isTagRegionsEditing ? t('done') : t('edit');
+    renderTagRegionsList(document.getElementById('tagRegionsSelect').value);
+  });
+
+  document.getElementById('selectAllTagRegions').addEventListener('change', function(){
+    var checked = this.checked;
+    document.querySelectorAll('.region-select-cb').forEach(function(cb){ cb.checked = checked; });
+    updateSelectAllStatus();
+  });
+
+  document.getElementById('deleteSelectedTagRegionsBtn').addEventListener('click', function(){
+    var selectedCbs = document.querySelectorAll('.region-select-cb:checked');
+    if (selectedCbs.length === 0) {
+      showToast(t('selectToDelete'));
+      return;
+    }
+    selectedCbs.forEach(function(cb){
+      var key = cb.dataset.key;
+      delete state.assignments[key];
+    });
+    assignmentsChanged();
+    var currentTagId = document.getElementById('tagRegionsSelect').value;
+    renderTagRegionsList(currentTagId);
+    updateTagSelectOptionText(currentTagId);
+  });
+
+  document.getElementById('regionSelectCloseBtn').addEventListener('click', function(){
+    document.getElementById('regionSelectModal').classList.remove('open');
+  });
+
+  document.getElementById('foldTagbarBtn').addEventListener('click', function(){
+    var sec = document.getElementById('tagBarSection');
+    sec.classList.toggle('collapsed');
+    this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
+  });
+
+  document.getElementById('foldInputbarBtn').addEventListener('click', function(){
+    var sec = document.getElementById('inputBarSection');
+    sec.classList.toggle('collapsed');
+    this.textContent = sec.classList.contains('collapsed') ? '▼' : '▲';
+  });
+
+  document.getElementById('foldMapKRBtn').addEventListener('click', function(){
+    var panel = document.getElementById('mapPanelKR');
+    panel.classList.toggle('collapsed');
+    this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
+  });
+
+  document.getElementById('foldMapJPBtn').addEventListener('click', function(){
+    var panel = document.getElementById('mapPanelJP');
+    panel.classList.toggle('collapsed');
+    this.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
+  });
+
+  document.getElementById('title-kr').addEventListener('click', function(){
+    openRegionSelectModal('kr');
+  });
+  document.getElementById('title-jp').addEventListener('click', function(){
+    openRegionSelectModal('jp');
+  });
+
+  document.getElementById('zoomResetKR').addEventListener('click', function(){
+    if (svgRefs.kr) svgRefs.kr.svg.transition().duration(500).call(svgRefs.kr.zoom.transform, d3.zoomIdentity);
+  });
+  document.getElementById('zoomResetJP').addEventListener('click', function(){
+    if (svgRefs.jp) svgRefs.jp.svg.transition().duration(500).call(svgRefs.jp.zoom.transform, d3.zoomIdentity);
+  });
+
+  document.getElementById('pngKR').addEventListener('click', function(){ exportPNG('kr'); });
+  document.getElementById('pngJP').addEventListener('click', function(){ exportPNG('jp'); });
+
+  document.getElementById('activeTagSelect').addEventListener('change', function(e){
+    setActiveTag(e.target.value);
+  });
+
+  document.getElementById('addTagBtn').addEventListener('click', function(){
+    addTag();
+  });
+
+  document.getElementById('toggleBulk').addEventListener('click', function(){
+    var p = document.getElementById('bulkPanel');
+    p.classList.toggle('open');
+    this.textContent = p.classList.contains('open') ? '여러 개 한 번에 입력 ▲' : t('bulkToggle');
+  });
+
+  document.getElementById('bulkAddBtn').addEventListener('click', runBulkAdd);
+
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+
+  // Default initial tags
   addTag(t('defaultTagVisit'), '#0DFFEF');
   addTag(t('defaultTagPlan'), '#FF9500');
 
-  setupEventListeners();
-  init();
+  setupColorPickerUI();
 
+  window.addEventListener('resize', function(){
+    if (state.countries.kr) renderMap('kr');
+    if (state.countries.jp) renderMap('jp');
+  });
+
+  init();
 })();
 </script>
 </body>
