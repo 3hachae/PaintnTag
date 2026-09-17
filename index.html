@@ -76,7 +76,14 @@
       letter-spacing: -0.01em;
     }
 
-    textarea, input[type="text"] {
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    textarea, input[type="text"], input[type="number"] {
       font-family: inherit !important;
     }
 
@@ -93,7 +100,7 @@
       transition: all 0.2s ease;
     }
 
-    textarea:focus, input[type="text"]:focus {
+    textarea:focus, input[type="text"]:focus, input[type="number"]:focus {
       outline: none;
       background-color: #FFFFFF;
       border-color: var(--text-primary);
@@ -101,7 +108,7 @@
 
     .options {
       margin: 16px 0 20px 0;
-      padding: 16px;
+      padding: 18px;
       background-color: var(--input-bg);
       border-radius: 14px;
       display: flex;
@@ -115,6 +122,7 @@
       gap: 10px;
       font-size: 0.9rem;
       color: var(--text-primary);
+      flex-wrap: wrap;
     }
 
     .option-item input[type="checkbox"] {
@@ -131,6 +139,42 @@
       border-radius: 8px;
       font-size: 0.85rem;
       flex: 1;
+      min-width: 150px;
+    }
+
+    .option-divider {
+      height: 1px;
+      background-color: var(--border);
+      margin: 4px 0;
+    }
+
+    .option-label {
+      font-weight: 600;
+      min-width: 90px;
+    }
+
+    .radio-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .radio-label input[type="radio"] {
+      accent-color: var(--text-primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .count-input {
+      width: 70px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-left: 6px;
     }
 
     .btn-group {
@@ -183,46 +227,6 @@
       display: none;
     }
 
-    /* Preview Item Design */
-    .preview-item {
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .preview-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .preview-item:first-child {
-      padding-top: 0;
-    }
-
-    .preview-num {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-    }
-
-    .preview-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background-color: var(--input-bg);
-      padding: 12px 16px;
-      border-radius: 12px;
-    }
-
-    .scrambled-text {
-      flex: 1;
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text-primary);
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
     /* Quiz Item Design */
     .quiz-item {
       padding: 20px 0;
@@ -238,14 +242,20 @@
       padding-top: 0;
     }
 
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
     .quiz-num {
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-secondary);
-      margin-bottom: 8px;
     }
 
-    /* Clickable Word Tokens for Mobile */
+    /* Interactive Word Buttons */
     .scrambled-box-interactive {
       background-color: var(--input-bg);
       padding: 12px 14px;
@@ -261,29 +271,39 @@
       background-color: #FFFFFF;
       color: var(--text-primary);
       border: 1px solid var(--border);
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 8px 14px;
+      border-radius: 10px;
       font-size: 0.95rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s ease;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .word-btn:hover {
       background-color: #F8F8FA;
+      border-color: #D1D1D6;
     }
 
-    /* 클릭되었을 때 (취소선 / 빗금 처리) */
+    .word-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* 클릭 시 취소선 및 빗금 처리 */
     .word-btn.used {
       text-decoration: line-through;
+      text-decoration-thickness: 2px;
+      text-decoration-color: var(--text-secondary);
       color: var(--text-secondary);
       background-color: #E5E5EA;
       border-color: transparent;
       box-shadow: none;
-      opacity: 0.6;
+      opacity: 0.65;
     }
 
     .token-divider {
@@ -368,7 +388,6 @@
       margin-top: 8px;
     }
 
-    /* Footer Design */
     footer {
       text-align: center;
       font-size: 0.8rem;
@@ -386,12 +405,12 @@
       <h1>Scrambler</h1>
     </header>
 
-    <!-- 1. 지문 입력 섹션 -->
+    <!-- 1. 지문 입력 및 옵션 설정 카드 -->
     <div id="inputContainer" class="card">
       <div class="card-title">지문 입력</div>
       <textarea id="inputText" placeholder="영어 지문을 입력하세요. 줄바꿈(Enter)으로 각각의 문장을 구분합니다."></textarea>
 
-      <!-- 옵션 -->
+      <!-- 옵션 설정 -->
       <div class="options">
         <div class="option-item">
           <input type="checkbox" id="groupArticles" checked>
@@ -402,9 +421,26 @@
           <label for="groupCustom" style="white-space: nowrap;">지정 단어 묶기:</label>
           <input type="text" id="customWords" value="in, on, at, of, to, with" placeholder="예: in, on, of">
         </div>
+
+        <div class="option-divider"></div>
+
+        <!-- 문제 출제 순서 선택 -->
+        <div class="option-item">
+          <span class="option-label">문제 순서:</span>
+          <label class="radio-label"><input type="radio" name="orderMode" value="original" checked> 입력 순서대로</label>
+          <label class="radio-label" style="margin-left: 10px;"><input type="radio" name="orderMode" value="random"> 랜덤 섞기</label>
+        </div>
+
+        <!-- 출제 문제 수 선택 -->
+        <div class="option-item">
+          <span class="option-label">출제 문제 수:</span>
+          <label class="radio-label"><input type="radio" name="countMode" value="all" checked onchange="toggleCountInput()"> 전체 문제</label>
+          <label class="radio-label" style="margin-left: 10px;"><input type="radio" name="countMode" value="custom" onchange="toggleCountInput()"> 지정 개수</label>
+          <input type="number" id="customCount" value="5" min="1" class="count-input" style="display: none;" placeholder="개수">
+        </div>
       </div>
 
-      <!-- 버튼 영역 -->
+      <!-- 작업 버튼 -->
       <div class="btn-group">
         <button onclick="generateScramble()" style="flex: 2;">문제 만들기</button>
         <label for="fileInput" class="file-label btn-secondary" style="flex: 1;">불러오기</label>
@@ -413,20 +449,13 @@
       </div>
     </div>
 
-    <!-- 2. 스크램블 결과 미리보기 및 복사 섹션 -->
-    <div id="previewContainer" class="card" style="display: none;">
-      <div class="card-title">스크램블 결과 및 복사</div>
-      <div id="previewList"></div>
-      
-      <div class="btn-group" style="margin-top: 24px;">
-        <button onclick="startQuiz()" style="flex: 2;">▶ 문제 풀기 시작</button>
-        <button class="btn-secondary" onclick="copyAllScrambled(this)" style="flex: 1;">전체 복사</button>
-      </div>
-    </div>
-
-    <!-- 3. 문제 풀기 섹션 (모바일 터치 지원) -->
+    <!-- 2. 문제 풀기 카드 (단어 버튼 클릭 지원) -->
     <div id="quizContainer" class="card" style="display: none;">
-      <div class="card-title">문제 풀기</div>
+      <div class="card-title-row">
+        <div class="card-title" style="margin-bottom: 0;">문제 풀기</div>
+        <button class="btn-secondary btn-sm" onclick="copyAllScrambled(this)">📋 전체 스크램블 복사</button>
+      </div>
+
       <div id="quizList"></div>
       
       <div class="btn-group" style="margin-top: 28px;">
@@ -435,7 +464,6 @@
       </div>
     </div>
 
-    <!-- 푸터 영역 -->
     <footer>
       &copy; 2026 Hachae. All rights reserved.
     </footer>
@@ -443,6 +471,13 @@
 
   <script>
     let sentencesData = [];
+
+    // 숫자 입력창 토글
+    function toggleCountInput() {
+      const countMode = document.querySelector('input[name="countMode"]:checked').value;
+      const countInput = document.getElementById('customCount');
+      countInput.style.display = (countMode === 'custom') ? 'inline-block' : 'none';
+    }
 
     // TXT 불러오기
     function loadTextFile(event) {
@@ -471,7 +506,17 @@
       URL.revokeObjectURL(link.href);
     }
 
-    // 배열 무작위 셔플
+    // HTML 특수문자 이스케이프
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // 배열 셔플
     function shuffle(array) {
       let currentIndex = array.length, randomIndex;
       const newArray = [...array];
@@ -484,7 +529,7 @@
       return newArray;
     }
 
-    // 토큰화 및 단어 묶기
+    // 단어 토큰화
     function tokenizeSentence(sentence) {
       const words = sentence.trim().split(/\s+/);
       if (words.length === 0 || words[0] === "") return [];
@@ -548,7 +593,7 @@
       }
     }
 
-    // 1단계: 문제 생성 및 스크램블 결과 노출
+    // 문제 생성
     function generateScramble() {
       const text = document.getElementById('inputText').value;
       const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
@@ -558,14 +603,35 @@
         return;
       }
 
+      // 1. 문제 순서 및 문제 수 옵션 처리
+      const orderMode = document.querySelector('input[name="orderMode"]:checked').value;
+      const countMode = document.querySelector('input[name="countMode"]:checked').value;
+
+      let indexedLines = lines.map((line, idx) => ({ index: idx, text: line }));
+
+      // 지정 문제 수 추출
+      if (countMode === 'custom') {
+        const customCountInput = document.getElementById('customCount');
+        let count = parseInt(customCountInput.value, 10) || 1;
+        count = Math.max(1, Math.min(count, lines.length)); // 1 ~ 전체 개수 내로 제한
+        indexedLines = shuffle(indexedLines).slice(0, count);
+      }
+
+      // 정렬 순서 적용 (순서대로 vs 랜덤)
+      if (orderMode === 'original') {
+        indexedLines.sort((a, b) => a.index - b.index);
+      } else {
+        indexedLines = shuffle(indexedLines);
+      }
+
+      const selectedLines = indexedLines.map(item => item.text);
+
+      // 2. 문제 풀이 데이터 생성 및 DOM 렌더링
       sentencesData = [];
-      const previewList = document.getElementById('previewList');
       const quizList = document.getElementById('quizList');
-      
-      previewList.innerHTML = '';
       quizList.innerHTML = '';
 
-      lines.forEach((originalSentence, index) => {
+      selectedLines.forEach((originalSentence, index) => {
         const tokens = tokenizeSentence(originalSentence);
         
         let scrambledTokens = shuffle(tokens);
@@ -579,85 +645,67 @@
           original: originalSentence,
           scrambledText: scrambledText,
           scrambledTokens: scrambledTokens,
-          selectedIndices: [] // 클릭 순서 저장
+          selectedIndices: []
         });
 
-        // 1) 미리보기 및 복사용 DOM
-        const previewItem = document.createElement('div');
-        previewItem.className = 'preview-item';
-        previewItem.innerHTML = `
-          <div class="preview-num">QUESTION ${index + 1}</div>
-          <div class="preview-content">
-            <div class="scrambled-text">${scrambledText}</div>
-            <button class="btn-secondary btn-sm" onclick="copySingleText(${index}, this)">복사</button>
-          </div>
-        `;
-        previewList.appendChild(previewItem);
-
-        // 2) 문제 풀이용 버튼형 DOM 생성
-        const quizItem = document.createElement('div');
-        quizItem.className = 'quiz-item';
-
-        // 단어 버튼 영역 생성
+        // 단어 버튼 HTML 생성
         let buttonsHtml = `<div class="scrambled-box-interactive" id="word-box-${index}">`;
         scrambledTokens.forEach((token, tIdx) => {
-          buttonsHtml += `<button type="button" class="word-btn" id="btn-${index}-${tIdx}" onclick="toggleWordToken(${index}, ${tIdx})">${token}</button>`;
+          buttonsHtml += `<button type="button" class="word-btn" id="btn-${index}-${tIdx}" onclick="toggleWordToken(${index}, ${tIdx})">${escapeHtml(token)}</button>`;
           if (tIdx < scrambledTokens.length - 1) {
             buttonsHtml += `<span class="token-divider">/</span>`;
           }
         });
         buttonsHtml += `</div>`;
 
+        // 문제 풀이 아이템 생성
+        const quizItem = document.createElement('div');
+        quizItem.className = 'quiz-item';
         quizItem.innerHTML = `
-          <div class="quiz-num">QUESTION ${index + 1}</div>
+          <div class="quiz-header">
+            <span class="quiz-num">QUESTION ${index + 1}</span>
+            <button type="button" class="btn-secondary btn-sm" onclick="copySingleText(${index}, this)">복사</button>
+          </div>
           ${buttonsHtml}
-          <input type="text" class="user-input" id="input-${index}" placeholder="단어를 터치하거나 직접 입력하세요..." autocomplete="off" oninput="handleManualInput(${index})">
+          <input type="text" class="user-input" id="input-${index}" placeholder="단어 버튼을 클릭하거나 직접 입력하세요..." autocomplete="off" oninput="handleManualInput(${index})">
           <div class="feedback" id="feedback-${index}"></div>
         `;
+
         quizList.appendChild(quizItem);
       });
 
-      // 미리보기 영역 활성화 및 화면 이동
-      const previewContainer = document.getElementById('previewContainer');
-      previewContainer.style.display = 'block';
-      document.getElementById('quizContainer').style.display = 'none';
-      previewContainer.scrollIntoView({ behavior: 'smooth' });
+      // 문제 풀이 화면 노출
+      const quizContainer = document.getElementById('quizContainer');
+      quizContainer.style.display = 'block';
+      quizContainer.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 개별 스크램블 복사
-    function copySingleText(index, btnEl) {
-      copyToClipboard(sentencesData[index].scrambledText, btnEl);
-    }
-
-    // 전체 스크램블 복사
-    function copyAllScrambled(btnEl) {
-      if (sentencesData.length === 0) return;
-      const allText = sentencesData.map((item, idx) => `Q${idx + 1}. ${item.scrambledText}`).join('\n');
-      copyToClipboard(allText, btnEl);
-    }
-
-    // 모바일 지원: 단어 터치 시 빗금 추가 및 자동 입력/취소
+    // 단어 버튼 클릭 시 빗금(취소선) 및 자동 입력/삭제
     function toggleWordToken(qIndex, tokenIndex) {
       const data = sentencesData[qIndex];
+      if (!data) return;
+
       const selectedPos = data.selectedIndices.indexOf(tokenIndex);
 
       if (selectedPos > -1) {
-        // 이미 선택된 경우 -> 선택 해제 (빗금 제거 & 입력창에서 삭제)
+        // 이미 선택된 버튼 -> 해제 (빗금 제거 & 입력창에서 삭제)
         data.selectedIndices.splice(selectedPos, 1);
       } else {
-        // 선택 안 된 경우 -> 선택 추가 (빗금 적용 & 입력창 뒤에 추가)
+        // 안 된 버튼 -> 선택 (빗금 적용 & 입력창 뒤에 추가)
         data.selectedIndices.push(tokenIndex);
       }
 
       updateWordBoxUI(qIndex);
     }
 
-    // UI 업데이트 (빗금 처리 및 input 텍스트 조합)
+    // UI 버튼 상태 및 Input 값 동기화
     function updateWordBoxUI(qIndex) {
       const data = sentencesData[qIndex];
+      if (!data) return;
+
       const inputEl = document.getElementById(`input-${qIndex}`);
 
-      // 1) 버튼 빗금(취소선) 스타일 조절
+      // 빗금 스타일 토글
       data.scrambledTokens.forEach((_, tIdx) => {
         const btn = document.getElementById(`btn-${qIndex}-${tIdx}`);
         if (!btn) return;
@@ -669,37 +717,38 @@
         }
       });
 
-      // 2) 선택된 순서대로 단어 결합하여 입력창에 넣기
+      // 클릭한 순서대로 입력창에 단어 결합하여 채우기
       const selectedWords = data.selectedIndices.map(i => data.scrambledTokens[i]);
       inputEl.value = selectedWords.join(' ');
     }
 
-    // 사용자가 입력창을 손으로 직접 지웠을 때 상태 초기화
+    // 입력창 텍스트를 직접 지웠을 때 버튼 상태 연동
     function handleManualInput(qIndex) {
       const inputEl = document.getElementById(`input-${qIndex}`);
-      if (inputEl.value.trim() === '') {
+      if (inputEl && inputEl.value.trim() === '') {
         sentencesData[qIndex].selectedIndices = [];
         updateWordBoxUI(qIndex);
       }
     }
 
-    // 2단계 -> 3단계: 실제 문제 풀기 시작
-    function startQuiz() {
-      document.getElementById('inputContainer').style.display = 'none';
-      document.getElementById('previewContainer').style.display = 'none';
-      document.getElementById('quizContainer').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 개별 스크램블 문제 복사
+    function copySingleText(index, btnEl) {
+      copyToClipboard(sentencesData[index].scrambledText, btnEl);
+    }
+
+    // 전체 스크램블 문제 복사
+    function copyAllScrambled(btnEl) {
+      if (sentencesData.length === 0) return;
+      const allText = sentencesData.map((item, idx) => `Q${idx + 1}. ${item.scrambledText}`).join('\n');
+      copyToClipboard(allText, btnEl);
     }
 
     // 지문 수정으로 돌아가기
     function backToInput() {
-      document.getElementById('quizContainer').style.display = 'none';
-      document.getElementById('inputContainer').style.display = 'block';
-      document.getElementById('previewContainer').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('inputContainer').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 정답 채점 및 오답 분석
+    // 정답 확인 및 분석
     function checkAnswers() {
       sentencesData.forEach((data, index) => {
         const userInput = document.getElementById(`input-${index}`).value.trim();
@@ -725,9 +774,9 @@
             userWords.forEach((uWord, i) => {
               const tWord = targetWords[i];
               if (uWord === tWord) {
-                html += `<span class="word-chip match">${uWord}</span>`;
+                html += `<span class="word-chip match">${escapeHtml(uWord)}</span>`;
               } else {
-                html += `<span class="word-chip mismatch" title="해당 위치의 단어가 잘못되었습니다">${uWord}</span>`;
+                html += `<span class="word-chip mismatch" title="해당 위치의 단어가 틀렸습니다">${escapeHtml(uWord)}</span>`;
               }
             });
           }
