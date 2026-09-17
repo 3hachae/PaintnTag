@@ -245,16 +245,51 @@
       margin-bottom: 8px;
     }
 
-    .scrambled-box {
+    /* Clickable Word Tokens for Mobile */
+    .scrambled-box-interactive {
       background-color: var(--input-bg);
-      padding: 14px 18px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-primary);
+      padding: 12px 14px;
+      border-radius: 14px;
       margin-bottom: 12px;
-      line-height: 1.6;
-      word-break: break-word;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+    }
+
+    .word-btn {
+      background-color: #FFFFFF;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .word-btn:hover {
+      background-color: #F8F8FA;
+    }
+
+    /* 클릭되었을 때 (취소선 / 빗금 처리) */
+    .word-btn.used {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+      background-color: #E5E5EA;
+      border-color: transparent;
+      box-shadow: none;
+      opacity: 0.6;
+    }
+
+    .token-divider {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      user-select: none;
     }
 
     .user-input {
@@ -380,16 +415,16 @@
 
     <!-- 2. 스크램블 결과 미리보기 및 복사 섹션 -->
     <div id="previewContainer" class="card" style="display: none;">
-      <div class="card-title">스크램블 결과</div>
+      <div class="card-title">스크램블 결과 및 복사</div>
       <div id="previewList"></div>
       
       <div class="btn-group" style="margin-top: 24px;">
         <button onclick="startQuiz()" style="flex: 2;">▶ 문제 풀기 시작</button>
-        <button class="btn-secondary" onclick="copyAllScrambled()" style="flex: 1;">전체 복사</button>
+        <button class="btn-secondary" onclick="copyAllScrambled(this)" style="flex: 1;">전체 복사</button>
       </div>
     </div>
 
-    <!-- 3. 문제 풀기 섹션 (실제 시험 모드) -->
+    <!-- 3. 문제 풀기 섹션 (모바일 터치 지원) -->
     <div id="quizContainer" class="card" style="display: none;">
       <div class="card-title">문제 풀기</div>
       <div id="quizList"></div>
@@ -486,7 +521,7 @@
       return tokens;
     }
 
-    // 클립보드 복사 함수 (호환성 보장)
+    // 클립보드 복사
     function copyToClipboard(text, btnElement) {
       const handleSuccess = () => {
         const originalText = btnElement.textContent;
@@ -513,7 +548,7 @@
       }
     }
 
-    // 1단계: 스크램블 생성 및 복사용 결과 생성
+    // 1단계: 문제 생성 및 스크램블 결과 노출
     function generateScramble() {
       const text = document.getElementById('inputText').value;
       const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
@@ -543,49 +578,112 @@
         sentencesData.push({
           original: originalSentence,
           scrambledText: scrambledText,
-          tokens: tokens
+          scrambledTokens: scrambledTokens,
+          selectedIndices: [] // 클릭 순서 저장
         });
 
-        // 미리보기 및 복사용 항목 생성
+        // 1) 미리보기 및 복사용 DOM
         const previewItem = document.createElement('div');
         previewItem.className = 'preview-item';
         previewItem.innerHTML = `
           <div class="preview-num">QUESTION ${index + 1}</div>
           <div class="preview-content">
             <div class="scrambled-text">${scrambledText}</div>
-            <button class="btn-secondary btn-sm" onclick="copyToClipboard('${scrambledText.replace(/'/g, "\\'")}', this)">복사</button>
+            <button class="btn-secondary btn-sm" onclick="copySingleText(${index}, this)">복사</button>
           </div>
         `;
         previewList.appendChild(previewItem);
 
-        // 실제 풀이용 항목 생성
+        // 2) 문제 풀이용 버튼형 DOM 생성
         const quizItem = document.createElement('div');
         quizItem.className = 'quiz-item';
+
+        // 단어 버튼 영역 생성
+        let buttonsHtml = `<div class="scrambled-box-interactive" id="word-box-${index}">`;
+        scrambledTokens.forEach((token, tIdx) => {
+          buttonsHtml += `<button type="button" class="word-btn" id="btn-${index}-${tIdx}" onclick="toggleWordToken(${index}, ${tIdx})">${token}</button>`;
+          if (tIdx < scrambledTokens.length - 1) {
+            buttonsHtml += `<span class="token-divider">/</span>`;
+          }
+        });
+        buttonsHtml += `</div>`;
+
         quizItem.innerHTML = `
           <div class="quiz-num">QUESTION ${index + 1}</div>
-          <div class="scrambled-box">${scrambledText}</div>
-          <input type="text" class="user-input" id="input-${index}" placeholder="원래 문장을 입력하세요..." autocomplete="off">
+          ${buttonsHtml}
+          <input type="text" class="user-input" id="input-${index}" placeholder="단어를 터치하거나 직접 입력하세요..." autocomplete="off" oninput="handleManualInput(${index})">
           <div class="feedback" id="feedback-${index}"></div>
         `;
         quizList.appendChild(quizItem);
       });
 
-      // 스크램블 결과 카드 표시 및 스크롤
+      // 미리보기 영역 활성화 및 화면 이동
       const previewContainer = document.getElementById('previewContainer');
       previewContainer.style.display = 'block';
+      document.getElementById('quizContainer').style.display = 'none';
       previewContainer.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 전체 스크램블 문장 복사
-    function copyAllScrambled() {
-      if (sentencesData.length === 0) return;
-      const allText = sentencesData.map((item, idx) => `Q${idx + 1}. ${item.scrambledText}`).join('\n');
-      
-      const btn = event.target;
-      copyToClipboard(allText, btn);
+    // 개별 스크램블 복사
+    function copySingleText(index, btnEl) {
+      copyToClipboard(sentencesData[index].scrambledText, btnEl);
     }
 
-    // 2단계: 문제 풀기 시작 (지문 및 복사 영역 숨김 -> 시험 모드 전환)
+    // 전체 스크램블 복사
+    function copyAllScrambled(btnEl) {
+      if (sentencesData.length === 0) return;
+      const allText = sentencesData.map((item, idx) => `Q${idx + 1}. ${item.scrambledText}`).join('\n');
+      copyToClipboard(allText, btnEl);
+    }
+
+    // 모바일 지원: 단어 터치 시 빗금 추가 및 자동 입력/취소
+    function toggleWordToken(qIndex, tokenIndex) {
+      const data = sentencesData[qIndex];
+      const selectedPos = data.selectedIndices.indexOf(tokenIndex);
+
+      if (selectedPos > -1) {
+        // 이미 선택된 경우 -> 선택 해제 (빗금 제거 & 입력창에서 삭제)
+        data.selectedIndices.splice(selectedPos, 1);
+      } else {
+        // 선택 안 된 경우 -> 선택 추가 (빗금 적용 & 입력창 뒤에 추가)
+        data.selectedIndices.push(tokenIndex);
+      }
+
+      updateWordBoxUI(qIndex);
+    }
+
+    // UI 업데이트 (빗금 처리 및 input 텍스트 조합)
+    function updateWordBoxUI(qIndex) {
+      const data = sentencesData[qIndex];
+      const inputEl = document.getElementById(`input-${qIndex}`);
+
+      // 1) 버튼 빗금(취소선) 스타일 조절
+      data.scrambledTokens.forEach((_, tIdx) => {
+        const btn = document.getElementById(`btn-${qIndex}-${tIdx}`);
+        if (!btn) return;
+
+        if (data.selectedIndices.includes(tIdx)) {
+          btn.classList.add('used');
+        } else {
+          btn.classList.remove('used');
+        }
+      });
+
+      // 2) 선택된 순서대로 단어 결합하여 입력창에 넣기
+      const selectedWords = data.selectedIndices.map(i => data.scrambledTokens[i]);
+      inputEl.value = selectedWords.join(' ');
+    }
+
+    // 사용자가 입력창을 손으로 직접 지웠을 때 상태 초기화
+    function handleManualInput(qIndex) {
+      const inputEl = document.getElementById(`input-${qIndex}`);
+      if (inputEl.value.trim() === '') {
+        sentencesData[qIndex].selectedIndices = [];
+        updateWordBoxUI(qIndex);
+      }
+    }
+
+    // 2단계 -> 3단계: 실제 문제 풀기 시작
     function startQuiz() {
       document.getElementById('inputContainer').style.display = 'none';
       document.getElementById('previewContainer').style.display = 'none';
@@ -593,7 +691,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 지문 수정으로 돌아가기 (다시 입력 및 스크램블 화면 노출)
+    // 지문 수정으로 돌아가기
     function backToInput() {
       document.getElementById('quizContainer').style.display = 'none';
       document.getElementById('inputContainer').style.display = 'block';
